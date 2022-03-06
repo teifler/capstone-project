@@ -1,11 +1,15 @@
 import React from 'react';
 import Home from './pages/Home.js';
+import { useState } from 'react';
 
 function App() {
   return (
-    <div className="App">
+    <>
+      {
+        //<ErrorBoundary FallbackComponent={ErrorFallback}>
+      }
       <Home />
-    </div>
+    </>
   );
 }
 
