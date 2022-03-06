@@ -1,5 +1,5 @@
 import React from 'react';
-import Home from './pages/Home.js';
+import Home from './Home.js';
 import styled from 'styled-components';
 
 //import { ErrorBoundary } from 'react-error-boundary';
