@@ -1,28 +1,53 @@
 import Header from './components/Header.js';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import CoinCard from './components/CoinCard.js';
+//import styled from 'styled-components';
 
-function Home() {
-  const [coins, setCoins] = useState([]);
+function Home({ coins }) {
+  const [search, setSearch] = useState('');
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const currency = 'eur';
-      const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=100&page=1&sparkline=false`;
-      try {
-        const response = await fetch(url);
-        const data = await response.json();
-        console.log(data);
-      } catch (error) {
-        console.error('ERROR:', error);
-      }
-    };
+  const filterdCoins = coins.filter(coin =>
+    coin.name.toLowerCase().includes(search.toLowerCase())
+  );
 
-    fetchData();
-  }, []); // Fetch API Data
-
+  const handleChange = e => {
+    setSearch(e.target.value);
+  };
+  console.log(coins);
   return (
     <>
       <Header />
+      <div className="coins-container">
+        <div className="coin-search">
+          <form>
+            <label>
+              Search
+              <input
+                id="search-input"
+                name="search-input"
+                onChange={handleChange}
+                className="searchInput"
+                type="text"
+                placeholder="Search here"
+              ></input>
+            </label>
+          </form>
+        </div>
+        <ul>
+          {filterdCoins.map(coin => {
+            return (
+              <CoinCard
+                key={coin.id}
+                name={coin.name}
+                symbol={coin.symbol}
+                image={coin.image}
+                price={coin.current_price}
+                price_change_percentage_24h={coin.price_change_percentage_24h}
+              />
+            );
+          })}
+        </ul>
+      </div>
     </>
   );
 }
