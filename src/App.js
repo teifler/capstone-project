@@ -1,14 +1,13 @@
 import React from 'react';
 import Home from './Home.js';
-//import styled from 'styled-components';
+import styled from 'styled-components';
 import { useEffect, useState } from 'react';
-//import { ErrorBoundary } from 'react-error-boundary';
-//import ErrorFallback from './components/ErrorFallback.js';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [coins, setCoins] = useState([]);
   const [currency, setCurrency] = useState('eur');
+  const [error, setError] = useState('');
   useEffect(() => {
     const fetchData = async () => {
       const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=100&page=1&sparkline=false`;
@@ -18,7 +17,8 @@ function App() {
         setCoins(data);
         setIsLoading(false);
       } catch (error) {
-        console.error('ERROR:', error);
+        setError(error.message);
+        setIsLoading(false);
       }
     };
     fetchData();
@@ -29,12 +29,20 @@ function App() {
   }
   return (
     <>
-      {
-        //<ErrorBoundary FallbackComponent={ErrorFallback}>
-      }
-      <Home coins={coins} currency={currency} />
+      {!error ? (
+        <Home coins={coins} currency={currency} />
+      ) : (
+        <ErrorMessage>
+          We had issues while fetching the coins for you. Please reload the page
+          to try it again!
+        </ErrorMessage>
+      )}
     </>
   );
 }
 
 export default App;
+
+const ErrorMessage = styled.h2`
+  color: red;
+`;
