@@ -33,8 +33,8 @@ function App() {
         <Home coins={coins} currency={currency} />
       ) : (
         <ErrorMessage>
-          We had issues while fetching the coins for you. Please reload the page
-          to try it again!
+          We had issues fetching the coins for you. Please reload the page to
+          try it again!
         </ErrorMessage>
       )}
     </>
@@ -44,5 +44,5 @@ function App() {
 export default App;
 
 const ErrorMessage = styled.h2`
-  color: red;
+  color: blue;
 `;
