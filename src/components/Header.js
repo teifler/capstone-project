@@ -1,12 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
 function Header() {
-  return <Headline>CoinFox</Headline>;
+  return (
+    <Headline>
+      <h1>CoinFox</h1>
+    </Headline>
+  );
 }
 
 export default Header;
 
-const Headline = styled.h1`
+const Headline = styled.header`
   display: flex;
   align-items: center;
   justify-content: center;
