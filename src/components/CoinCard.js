@@ -35,6 +35,7 @@ function CoinCard({
 }
 
 export default CoinCard;
+
 const CardWrapper = styled.div`
   display: flex;
   margin: 0px 0 24px 11px;
@@ -60,6 +61,13 @@ const CoinImage = styled.div`
 
 const CoinName = styled.div`
   width: 102.5px;
+  h3 {
+    font-size: 16px;
+  }
+  p {
+    color: #a9abb1;
+    font-size: 15px;
+  }
 `;
 
 const CoinDetails = styled.div`
