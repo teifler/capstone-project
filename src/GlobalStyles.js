@@ -9,7 +9,10 @@ export default createGlobalStyle`
 
 
   body {
-
+    display:flex;
+    align-items:center;
+    justify-content: center;
+    background-color:#F8F9FB ;
   }
 
 
