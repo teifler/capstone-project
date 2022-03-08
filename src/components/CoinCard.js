@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import arrowUp from '../images/arrow-up.svg';
+import arrowDown from '../images/arrow-down.svg';
 
 CoinCard.propTypes = {
   currency: PropTypes.string.isRequired,
@@ -38,9 +40,15 @@ function CoinCard({
         </p>
 
         {price_change_percentage_24h >= 0 ? (
-          <ColorGreen>{price_change_percentage_24h.toFixed(2)} %</ColorGreen>
+          <ColorGreen>
+            <img alt="Arrow up" src={arrowUp} height="12" width="12"></img>
+            {price_change_percentage_24h.toFixed(2)} %
+          </ColorGreen>
         ) : (
-          <ColorRed>{price_change_percentage_24h.toFixed(2)} %</ColorRed>
+          <ColorRed>
+            <img alt="Arrow down" src={arrowDown} height="12" width="12"></img>
+            {price_change_percentage_24h.toFixed(2)} %
+          </ColorRed>
         )}
       </CoinDetails>
     </CardWrapper>
