@@ -1,4 +1,15 @@
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
+
+CoinCard.propTypes = {
+  currency: PropTypes.string.isRequired,
+  rank: PropTypes.number.isRequired,
+  name: PropTypes.string,
+  symbol: PropTypes.string,
+  image: PropTypes.string,
+  price: PropTypes.number,
+  price_change_percentage_24h: PropTypes.number,
+};
 
 function CoinCard({
   currency,
@@ -21,7 +32,9 @@ function CoinCard({
       </CoinName>
       <CoinDetails>
         <p>
-          {currency === 'eur' ? `${price.toFixed(2)}€` : `$${price.toFixed(2)}`}
+          {currency === 'eur'
+            ? `${price.toFixed(2)} €`
+            : `$${price.toFixed(2)}`}
         </p>
 
         {price_change_percentage_24h >= 0 ? (
