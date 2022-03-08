@@ -6,6 +6,7 @@ import styled from 'styled-components';
 
 function Home({ coins, currency }) {
   const [search, setSearch] = useState('');
+  const [searchError, setSearchError] = useState(false);
 
   const filterdCoins = coins.filter(coin =>
     coin.name.toLowerCase().includes(search.toLowerCase())
@@ -13,6 +14,15 @@ function Home({ coins, currency }) {
 
   const handleChange = e => {
     setSearch(e.target.value);
+    if (e.target.value !== '') {
+      if (!e.target.value.match(/^[a-zA-Z0-9]+$/)) {
+        setSearchError(true);
+      } else {
+        setSearchError(false);
+      }
+    } else {
+      setSearchError(false);
+    }
   };
   console.log(coins);
   return (
@@ -28,8 +38,16 @@ function Home({ coins, currency }) {
                 onChange={handleChange}
                 className="searchInput"
                 type="text"
+                pattern="[A-Za-z0-9_]{1,15}"
                 placeholder="Type to Search"
               ></InputField>
+              {searchError ? (
+                <SearchErrorMessage>
+                  Please don't use special characters
+                </SearchErrorMessage>
+              ) : (
+                ''
+              )}
             </label>
           </form>
         </CoinSearch>
@@ -111,4 +129,10 @@ const StackedHeading = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: flex-end;
+`;
+
+const SearchErrorMessage = styled.p`
+  color: red;
+  text-align: center;
+  padding-bottom: 5px;
 `;
