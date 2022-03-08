@@ -2,6 +2,7 @@ import React from 'react';
 import Home from './Home.js';
 import styled from 'styled-components';
 import { useEffect, useState } from 'react';
+import spinner from './images/spinner.svg';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -21,11 +22,11 @@ function App() {
         setIsLoading(false);
       }
     };
-    fetchData();
+    setTimeout(() => fetchData(), 2000);
   }, []); // Fetch API Data
 
   if (isLoading) {
-    return <>isLoading...</>;
+    return <SpinnerLogo src={spinner} height="80" width="80"></SpinnerLogo>;
   }
   return (
     <>
@@ -45,4 +46,8 @@ export default App;
 
 const ErrorMessage = styled.h2`
   color: blue;
+`;
+
+const SpinnerLogo = styled.img`
+  margin-top: 40vh;
 `;
