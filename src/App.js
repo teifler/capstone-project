@@ -24,7 +24,7 @@ function App() {
       }
     };
     setTimeout(() => fetchData(), 2000);
-  }, []); // Fetch API Data
+  }, []);
 
   if (isLoading) {
     return <SpinnerLogo src={spinner} height="80" width="80"></SpinnerLogo>;
