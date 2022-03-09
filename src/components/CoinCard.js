@@ -81,19 +81,19 @@ const CoinImage = styled.div`
 `;
 
 const CoinName = styled.div`
-  width: 102.5px;
+  width: 6.4rem;
   h3 {
-    font-size: 16px;
+    font-size: 1rem;
   }
   p {
     color: #a9abb1;
-    font-size: 15px;
+    font-size: 0.9rem;
   }
 `;
 
 const CoinDetails = styled.div`
   display: flex;
-  width: 147.5px;
+  width: 9.2rem;
   flex-direction: column;
   justify-content: flex-end;
   align-items: flex-end;
