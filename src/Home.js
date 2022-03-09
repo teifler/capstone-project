@@ -14,6 +14,7 @@ function Home({ coins, currency }) {
 
   const handleChange = e => {
     setSearch(e.target.value);
+
     if (e.target.value !== '') {
       if (!e.target.value.match(/^[a-zA-Z0-9_ ]+$/)) {
         setSearchError(true);
@@ -67,10 +68,10 @@ function Home({ coins, currency }) {
               />
             );
           })}
-          {filterdCoins == [] ? (
-            ''
-          ) : (
+          {filterdCoins.length === 0 ? (
             <CoinNotFound>Searched coin is not in the database</CoinNotFound>
+          ) : (
+            ''
           )}
         </CoinList>
       </div>

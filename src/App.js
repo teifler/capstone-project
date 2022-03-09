@@ -45,8 +45,8 @@ function App() {
 
 export default App;
 
-const ErrorMessage = styled.h2`
-  color: blue;
+const ErrorMessage = styled.h3`
+  color: red;
 `;
 
 const SpinnerLogo = styled.img`
