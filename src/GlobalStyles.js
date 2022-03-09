@@ -15,7 +15,6 @@ export default createGlobalStyle`
     background-color:#F8F9FB ;
   }
 
-
   ul {
     list-style: none;
   }

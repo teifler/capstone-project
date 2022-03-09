@@ -16,7 +16,7 @@ function Home({ coins, currency }) {
   const handleChange = e => {
     setSearch(e.target.value);
     if (e.target.value !== '') {
-      if (!search.match(/^[a-zA-Z0-9_ ]+$/)) {
+      if (!e.target.value.match(/^[a-zA-Z0-9_ ]+$/)) {
         setSearchError(true);
       } else {
         setSearchError(false);
@@ -28,7 +28,7 @@ function Home({ coins, currency }) {
   console.log(coins);
   return (
     <>
-      <Header title="FoxCoin" />
+      <Header title="Crypto Cloud" />
       <div className="coins-container">
         <CoinSearch>
           <form>
@@ -66,6 +66,11 @@ function Home({ coins, currency }) {
               />
             );
           })}
+          {filterdCoins == [] ? (
+            ''
+          ) : (
+            <CoinNotFound>Searched coin is not in the database</CoinNotFound>
+          )}
         </CoinList>
       </div>
     </>
@@ -105,4 +110,9 @@ const SearchErrorMessage = styled.p`
   color: red;
   text-align: center;
   padding-bottom: 5px;
+`;
+
+const CoinNotFound = styled.p`
+  color: black;
+  text-align: center;
 `;

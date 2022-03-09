@@ -9,6 +9,7 @@ function App() {
   const [coins, setCoins] = useState([]);
   const [currency, setCurrency] = useState('eur');
   const [error, setError] = useState('');
+
   useEffect(() => {
     const fetchData = async () => {
       const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=100&page=1&sparkline=false`;
