@@ -10,6 +10,7 @@ function SearchBar({ handleChange }) {
             <img alt="Search icon" src={searchIcon}></img>
           </SearchIcon>
           <InputField
+            type="button"
             aria-label="search-input"
             id="search-input"
             name="search-input"

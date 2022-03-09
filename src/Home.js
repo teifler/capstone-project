@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/no-redundant-roles */
 import Header from './components/Header.js';
 import { useState } from 'react';
 import CoinCard from './components/CoinCard.js';
@@ -30,7 +29,11 @@ function Home({ coins, currency }) {
       <Header title="Crypto Cloud" />
       <div className="coins-container">
         <CoinSearch>
-          <form>
+          <form
+            onSubmit={e => {
+              e.preventDefault();
+            }}
+          >
             <SearchBar handleChange={handleChange} />
             {searchError ? (
               <SearchErrorMessage>
@@ -54,7 +57,6 @@ function Home({ coins, currency }) {
             return (
               <CoinCard
                 currency={currency}
-                data-testid={'test'}
                 rank={coin.market_cap_rank}
                 key={coin.id}
                 name={coin.name}
