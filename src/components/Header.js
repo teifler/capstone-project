@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-function Header() {
+function Header({ title }) {
   return (
     <Headline>
-      <h1>CoinFox</h1>
+      <h1>{title}</h1>
     </Headline>
   );
 }

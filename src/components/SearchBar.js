@@ -33,16 +33,14 @@ const SearchBarContainer = styled.div`
   height: 2.5rem;
   border-radius: 6px;
   overflow: hidden;
-  box-shadow: 0px 1px 5px 2px #6299ff;
+  box-shadow: 0px 0.05px 5px 2px #6299ff;
   margin-bottom: 10px;
   background-color: #fff;
 `;
 
-//For SearchIcon or close Icon
 const SearchInputContainer = styled.div`
   width: 100%;
   height: 100%;
-
   padding: 2px 15px;
   position: relative;
   display: flex;
@@ -68,7 +66,6 @@ const InputField = styled.input`
 `;
 
 const SearchIcon = styled.span`
-  color: #a9abb1;
   font-size: 1rem;
   margin-right: 10px;
   margin-top: 3px;
