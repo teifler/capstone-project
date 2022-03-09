@@ -25,7 +25,6 @@ function Home({ coins, currency }) {
       setSearchError(false);
     }
   };
-  console.log(coins);
   return (
     <>
       <Header title="Crypto Cloud" />
