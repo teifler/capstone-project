@@ -39,7 +39,10 @@ function CoinCard({
                 .toFixed(2)
                 .toString()
                 .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} €`
-            : `$${price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}
+            : `$${price
+                .toFixed(2)
+                .toString()
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}
         </p>
 
         {price_change_percentage_24h >= 0 ? (
@@ -62,29 +65,32 @@ export default CoinCard;
 
 const CardWrapper = styled.div`
   display: flex;
-  margin: 0 0 1.5rem;
-  padding: 1rem;
-  width: 21.125rem;
-  height: 4.313rem;
+  margin: 0 0 24px;
+  padding: 16px;
+  width: 338px;
+  height: 69px;
   background: #ffffff;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 0.5rem;
+  border-radius: 8px;
   justify-content: center;
 `;
 
 const CoinRank = styled.div`
   display: flex;
   align-items: center;
-  padding-right: 1.25rem;
+  padding-right: 20px;
 `;
 
 const CoinImage = styled.div`
   display: flex;
-  padding-right: 0.75rem;
+  padding-right: 12px;
 `;
 
 const CoinName = styled.div`
-  width: 6.4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  width: 152px;
   h3 {
     font-size: 1rem;
   }
@@ -96,9 +102,9 @@ const CoinName = styled.div`
 
 const CoinDetails = styled.div`
   display: flex;
-  width: 9.2rem;
+  width: 112px;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: flex-end;
 `;
 
