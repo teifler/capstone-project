@@ -43,15 +43,15 @@ function CoinCard({
         </p>
 
         {price_change_percentage_24h >= 0 ? (
-          <ColorGreen>
+          <PriceUp>
             <img alt="Arrow up" src={arrowUp} height="12" width="12"></img>
             {price_change_percentage_24h.toFixed(2)} %
-          </ColorGreen>
+          </PriceUp>
         ) : (
-          <ColorRed>
+          <PriceDown>
             <img alt="Arrow down" src={arrowDown} height="12" width="12"></img>
             {price_change_percentage_24h.toFixed(2)} %
-          </ColorRed>
+          </PriceDown>
         )}
       </CoinDetails>
     </CardWrapper>
@@ -102,9 +102,9 @@ const CoinDetails = styled.div`
   align-items: flex-end;
 `;
 
-const ColorRed = styled.p`
+const PriceDown = styled.p`
   color: red;
 `;
-const ColorGreen = styled.p`
+const PriceUp = styled.p`
   color: green;
 `;
