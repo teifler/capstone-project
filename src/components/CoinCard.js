@@ -35,8 +35,11 @@ function CoinCard({
       <CoinDetails>
         <p>
           {currency === 'eur'
-            ? `${price.toFixed(2)} €`
-            : `$${price.toFixed(2)}`}
+            ? `${price
+                .toFixed(2)
+                .toString()
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} €`
+            : `$${price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}
         </p>
 
         {price_change_percentage_24h >= 0 ? (
@@ -59,25 +62,25 @@ export default CoinCard;
 
 const CardWrapper = styled.div`
   display: flex;
-  margin: 0px 0 24px 11px;
-  padding: 16px;
-  width: 338px;
-  height: 69px;
+  margin: 0 0 1.5rem;
+  padding: 1rem;
+  width: 21.125rem;
+  height: 4.313rem;
   background: #ffffff;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 8px;
+  border-radius: 0.5rem;
   justify-content: center;
 `;
 
 const CoinRank = styled.div`
   display: flex;
   align-items: center;
-  padding-right: 20px;
+  padding-right: 1.25rem;
 `;
 
 const CoinImage = styled.div`
   display: flex;
-  padding-right: 12px;
+  padding-right: 0.75rem;
 `;
 
 const CoinName = styled.div`

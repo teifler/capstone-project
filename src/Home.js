@@ -13,10 +13,10 @@ function Home({ coins, currency }) {
   );
 
   const handleChange = e => {
-    setSearch(e.target.value);
+    setSearch(e.target.value.trim());
 
-    if (e.target.value !== '') {
-      if (!e.target.value.match(/^[a-zA-Z0-9_ ]+$/)) {
+    if (e.target.value.trim() !== '') {
+      if (!e.target.value.trim().match(/^[a-zA-Z0-9_.]+$/)) {
         setSearchError(true);
       } else {
         setSearchError(false);
@@ -28,53 +28,51 @@ function Home({ coins, currency }) {
   return (
     <>
       <Header title="Crypto Cloud" />
-      <div className="coins-container">
-        <CoinSearch>
-          <form
-            onSubmit={e => {
-              e.preventDefault();
-            }}
-          >
-            <SearchBar handleChange={handleChange} />
-            {searchError ? (
-              <SearchErrorMessage>
-                Please don't use special characters
-              </SearchErrorMessage>
-            ) : (
-              ''
-            )}
-          </form>
-        </CoinSearch>
-        <TableHeading>
-          <p>#</p>
-          <p>Name</p>
-          <StackedHeading>
-            <p>Price</p>
-            <p>% Change 24H</p>
-          </StackedHeading>
-        </TableHeading>
-        <CoinList role="list">
-          {filterdCoins.map(coin => {
-            return (
-              <CoinCard
-                currency={currency}
-                rank={coin.market_cap_rank}
-                key={coin.id}
-                name={coin.name}
-                symbol={coin.symbol}
-                image={coin.image}
-                price={coin.current_price}
-                price_change_percentage_24h={coin.price_change_percentage_24h}
-              />
-            );
-          })}
-          {filterdCoins.length === 0 ? (
-            <CoinNotFound>Searched coin is not in the database</CoinNotFound>
+      <CoinSearch>
+        <form
+          onSubmit={e => {
+            e.preventDefault();
+          }}
+        >
+          <SearchBar handleChange={handleChange} />
+          {searchError ? (
+            <SearchErrorMessage>
+              Please don't use special characters
+            </SearchErrorMessage>
           ) : (
             ''
           )}
-        </CoinList>
-      </div>
+        </form>
+      </CoinSearch>
+      <TableHeading>
+        <p>#</p>
+        <p>Name</p>
+        <StackedHeading>
+          <p>Price</p>
+          <p>% Change 24H</p>
+        </StackedHeading>
+      </TableHeading>
+      <CoinList role="list">
+        {filterdCoins.map(coin => {
+          return (
+            <CoinCard
+              currency={currency}
+              rank={coin.market_cap_rank}
+              key={coin.id}
+              name={coin.name}
+              symbol={coin.symbol}
+              image={coin.image}
+              price={coin.current_price}
+              price_change_percentage_24h={coin.price_change_percentage_24h}
+            />
+          );
+        })}
+      </CoinList>
+      {filterdCoins.length === 0 ? (
+        <CoinNotFound>Searched coin is not in the database</CoinNotFound>
+      ) : (
+        ''
+      )}
     </>
   );
 }
