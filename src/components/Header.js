@@ -20,8 +20,9 @@ const Headline = styled.header`
   align-items: center;
   justify-content: center;
   text-align: center;
-  color: #2f66f6;
+  color: white;
   height: 5rem;
   border-bottom: 1px solid black;
   margin-bottom: 1.5rem;
+  color: #2f66f6;
 `;
