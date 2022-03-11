@@ -1,10 +1,6 @@
 import { createGlobalStyle } from 'styled-components';
 export default createGlobalStyle`
 
-:root {
-
-}
-
   * {
     box-sizing: border-box;
     padding: 0;

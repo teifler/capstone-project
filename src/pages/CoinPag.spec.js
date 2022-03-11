@@ -10,10 +10,9 @@ import { NavLink } from 'react-router-dom';
 function CoinPage({ coin, title, currency }) {
   return (
     <div>
-      <div></div>
       <Header title={title} />
       <CardWrapper>
-        <GoBack to="/">
+        <GoBack to="Home">
           <img alt="arrow-left" src={arrowLeft} hight="35" width="35"></img>{' '}
           <span>Back</span>
         </GoBack>
