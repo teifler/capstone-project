@@ -1,8 +1,10 @@
-import React from 'react';
-import Home from './Home.js';
+import { Routes, Route } from 'react-router-dom';
+import HomePage from './pages/HomePage.js';
 import styled from 'styled-components';
 import { useEffect, useState } from 'react';
 import spinner from './images/spinner.svg';
+import CoinPage from './pages/CoinPage.js';
+import { nanoid } from 'nanoid';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -29,17 +31,38 @@ function App() {
   if (isLoading) {
     return <SpinnerLogo src={spinner} height="80" width="80"></SpinnerLogo>;
   }
+
+  console.log(coins);
   return (
-    <>
-      {!error ? (
-        <Home coins={coins} currency={currency} />
-      ) : (
-        <ErrorMessage>
-          We had issues fetching the coins for you. Please reload the page to
-          try it again!
-        </ErrorMessage>
-      )}
-    </>
+    <Routes>
+      <Route
+        path="/"
+        element={
+          error ? (
+            <ErrorMessage>
+              We had issues fetching the coins for you. Please reload the page
+              to try it again!
+            </ErrorMessage>
+          ) : (
+            <HomePage coins={coins} currency={currency} />
+          )
+        }
+      />
+      {coins.map(coin => (
+        <Route
+          key={nanoid()}
+          path={`${coin.id}`}
+          element={
+            <CoinPage
+              key={nanoid()}
+              title={coin.name}
+              coin={coin}
+              currency={currency}
+            />
+          }
+        />
+      ))}
+    </Routes>
   );
 }
 

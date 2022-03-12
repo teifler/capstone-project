@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import arrowUp from '../images/arrow-up.svg';
 import arrowDown from '../images/arrow-down.svg';
+import { NavLink } from 'react-router-dom';
 
 CoinCard.propTypes = {
   currency: PropTypes.string.isRequired,
@@ -16,6 +17,7 @@ CoinCard.propTypes = {
 function CoinCard({
   currency,
   rank,
+  id,
   name,
   symbol,
   image,
@@ -23,7 +25,7 @@ function CoinCard({
   price_change_percentage_24h,
 }) {
   return (
-    <CardWrapper>
+    <CardWrapper to={`/${id}`}>
       <CoinRank>{rank}.</CoinRank>
       <CoinImage>
         <img alt={name} src={image} height="32" width="32"></img>
@@ -63,7 +65,7 @@ function CoinCard({
 
 export default CoinCard;
 
-const CardWrapper = styled.div`
+const CardWrapper = styled(NavLink)`
   display: flex;
   margin: 0 0 24px;
   padding: 16px;
@@ -73,6 +75,14 @@ const CardWrapper = styled.div`
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 8px;
   justify-content: center;
+  text-decoration: none;
+  &:link,
+  &:visited,
+  &:hover,
+  &:active {
+    text-decoration: none;
+    color: inherit;
+  }
 `;
 
 const CoinRank = styled.div`

@@ -1,7 +1,6 @@
 import { createGlobalStyle } from 'styled-components';
 export default createGlobalStyle`
 
-
   * {
     box-sizing: border-box;
     padding: 0;
@@ -15,7 +14,7 @@ export default createGlobalStyle`
     background-color:#F8F9FB ;
   }
 
-  ul {
+  ul[role="list"] {
     list-style: none;
   }
 `;

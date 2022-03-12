@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router';
 
-import Home from '../Home.js';
+import Home from '../pages/HomePage.js';
 
 // Sample data for test
 const sample = [
@@ -69,9 +70,13 @@ const sample = [
 
 //
 
-describe('Home', () => {
+describe('CoinCard', () => {
   it('renders the sample data from above', () => {
-    render(<Home coins={sample} currency="usd" />);
+    render(
+      <MemoryRouter>
+        <Home coins={sample} currency="usd" />
+      </MemoryRouter>
+    );
     const btc = screen.getByText('Bitcoin');
     const eth = screen.getByText('Ethereum');
 

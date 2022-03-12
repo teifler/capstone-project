@@ -1,10 +1,10 @@
-import Header from './components/Header.js';
+import Header from '../components/Header.js';
 import { useState } from 'react';
-import CoinCard from './components/CoinCard.js';
+import CoinCard from '../components/CoinCard.js';
 import styled from 'styled-components';
-import SearchBar from './components/SearchBar.js';
+import SearchBar from '../components/SearchBar.js';
 
-function Home({ coins, currency }) {
+function HomePage({ coins, currency }) {
   const [search, setSearch] = useState('');
   const [searchError, setSearchError] = useState(false);
 
@@ -58,6 +58,7 @@ function Home({ coins, currency }) {
             <CoinCard
               currency={currency}
               rank={coin.market_cap_rank}
+              id={coin.id}
               key={coin.id}
               name={coin.name}
               symbol={coin.symbol}
@@ -77,7 +78,7 @@ function Home({ coins, currency }) {
   );
 }
 
-export default Home;
+export default HomePage;
 
 const CoinList = styled.ul``;
 
