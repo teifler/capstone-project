@@ -17,7 +17,6 @@ CoinCard.propTypes = {
 function CoinCard({
   currency,
   rank,
-  key,
   id,
   name,
   symbol,

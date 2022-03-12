@@ -10,7 +10,6 @@ import { NavLink } from 'react-router-dom';
 function CoinPage({ coin, title, currency }) {
   return (
     <div>
-      <div></div>
       <Header title={title} />
       <CardWrapper>
         <GoBack to="/">
@@ -27,8 +26,8 @@ function CoinPage({ coin, title, currency }) {
         <InformationWrapper>
           <h4>Market Information</h4>
           <ul>
+            <li>Rank: {coin.market_cap_rank}</li>
             <li>
-              <li>Rank: {coin.market_cap_rank}</li>
               {currency.toUpperCase()}:{' '}
               {currency === 'eur'
                 ? `${coin.current_price
