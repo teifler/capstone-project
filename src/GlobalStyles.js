@@ -14,7 +14,7 @@ export default createGlobalStyle`
     background-color:#F8F9FB ;
   }
 
-  ul {
+  ul[role="list"] {
     list-style: none;
   }
 `;

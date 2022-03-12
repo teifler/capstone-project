@@ -10,11 +10,10 @@ import { NavLink } from 'react-router-dom';
 function CoinPage({ coin, title, currency }) {
   return (
     <div>
-      <Header title={title} />
+      <Header title="Coin Detais" />
       <CardWrapper>
         <GoBack to="/">
           <img alt="arrow-left" src={arrowLeft} hight="35" width="35"></img>{' '}
-          <span>Back</span>
         </GoBack>
         <IconFav alt="icon-fav" src={star} width="28" height="28"></IconFav>
         <CoinImages>
@@ -25,7 +24,7 @@ function CoinPage({ coin, title, currency }) {
         </CoinName>
         <InformationWrapper>
           <h4>Market Information</h4>
-          <ul>
+          <ul role="list">
             <li>Rank: {coin.market_cap_rank}</li>
             <li>
               {currency.toUpperCase()}:{' '}
@@ -44,7 +43,7 @@ function CoinPage({ coin, title, currency }) {
         </InformationWrapper>
         <InformationWrapper>
           <h4>Last day Information</h4>
-          <ul>
+          <ul role="list">
             <li>
               High:{' '}
               {currency === 'eur'
@@ -117,20 +116,14 @@ const GoBack = styled(NavLink)`
   text-decoration: none;
   align-items: flex-end;
   padding-bottom: 5px;
-
-  span {
-    font-size: 1.5rem;
-    color: black;
-    font-weight: 600;
-    padding-left: 5px;
-  }
 `;
 
 const CoinName = styled.div`
   width: 90%;
+  text-align: center;
   display: flex;
   flex-direction: column;
-  margin-bottom: 20px;
+  margin: 20px 0 20px 0;
 
   align-items: space-around;
   h3 {
