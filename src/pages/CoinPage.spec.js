@@ -35,14 +35,17 @@ const sample = {
 };
 
 describe('CoinPage', () => {
-  it('Renders CoinPage with sample data', () => {
+  it('Renders CoinPage with details of coin, a favimage and a link back to the startpage', () => {
     render(
       <MemoryRouter>
         <CoinPage coin={sample} currency="eur" />
       </MemoryRouter>
     );
+
     const favIcon = screen.getByAltText('icon-fav');
-    const link = screen.getByRole('link');
+    const link = screen.getByRole('link', {
+      name: 'arrow-left Back',
+    });
     const btc = screen.getByText('Bitcoin');
 
     expect(favIcon).toBeInTheDocument();
