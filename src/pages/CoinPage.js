@@ -103,6 +103,9 @@ export default CoinPage;
 
 const CardWrapper = styled.div`
   display: flex;
+  margin-left: auto;
+  justify-content: center;
+  align-items: center;
   flex-direction: column;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   min-width: 340px;
@@ -113,6 +116,7 @@ const CardWrapper = styled.div`
 
 const GoBack = styled(NavLink)`
   display: flex;
+  align-self: flex-start;
   text-decoration: none;
   align-items: flex-end;
   padding-bottom: 5px;
