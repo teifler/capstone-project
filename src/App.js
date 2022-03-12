@@ -25,14 +25,13 @@ function App() {
         setIsLoading(false);
       }
     };
-    setTimeout(() => fetchData(), 2000);
+    fetchData();
   }, []);
 
   if (isLoading) {
     return <SpinnerLogo src={spinner} height="80" width="80"></SpinnerLogo>;
   }
 
-  console.log(coins);
   return (
     <Routes>
       <Route
@@ -50,15 +49,10 @@ function App() {
       />
       {coins.map(coin => (
         <Route
-          key={nanoid()}
+          key={coin.id}
           path={`${coin.id}`}
           element={
-            <CoinPage
-              key={nanoid()}
-              title={coin.name}
-              coin={coin}
-              currency={currency}
-            />
+            <CoinPage title={coin.name} coin={coin} currency={currency} />
           }
         />
       ))}

@@ -1,13 +1,48 @@
+import { NavLink } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+
 import Header from '../components/Header.js';
-import { useState } from 'react';
 import styled from 'styled-components';
 import star from '../images/star.svg';
 import arrowLeft from '../images/arrow-left.svg';
 import arrowUp from '../images/arrow-up.svg';
 import arrowDown from '../images/arrow-down.svg';
-import { NavLink } from 'react-router-dom';
+import spinner from '../images/spinner.svg';
 
 function CoinPage({ coin, title, currency }) {
+  const [isLoading, setIsLoading] = useState(true);
+  const [days, setDays] = useState(1);
+  const [cryptoHistory, setCryptoHistory] = useState([]);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const url = `https://api.coingecko.com/api/v3/coins/${coin.id}/market_chart?vs_currency=${currency}&days=${days}`;
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        setCryptoHistory(data);
+        setIsLoading(false);
+      } catch (error) {
+        setError(error.message);
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, [days, currency]);
+  {
+    //ADD ERROR RENDERING -- ADD FETCH FOR COIN
+  }
+
+  if (isLoading) {
+    return <SpinnerLogo src={spinner} height="80" width="80"></SpinnerLogo>;
+  }
+
+  {
+    //MAYBE ADD DAYS to change chart
+  }
+  console.log(cryptoHistory);
+
   return (
     <div>
       <Header title="Coin Details" />
@@ -38,7 +73,6 @@ function CoinPage({ coin, title, currency }) {
                     .toString()
                     .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}
             </li>
-            <li>{coin.symbol.toUpperCase()}: 1BTC</li>
           </ul>
         </InformationWrapper>
         <InformationWrapper>
@@ -175,4 +209,8 @@ const PriceDown = styled.p`
 const PriceUp = styled.p`
   color: green;
   display: inline;
+`;
+
+const SpinnerLogo = styled.img`
+  margin-top: 40vh;
 `;
