@@ -14,7 +14,7 @@ function App() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=100&page=1&sparkline=false`;
+      const url = `hqttps://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=100&page=1&sparkline=false`;
       try {
         const response = await fetch(url);
         const data = await response.json();
@@ -37,7 +37,16 @@ function App() {
     <Routes>
       <Route
         path="/"
-        element={<HomePage coins={coins} currency={currency} />}
+        element={
+          error ? (
+            <ErrorMessage>
+              We had issues fetching the coins for you. Please reload the page
+              to try it again!
+            </ErrorMessage>
+          ) : (
+            <HomePage coins={coins} currency={currency} />
+          )
+        }
       />
       {coins.map(coin => (
         <Route
@@ -53,15 +62,6 @@ function App() {
           }
         />
       ))}
-
-      {/*{!error ? (
-        <Home coins={coins} currency={currency} />
-      ) : (
-        <ErrorMessage>
-          We had issues fetching the coins for you. Please reload the page to
-          try it again!
-        </ErrorMessage>
-      )}*/}
     </Routes>
   );
 }
