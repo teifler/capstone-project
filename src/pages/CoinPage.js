@@ -17,8 +17,6 @@ function CoinPage({ coin, title, currency }) {
   const [cryptoHistory, setCryptoHistory] = useState([]);
   const [error, setError] = useState('');
 
-  console.log('Days -- ', days);
-
   useEffect(() => {
     const fetchData = async () => {
       const url = `https://api.coingecko.com/api/v3/coins/${coin.id}/market_chart?vs_currency=${currency}&days=${days}`;
@@ -34,21 +32,11 @@ function CoinPage({ coin, title, currency }) {
     };
     fetchData();
   }, [days, currency]);
-  {
-    //ADD ERROR RENDERING -- ADD FETCH FOR COIN
-  }
 
   if (isLoading) {
     return <SpinnerLogo src={spinner} height="80" width="80"></SpinnerLogo>;
   }
 
-  {
-    //MAYBE ADD DAYS to change chart
-  }
-  console.log(cryptoHistory);
-  const handleClick = (e, num) => {
-    console.log('HIER IST NUM IN FUNCTION', num);
-  };
   return (
     <div>
       <Header title="Coin Details" />
@@ -152,9 +140,6 @@ function CoinPage({ coin, title, currency }) {
           days={days}
         />
       </CardWrapper>
-
-      <button onClick={handleClick(10)}></button>
-      <button onClick={handleClick}></button>
     </div>
   );
 }

@@ -7,7 +7,6 @@ import styled from 'styled-components';
 function CryptoChart({ cryptoHistory, days, currency }) {
   const coinPriceList = cryptoHistory.prices.map(coin => coin[1]);
   const coinTimestampes = cryptoHistory.prices.map(coin => {
-    console.log('DRINNEN');
     const date = new Date(coin[0]);
     return days < 2
       ? date.toLocaleString('en-US', {
