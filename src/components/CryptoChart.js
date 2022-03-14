@@ -34,6 +34,7 @@ function CryptoChart({ cryptoHistory, days, currency }) {
       <Line
         data={{
           labels: coinTimestampes,
+          responsive: true,
           datasets: [
             {
               label: `Price ( Past ${days} Days) in ${currency}`,
@@ -45,6 +46,24 @@ function CryptoChart({ cryptoHistory, days, currency }) {
           ],
         }}
         options={{
+          plugins: {
+            legend: {
+              display: false,
+            },
+          },
+          lineHeightAnnotation: {
+            alwayse: true,
+            hover: false,
+            lineWeight: 10.5,
+          },
+          animation: {
+            duration: 2000,
+          },
+          maintainAspectRatio: false,
+          responsive: true,
+          legend: {
+            display: false,
+          },
           elements: {
             point: {
               radius: 1,
@@ -62,4 +81,5 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  height: 250px;
 `;

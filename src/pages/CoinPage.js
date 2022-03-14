@@ -13,7 +13,7 @@ import spinner from '../images/spinner.svg';
 
 function CoinPage({ coin, title, currency }) {
   const [isLoading, setIsLoading] = useState(true);
-  const [days, setDays] = useState(3);
+  const [days, setDays] = useState(1);
   const [cryptoHistory, setCryptoHistory] = useState([]);
   const [error, setError] = useState('');
 
