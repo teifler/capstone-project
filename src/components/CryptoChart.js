@@ -7,26 +7,16 @@ import styled from 'styled-components';
 function CryptoChart({ cryptoHistory, days, currency }) {
   const coinPriceList = cryptoHistory.prices.map(coin => coin[1]);
   const coinTimestampes = cryptoHistory.prices.map(coin => {
+    console.log('DRINNEN');
     const date = new Date(coin[0]);
-    return date.toLocaleDateString();
+    return days < 2
+      ? date.toLocaleString('en-US', {
+          hour: 'numeric',
+          minute: 'numeric',
+          hour12: true,
+        })
+      : date.toLocaleDateString();
   });
-
-  const options1 = {
-    elements: {
-      point: {
-        radius: 0,
-      },
-    },
-    scales: {
-      yAxes: [
-        {
-          ticks: {
-            beginAtZero: true,
-          },
-        },
-      ],
-    },
-  };
 
   return (
     <Wrapper>
@@ -37,7 +27,7 @@ function CryptoChart({ cryptoHistory, days, currency }) {
           responsive: true,
           datasets: [
             {
-              label: `Price ( Past ${days} Days) in ${currency}`,
+              label: `Price last ${days} days in ${currency}`,
               data: coinPriceList,
               fill: true,
               backgroundColor: '#88A6E7',
