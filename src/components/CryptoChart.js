@@ -36,7 +36,7 @@ function CryptoChart({ cryptoHistory, days, currency }) {
           labels: coinTimestampes,
           datasets: [
             {
-              label: `Price (Past ${days} Days) in ${currency}`,
+              label: `Price ( Past ${days} Days) in ${currency}`,
               data: coinPriceList,
               fill: true,
               backgroundColor: '#88A6E7',

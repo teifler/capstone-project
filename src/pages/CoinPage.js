@@ -229,8 +229,8 @@ const CoinImages = styled.div`
 `;
 
 const SelectTimeFrame = styled.select`
-  width: 50%;
-  align-self: center;
+  width: 30%;
+  align-self: flex-start;
   margin-bottom: 5px;
 `;
 
