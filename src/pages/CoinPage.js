@@ -1,8 +1,10 @@
 import { NavLink } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import styled from 'styled-components';
 
 import Header from '../components/Header.js';
-import styled from 'styled-components';
+import CryptoChart from '../components/CryptoChart.js';
+
 import star from '../images/star.svg';
 import arrowLeft from '../images/arrow-left.svg';
 import arrowUp from '../images/arrow-up.svg';
@@ -11,9 +13,11 @@ import spinner from '../images/spinner.svg';
 
 function CoinPage({ coin, title, currency }) {
   const [isLoading, setIsLoading] = useState(true);
-  const [days, setDays] = useState(1);
+  const [days, setDays] = useState(3);
   const [cryptoHistory, setCryptoHistory] = useState([]);
   const [error, setError] = useState('');
+
+  console.log('Days -- ', days);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,7 +46,9 @@ function CoinPage({ coin, title, currency }) {
     //MAYBE ADD DAYS to change chart
   }
   console.log(cryptoHistory);
-
+  const handleClick = (e, num) => {
+    console.log('HIER IST NUM IN FUNCTION', num);
+  };
   return (
     <div>
       <Header title="Coin Details" />
@@ -128,7 +134,27 @@ function CoinPage({ coin, title, currency }) {
             </li>
           </ul>
         </InformationWrapper>
+        <SelectTimeFrame
+          id="dropdown"
+          placeholder="Set Timeframe"
+          defaultValue="1"
+          onChange={e => setDays(e.target.value)}
+        >
+          <option value="1">24h</option>
+          <option value="7">7D</option>
+          <option value="30">1M</option>
+          <option value="90">3M</option>
+          <option value="365">1Y</option>
+        </SelectTimeFrame>
+        <CryptoChart
+          cryptoHistory={cryptoHistory}
+          currency={currency}
+          days={days}
+        />
       </CardWrapper>
+
+      <button onClick={handleClick(10)}></button>
+      <button onClick={handleClick}></button>
     </div>
   );
 }
@@ -200,6 +226,12 @@ const CoinImages = styled.div`
   width: 90%;
   margin-bottom: 15px;
   margin-right: 0;
+`;
+
+const SelectTimeFrame = styled.select`
+  width: 50%;
+  align-self: center;
+  margin-bottom: 5px;
 `;
 
 const PriceDown = styled.p`
