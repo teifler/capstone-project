@@ -23,7 +23,8 @@ function CoinPage({ coin, title, currency, toggleBookmark }) {
     errorCryptoHistory,
     fetchCryptoHistory,
   ] = useFetch(
-    `https://api.coingecko.com/api/v3/coins/${coin.id}/market_chart?vs_currency=${currency}&days=${days}`
+    `https://api.coingecko.com/api/v3/coins/${coin.id}/market_chart?vs_currency=${currency}&days=${days}`,
+    [days]
   );
 
   const [coins, isLoadingCoins, errorCoins, fetchCoins] = useFetch(
