@@ -34,7 +34,7 @@ function CoinPage({ coin, title, currency }) {
   }, [days, currency]);
 
   if (isLoading) {
-    return <SpinnerLogo src={spinner} height="80" width="80"></SpinnerLogo>;
+    return <SpinnerLogo srg={spinner} height="80" width="80"></SpinnerLogo>;
   }
 
   return (
@@ -44,7 +44,13 @@ function CoinPage({ coin, title, currency }) {
         <GoBack to="/">
           <img alt="arrow-left" src={arrowLeft} hight="35" width="35"></img>{' '}
         </GoBack>
-        <IconFav alt="icon-fav" src={star} width="28" height="28"></IconFav>
+        <IconFav
+          alt="icon-fav"
+          aria-label="icon-fav"
+          src={star}
+          width="28"
+          height="28"
+        ></IconFav>
         <CoinImages>
           <img alt={coin.id} src={coin.image} height="80"></img>
         </CoinImages>
