@@ -4,15 +4,15 @@ import styled from 'styled-components';
 import { useEffect, useState } from 'react';
 import spinner from './images/spinner.svg';
 import CoinPage from './pages/CoinPage.js';
-import { nanoid } from 'nanoid';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [coins, setCoins] = useState([]);
-  const [currency, setCurrency] = useState('eur');
+  const [currency, setCurrency] = useState('usd');
   const [error, setError] = useState('');
 
   useEffect(() => {
+    setCurrency('eur');
     const fetchData = async () => {
       const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=100&page=1&sparkline=false`;
       try {
@@ -25,14 +25,13 @@ function App() {
         setIsLoading(false);
       }
     };
-    setTimeout(() => fetchData(), 2000);
-  }, []);
+    fetchData();
+  }, [currency]);
 
   if (isLoading) {
     return <SpinnerLogo src={spinner} height="80" width="80"></SpinnerLogo>;
   }
 
-  console.log(coins);
   return (
     <Routes>
       <Route
@@ -50,15 +49,10 @@ function App() {
       />
       {coins.map(coin => (
         <Route
-          key={nanoid()}
+          key={coin.id}
           path={`${coin.id}`}
           element={
-            <CoinPage
-              key={nanoid()}
-              title={coin.name}
-              coin={coin}
-              currency={currency}
-            />
+            <CoinPage title={coin.name} coin={coin} currency={currency} />
           }
         />
       ))}
