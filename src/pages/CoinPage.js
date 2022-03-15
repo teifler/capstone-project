@@ -34,7 +34,7 @@ function CoinPage({ coin, title, currency }) {
   }, [days, currency]);
 
   if (isLoading) {
-    return <SpinnerLogo srg={spinner} height="80" width="80"></SpinnerLogo>;
+    return <SpinnerLogo src={spinner} height="80" width="80"></SpinnerLogo>;
   }
 
   return (
