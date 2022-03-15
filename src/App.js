@@ -1,8 +1,11 @@
 import { Routes, Route } from 'react-router-dom';
-import HomePage from './pages/HomePage.js';
-import styled from 'styled-components';
 import { useEffect, useState } from 'react';
+import styled from 'styled-components';
+
 import spinner from './images/spinner.svg';
+
+import HomePage from './pages/HomePage.js';
+import Tracker from './pages/Tracker.js';
 import CoinPage from './pages/CoinPage.js';
 
 function App() {
@@ -32,8 +35,24 @@ function App() {
     return <SpinnerLogo src={spinner} height="80" width="80"></SpinnerLogo>;
   }
 
+  function toggleBookmark(id) {
+    setCoins(
+      coins.map(coin => {
+        if (coin.id === id) {
+          return { ...coin, isBookmarked: !coin.isBookmarked };
+        } else {
+          return coin;
+        }
+      })
+    );
+  }
+
   return (
     <Routes>
+      <Route
+        path="/Tracker"
+        element={<Tracker coins={coins} currency={currency} />}
+      />
       <Route
         path="/"
         element={
@@ -52,7 +71,12 @@ function App() {
           key={coin.id}
           path={`${coin.id}`}
           element={
-            <CoinPage title={coin.name} coin={coin} currency={currency} />
+            <CoinPage
+              title={coin.name}
+              coin={coin}
+              currency={currency}
+              toggleBookmark={toggleBookmark}
+            />
           }
         />
       ))}

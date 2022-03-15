@@ -6,13 +6,14 @@ import Header from '../components/Header.js';
 import CryptoChart from '../components/CryptoChart.js';
 
 import star from '../images/star.svg';
+import starFilled from '../images/star-filled.svg';
 import arrowLeft from '../images/arrow-left.svg';
 import arrowUp from '../images/arrow-up.svg';
 import arrowDown from '../images/arrow-down.svg';
 import spinner from '../images/spinner.svg';
 import useFetch from '../hooks/useFetch.js';
 
-function CoinPage({ coin, title, currency }) {
+function CoinPage({ coin, title, currency, toggleBookmark }) {
   const [days, setDays] = useState(1);
   const [error, setError] = useState(false);
 
@@ -22,7 +23,7 @@ function CoinPage({ coin, title, currency }) {
     errorCryptoHistory,
     fetchCryptoHistory,
   ] = useFetch(
-    `https://apix.coingecko.com/api/v3/coins/${coin.id}/market_chart?vs_currency=${currency}&days=${days}`
+    `https://api.coingecko.com/api/v3/coins/${coin.id}/market_chart?vs_currency=${currency}&days=${days}`
   );
 
   const [coins, isLoadingCoins, errorCoins, fetchCoins] = useFetch(
@@ -46,13 +47,13 @@ function CoinPage({ coin, title, currency }) {
           <GoBack to="/">
             <img alt="arrow-left" src={arrowLeft} hight="35" width="35"></img>{' '}
           </GoBack>
-          <IconFav
-            alt="icon-fav"
-            aria-label="icon-fav"
-            src={star}
-            width="28"
-            height="28"
-          ></IconFav>
+          <TrackButton onClick={() => toggleBookmark(coin.id)}>
+            {coin.isBookmarked ? (
+              <img src={starFilled} height="30" width="30"></img>
+            ) : (
+              <img src={star} height="30" width="30"></img>
+            )}
+          </TrackButton>
           <CoinImages>
             <img alt={coin.id} src={coin.image} height="80"></img>
           </CoinImages>
@@ -210,10 +211,12 @@ const InformationWrapper = styled.div`
   }
 `;
 
-const IconFav = styled.img`
+const TrackButton = styled.button`
   position: absolute;
   top: 32px;
   right: 15px;
+  border-style: none;
+  background-color: transparent;
 `;
 
 const CoinImages = styled.div`
