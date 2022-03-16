@@ -1,20 +1,20 @@
 import { NavLink } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 
 import Header from '../components/Header.js';
 import CryptoChart from '../components/CryptoChart.js';
 
 import star from '../images/star.svg';
+import starFilled from '../images/star-filled.svg';
 import arrowLeft from '../images/arrow-left.svg';
 import arrowUp from '../images/arrow-up.svg';
 import arrowDown from '../images/arrow-down.svg';
 import spinner from '../images/spinner.svg';
 import useFetch from '../hooks/useFetch.js';
 
-function CoinPage({ coin, title, currency }) {
+function CoinPage({ coin, title, currency, toggleBookmark }) {
   const [days, setDays] = useState(1);
-  const [error, setError] = useState(false);
 
   const [
     cryptoHistory,
@@ -22,7 +22,8 @@ function CoinPage({ coin, title, currency }) {
     errorCryptoHistory,
     fetchCryptoHistory,
   ] = useFetch(
-    `https://apix.coingecko.com/api/v3/coins/${coin.id}/market_chart?vs_currency=${currency}&days=${days}`
+    `https://api.coingecko.com/api/v3/coins/${coin.id}/market_chart?vs_currency=${currency}&days=${days}`,
+    [days]
   );
 
   const [coins, isLoadingCoins, errorCoins, fetchCoins] = useFetch(
@@ -46,13 +47,23 @@ function CoinPage({ coin, title, currency }) {
           <GoBack to="/">
             <img alt="arrow-left" src={arrowLeft} hight="35" width="35"></img>{' '}
           </GoBack>
-          <IconFav
-            alt="icon-fav"
-            aria-label="icon-fav"
-            src={star}
-            width="28"
-            height="28"
-          ></IconFav>
+          <TrackButton onClick={() => toggleBookmark(coin.id)}>
+            {coin.isBookmarked ? (
+              <img
+                src={starFilled}
+                alt="Remove coin of your tracking list"
+                height="30"
+                width="30"
+              ></img>
+            ) : (
+              <img
+                src={star}
+                alt="Add coin to your tracking list"
+                height="30"
+                width="30"
+              ></img>
+            )}
+          </TrackButton>
           <CoinImages>
             <img alt={coin.id} src={coin.image} height="80"></img>
           </CoinImages>
@@ -61,7 +72,7 @@ function CoinPage({ coin, title, currency }) {
           </CoinName>
           <InformationWrapper>
             <h4>Market Information</h4>
-            <ul role="list">
+            <StyledList role="list">
               <li>Rank: {coin.market_cap_rank}</li>
               <li>
                 {currency.toUpperCase()}:{' '}
@@ -75,11 +86,11 @@ function CoinPage({ coin, title, currency }) {
                       .toString()
                       .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}
               </li>
-            </ul>
+            </StyledList>
           </InformationWrapper>
           <InformationWrapper>
             <h4>Last day Information</h4>
-            <ul role="list">
+            <StyledList role="list">
               <li>
                 High:{' '}
                 {currency === 'eur'
@@ -128,7 +139,7 @@ function CoinPage({ coin, title, currency }) {
                   </PriceDown>
                 )}
               </li>
-            </ul>
+            </StyledList>
           </InformationWrapper>
           <SelectTimeFrame
             id="dropdown"
@@ -170,6 +181,8 @@ const CardWrapper = styled.div`
   position: relative;
 `;
 
+const StyledList = styled.ul``;
+
 const GoBack = styled(NavLink)`
   display: flex;
   align-self: flex-start;
@@ -210,10 +223,12 @@ const InformationWrapper = styled.div`
   }
 `;
 
-const IconFav = styled.img`
+const TrackButton = styled.button`
   position: absolute;
   top: 32px;
   right: 15px;
+  border-style: none;
+  background-color: transparent;
 `;
 
 const CoinImages = styled.div`

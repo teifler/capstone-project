@@ -79,7 +79,6 @@ function HomePage({ coins, currency }) {
 }
 
 export default HomePage;
-
 const CoinList = styled.ul``;
 
 const CoinSearch = styled.div`

@@ -18,7 +18,8 @@ export default function useFetch(url, dependencyArray = []) {
 
   useEffect(() => {
     fetchData();
-  }, dependencyArray);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dependencyArray]);
 
   return [data, loading, error, fetchData];
 }
