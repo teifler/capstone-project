@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 
 import Header from '../components/Header.js';
@@ -15,7 +15,6 @@ import useFetch from '../hooks/useFetch.js';
 
 function CoinPage({ coin, title, currency, toggleBookmark }) {
   const [days, setDays] = useState(1);
-  const [error, setError] = useState(false);
 
   const [
     cryptoHistory,
@@ -50,9 +49,19 @@ function CoinPage({ coin, title, currency, toggleBookmark }) {
           </GoBack>
           <TrackButton onClick={() => toggleBookmark(coin.id)}>
             {coin.isBookmarked ? (
-              <img src={starFilled} height="30" width="30"></img>
+              <img
+                src={starFilled}
+                alt="Remove coin of your tracking list"
+                height="30"
+                width="30"
+              ></img>
             ) : (
-              <img src={star} height="30" width="30"></img>
+              <img
+                src={star}
+                alt="Add coin to your tracking list"
+                height="30"
+                width="30"
+              ></img>
             )}
           </TrackButton>
           <CoinImages>
@@ -63,7 +72,7 @@ function CoinPage({ coin, title, currency, toggleBookmark }) {
           </CoinName>
           <InformationWrapper>
             <h4>Market Information</h4>
-            <ul role="list">
+            <StyledList role="list">
               <li>Rank: {coin.market_cap_rank}</li>
               <li>
                 {currency.toUpperCase()}:{' '}
@@ -77,11 +86,11 @@ function CoinPage({ coin, title, currency, toggleBookmark }) {
                       .toString()
                       .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}
               </li>
-            </ul>
+            </StyledList>
           </InformationWrapper>
           <InformationWrapper>
             <h4>Last day Information</h4>
-            <ul role="list">
+            <StyledList role="list">
               <li>
                 High:{' '}
                 {currency === 'eur'
@@ -130,7 +139,7 @@ function CoinPage({ coin, title, currency, toggleBookmark }) {
                   </PriceDown>
                 )}
               </li>
-            </ul>
+            </StyledList>
           </InformationWrapper>
           <SelectTimeFrame
             id="dropdown"
@@ -171,6 +180,8 @@ const CardWrapper = styled.div`
   margin: 0 auto auto;
   position: relative;
 `;
+
+const StyledList = styled.ul``;
 
 const GoBack = styled(NavLink)`
   display: flex;
