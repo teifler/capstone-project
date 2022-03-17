@@ -1,4 +1,4 @@
-# CryptoCloud tracks your favorite CryptoCurrency's - Build with React, Chart JS and Storybook.
+# CryptoCloud - Built with React, Chart JS and Storybook.
 
 CryptoCloud makes it easy to track your favorite cryptocurrencies. Add your favorites coins to your trackinglist, so you'll get a quick overview of all your coins in one place.
 
@@ -15,16 +15,8 @@ Please note that Cryptocloud is still under construction. Please let me know if 
 - [StyledComponents](https://styled-components.com/)
 - [npm](https://www.npmjs.com/)
 
-- React
-- React Hooks
-- React Router
-- React Testing Library / Jest
-- JavaScript
-- Storybook
-- styled-components
-- localStorage
-- npm
-- Vercel
+- [JavaScript](https://developer.mozilla.org/de/docs/Web/JavaScript)
+- [Vercel](https://vercel.com/)
 
 ## Project Setup
 
@@ -33,5 +25,5 @@ Please note that Cryptocloud is still under construction. Please let me know if 
 - Install all dependencies with `$ npm install`
 - Run app in dev mode with `$ npm run dev`
 - Server: [http://localhost:3000/](http://localhost:3000/)
-- Run tests via `$ npm run test`
+- Run the tests via `$ npm run test`
 - Run Storybook with `$ npm run storybook`
