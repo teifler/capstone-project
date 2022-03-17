@@ -27,7 +27,6 @@ function HomePage({ coins, currency }) {
   };
   return (
     <>
-      <Header title={'Crypto Cloud'} ß />
       <CoinSearch>
         <form
           onSubmit={e => {

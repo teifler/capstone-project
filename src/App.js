@@ -51,6 +51,7 @@ function App() {
 
   return (
     <AppGrid>
+      <Header title={'Crypto Cloud'} />
       <Main>
         <Routes>
           <Route
@@ -86,7 +87,6 @@ function App() {
           ))}
         </Routes>
       </Main>
-
       <Navigation />
     </AppGrid>
   );
@@ -102,6 +102,7 @@ const AppGrid = styled.div`
 const Main = styled.main`
   height: 100vh;
   padding: 1rem 0.5rem;
+  overflow-y: auto;
   -ms-overflow-style: none;
   scrollbar-width: none;
   ::-webkit-scrollbar {

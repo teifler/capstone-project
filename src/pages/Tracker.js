@@ -6,7 +6,6 @@ import styled from 'styled-components';
 function HomePage({ coins, currency }) {
   return (
     <Container>
-      <Header title="Crypto Cloud" />
       <CoinList role="list">
         {coins
           .filter(coin => coin.isBookmarked)

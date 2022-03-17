@@ -35,7 +35,6 @@ function CoinPage({ coin, title, currency, toggleBookmark }) {
 
   return (
     <div>
-      <Header title="Coin Details" />
       {errorCoins ? (
         <ErrorMessage>
           We had issues fetching the coins for you. Please reload the page to
