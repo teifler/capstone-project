@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
-export default function useFetch(url, dependencyArray = []) {
+import { useCallback, useEffect, useState } from 'react';
+const defaultArray = [];
+export default function useFetch(url) {
   const [data, setData] = useState(null);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  async function fetchData() {
+  const fetchData = useCallback(async () => {
     try {
       const response = await fetch(url);
       const receivedData = await response.json();
@@ -14,12 +15,12 @@ export default function useFetch(url, dependencyArray = []) {
       setError(error.message);
       setLoading(false);
     }
-  }
+  }, [url]);
 
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dependencyArray]);
+  }, [fetchData]);
 
   return [data, loading, error, fetchData];
 }
