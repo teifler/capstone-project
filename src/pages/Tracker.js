@@ -41,6 +41,8 @@ export default HomePage;
 
 const Container = styled.div`
   margin-bottom: 60px;
+  display: flex;
+  justify-content: center;
 `;
 
 const CoinList = styled.ul``;
