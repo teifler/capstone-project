@@ -40,7 +40,6 @@ const SearchInputContainer = styled.div`
   width: 100%;
   height: 100%;
   padding: 2px 15px;
-  position: relative;
   display: flex;
   align-items: center;
 `;

@@ -1,4 +1,3 @@
-import Header from '../components/Header.js';
 import { useState } from 'react';
 import CoinCard from '../components/CoinCard.js';
 import styled from 'styled-components';
@@ -26,8 +25,7 @@ function HomePage({ coins, currency }) {
     }
   };
   return (
-    <>
-      <Header title="Crypto Cloud" />
+    <Container>
       <CoinSearch>
         <form
           onSubmit={e => {
@@ -44,14 +42,7 @@ function HomePage({ coins, currency }) {
           )}
         </form>
       </CoinSearch>
-      <TableHeading>
-        <p>#</p>
-        <p>Name</p>
-        <StackedHeading>
-          <p>Price</p>
-          <p>% Change 24H</p>
-        </StackedHeading>
-      </TableHeading>
+
       <CoinList role="list">
         {filterdCoins.map(coin => {
           return (
@@ -74,37 +65,22 @@ function HomePage({ coins, currency }) {
       ) : (
         ''
       )}
-    </>
+    </Container>
   );
 }
 
 export default HomePage;
-const CoinList = styled.ul``;
 
-const CoinSearch = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const TableHeading = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-top: 1px solid black;
-  border-bottom: 1px solid black;
-  margin: 0 auto;
-  padding: 5px 0 5px;
-  width: 90%;
-  margin-bottom: 24px;
-`;
-
-const StackedHeading = styled.div`
+const Container = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: flex-end;
+  align-items: center;
 `;
+const CoinList = styled.ul`
+  margin-bottom: 55px;
+`;
+
+const CoinSearch = styled.div``;
 
 const SearchErrorMessage = styled.p`
   color: red;

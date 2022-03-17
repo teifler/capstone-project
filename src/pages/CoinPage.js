@@ -22,8 +22,7 @@ function CoinPage({ coin, title, currency, toggleBookmark }) {
     errorCryptoHistory,
     fetchCryptoHistory,
   ] = useFetch(
-    `https://api.coingecko.com/api/v3/coins/${coin.id}/market_chart?vs_currency=${currency}&days=${days}`,
-    [days]
+    `https://api.coingecko.com/api/v3/coins/${coin.id}/market_chart?vs_currency=${currency}&days=${days}`
   );
 
   const [coins, isLoadingCoins, errorCoins, fetchCoins] = useFetch(
@@ -36,7 +35,6 @@ function CoinPage({ coin, title, currency, toggleBookmark }) {
 
   return (
     <div>
-      <Header title="Coin Details" />
       {errorCoins ? (
         <ErrorMessage>
           We had issues fetching the coins for you. Please reload the page to
@@ -177,18 +175,14 @@ const CardWrapper = styled.div`
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   min-width: 340px;
   padding: 2rem;
-  margin: 0 auto auto;
   position: relative;
+  margin-bottom: 65px;
 `;
 
 const StyledList = styled.ul``;
 
 const GoBack = styled(NavLink)`
-  display: flex;
   align-self: flex-start;
-  text-decoration: none;
-  align-items: flex-end;
-  padding-bottom: 5px;
 `;
 
 const CoinName = styled.div`
@@ -216,6 +210,7 @@ const InformationWrapper = styled.div`
   padding: 10px;
   line-height: 130%;
   font-size: 110%;
+  max-width: 400px;
 
   li {
     text-align: left;
@@ -242,6 +237,10 @@ const CoinImages = styled.div`
 const SelectTimeFrame = styled.select`
   width: 30%;
   align-self: flex-start;
+  @media (min-width: 768px) {
+    align-self: center;
+    width: 390px;
+  }
   margin-bottom: 5px;
 `;
 

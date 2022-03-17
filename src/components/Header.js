@@ -20,9 +20,11 @@ const Headline = styled.header`
   align-items: center;
   justify-content: center;
   text-align: center;
+  background-color: #d7d9e4;
   color: white;
-  height: 5rem;
-  border-bottom: 1px solid black;
-  margin-bottom: 1.5rem;
+  width: 100%;
+  height: 2.75rem;
+  margin-bottom: 0.9rem;
   color: #2f66f6;
+  padding-top: 10px;
 `;
