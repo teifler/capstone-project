@@ -26,7 +26,7 @@ function HomePage({ coins, currency }) {
     }
   };
   return (
-    <>
+    <Container>
       <CoinSearch>
         <form
           onSubmit={e => {
@@ -43,14 +43,7 @@ function HomePage({ coins, currency }) {
           )}
         </form>
       </CoinSearch>
-      <TableHeading>
-        <p>#</p>
-        <p>Name</p>
-        <StackedHeading>
-          <p>Price</p>
-          <p>% Change 24H</p>
-        </StackedHeading>
-      </TableHeading>
+
       <CoinList role="list">
         {filterdCoins.map(coin => {
           return (
@@ -73,20 +66,22 @@ function HomePage({ coins, currency }) {
       ) : (
         ''
       )}
-    </>
+    </Container>
   );
 }
 
 export default HomePage;
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
 const CoinList = styled.ul`
   margin-bottom: 55px;
 `;
 
-const CoinSearch = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
+const CoinSearch = styled.div``;
 
 const TableHeading = styled.div`
   display: flex;

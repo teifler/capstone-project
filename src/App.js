@@ -97,6 +97,7 @@ export default App;
 const AppGrid = styled.div`
   display: grid;
   grid-template-rows: 48px 1fr 48px;
+  position: relative;
 `;
 
 const Main = styled.main`
@@ -121,5 +122,7 @@ const ErrorMessage = styled.h3`
 `;
 
 const SpinnerLogo = styled.img`
-  margin-top: 40vh;
+  position: absolute;
+  top: 50%;
+  left: 50%;
 `;

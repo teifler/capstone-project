@@ -214,6 +214,7 @@ const InformationWrapper = styled.div`
   padding: 10px;
   line-height: 130%;
   font-size: 110%;
+  max-width: 400px;
 
   li {
     text-align: left;
@@ -240,6 +241,10 @@ const CoinImages = styled.div`
 const SelectTimeFrame = styled.select`
   width: 30%;
   align-self: flex-start;
+  @media (min-width: 768px) {
+    align-self: center;
+    width: 390px;
+  }
   margin-bottom: 5px;
 `;
 
