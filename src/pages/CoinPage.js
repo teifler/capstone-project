@@ -182,11 +182,7 @@ const CardWrapper = styled.div`
 const StyledList = styled.ul``;
 
 const GoBack = styled(NavLink)`
-  display: flex;
   align-self: flex-start;
-  text-decoration: none;
-  align-items: flex-end;
-  padding-bottom: 5px;
 `;
 
 const CoinName = styled.div`
