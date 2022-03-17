@@ -22,8 +22,7 @@ function CoinPage({ coin, title, currency, toggleBookmark }) {
     errorCryptoHistory,
     fetchCryptoHistory,
   ] = useFetch(
-    `https://api.coingecko.com/api/v3/coins/${coin.id}/market_chart?vs_currency=${currency}&days=${days}`,
-    [days]
+    `https://api.coingecko.com/api/v3/coins/${coin.id}/market_chart?vs_currency=${currency}&days=${days}`
   );
 
   const [coins, isLoadingCoins, errorCoins, fetchCoins] = useFetch(
@@ -177,8 +176,8 @@ const CardWrapper = styled.div`
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   min-width: 340px;
   padding: 2rem;
-  margin: 0 auto auto;
   position: relative;
+  margin-bottom: 65px;
 `;
 
 const StyledList = styled.ul``;

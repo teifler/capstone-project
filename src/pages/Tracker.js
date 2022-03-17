@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 function HomePage({ coins, currency }) {
   return (
-    <>
+    <Container>
       <Header title="Crypto Cloud" />
       <CoinList role="list">
         {coins
@@ -34,11 +34,15 @@ function HomePage({ coins, currency }) {
       ) : (
         ''
       )}
-    </>
+    </Container>
   );
 }
 
 export default HomePage;
+
+const Container = styled.div`
+  margin-bottom: 60px;
+`;
 
 const CoinList = styled.ul``;
 

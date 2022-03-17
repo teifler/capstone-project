@@ -27,7 +27,7 @@ function HomePage({ coins, currency }) {
   };
   return (
     <>
-      <Header title="Crypto Cloud" />
+      <Header title={'Crypto Cloud'} ß />
       <CoinSearch>
         <form
           onSubmit={e => {
@@ -79,7 +79,9 @@ function HomePage({ coins, currency }) {
 }
 
 export default HomePage;
-const CoinList = styled.ul``;
+const CoinList = styled.ul`
+  margin-bottom: 55px;
+`;
 
 const CoinSearch = styled.div`
   display: flex;
