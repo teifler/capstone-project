@@ -1,3 +1,15 @@
+# CryptoCloud track your favorite CryptoCurrency's Tracker - Build with React, Chart JS
+
+Cryptocloud is a cryptocurrency
+
+#### Check the live version: (https://capstone-project-teifler.vercel.app)
+
+## Tech Stack
+
+- [React JS](https://reactjs.org/)
+- [Storybook](https://storybook.js.org/)
+- [StyledComponents]}(https://styled-components.com/)
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
@@ -68,4 +80,5 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
 # capstone-project
