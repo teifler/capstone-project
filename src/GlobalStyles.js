@@ -11,6 +11,10 @@ export default createGlobalStyle`
 
   }
 
+  a {
+    color: currentColor;
+  }
+
   ul[role="list"] {
     list-style: none;
   }

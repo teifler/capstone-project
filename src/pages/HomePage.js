@@ -12,18 +12,15 @@ function HomePage({ coins, currency }) {
   );
 
   const handleChange = e => {
-    setSearch(e.target.value.trim());
-
-    if (e.target.value.trim() !== '') {
-      if (!e.target.value.trim().match(/^[a-zA-Z0-9_.]+$/)) {
-        setSearchError(true);
-      } else {
-        setSearchError(false);
-      }
+    const trimmed = e.target.value.trim();
+    setSearch(trimmed);
+    if (trimmed !== '' && !trimmed.match(/^[a-zA-Z0-9_. ]+$/)) {
+      setSearchError(true);
     } else {
       setSearchError(false);
     }
   };
+
   return (
     <Container>
       <CoinSearch>
@@ -33,12 +30,10 @@ function HomePage({ coins, currency }) {
           }}
         >
           <SearchBar handleChange={handleChange} />
-          {searchError ? (
+          {searchError && (
             <SearchErrorMessage>
               Please don't use special characters
             </SearchErrorMessage>
-          ) : (
-            ''
           )}
         </form>
       </CoinSearch>
@@ -62,9 +57,7 @@ function HomePage({ coins, currency }) {
       </CoinList>
       {filterdCoins.length === 0 ? (
         <CoinNotFound>Searched coin is not in the database</CoinNotFound>
-      ) : (
-        ''
-      )}
+      ) : null}
     </Container>
   );
 }
