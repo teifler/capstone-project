@@ -3,7 +3,7 @@ import searchIcon from '../images/search.svg';
 
 function SearchBar({ handleChange }) {
   return (
-    <label htmlFor="search-input">
+    <label>
       <SearchBarContainer>
         <SearchInputContainer>
           <SearchIcon>
