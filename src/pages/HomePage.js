@@ -3,9 +3,12 @@ import CoinCard from '../components/CoinCard.js';
 import styled from 'styled-components';
 import SearchBar from '../components/SearchBar.js';
 
+import useStore from '../hooks/useStore.js';
+
 function HomePage({ coins, currency }) {
   const [search, setSearch] = useState('');
   const [searchError, setSearchError] = useState(false);
+  console.log('coins', coins);
 
   const filterdCoins = coins.filter(coin =>
     coin.name.toLowerCase().includes(search.toLowerCase())

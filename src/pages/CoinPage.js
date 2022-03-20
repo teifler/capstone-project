@@ -1,8 +1,8 @@
 import { NavLink } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect } from 'react';
 import styled from 'styled-components';
+import useStore from '../hooks/useStore.js';
 
-import Header from '../components/Header.js';
 import CryptoChart from '../components/CryptoChart.js';
 
 import star from '../images/star.svg';
@@ -11,31 +11,28 @@ import arrowLeft from '../images/arrow-left.svg';
 import arrowUp from '../images/arrow-up.svg';
 import arrowDown from '../images/arrow-down.svg';
 import spinner from '../images/spinner.svg';
-import useFetch from '../hooks/useFetch.js';
 
 function CoinPage({ coin, title, currency, toggleBookmark }) {
-  const [days, setDays] = useState(1);
+  const days = useStore(state => state.days);
+  const setDays = useStore(state => state.setDays);
+  const getData = useStore(state => state.getData);
+  const chartHistory = useStore(state => state.chartHistory);
 
-  const [
-    cryptoHistory,
-    isLoadingCryptoHistory,
-    errorCryptoHistory,
-    fetchCryptoHistory,
-  ] = useFetch(
-    `https://api.coingecko.com/api/v3/coins/${coin.id}/market_chart?vs_currency=${currency}&days=${days}`
-  );
+  useEffect(() => {
+    getData(
+      `https://api.coingecko.com/api/v3/coins/${coin.id}/market_chart?vs_currency=${currency}&days=${days}`,
+      'chartHistory'
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currency, days]);
 
-  const [coins, isLoadingCoins, errorCoins, fetchCoins] = useFetch(
-    `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=100&page=1&sparkline=false`
-  );
-
-  if (isLoadingCoins && isLoadingCryptoHistory) {
+  if (coin.loading) {
     return <SpinnerLogo src={spinner} height="80" width="80"></SpinnerLogo>;
   }
 
   return (
     <div>
-      {errorCoins ? (
+      {chartHistory.error ? (
         <ErrorMessage>
           We had issues fetching the coins for you. Please reload the page to
           try it again!
@@ -151,9 +148,9 @@ function CoinPage({ coin, title, currency, toggleBookmark }) {
             <option value="90">3M</option>
             <option value="365">1Y</option>
           </SelectTimeFrame>
-          {cryptoHistory && (
+          {chartHistory.data && (
             <CryptoChart
-              cryptoHistory={cryptoHistory}
+              chartHistory={chartHistory.data}
               currency={currency}
               days={days}
             />
@@ -254,7 +251,10 @@ const PriceUp = styled.p`
 `;
 
 const SpinnerLogo = styled.img`
-  margin-top: 40vh;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 `;
 
 const ErrorMessage = styled.h3`
