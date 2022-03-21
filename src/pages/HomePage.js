@@ -1,23 +1,22 @@
-import { useState } from 'react';
 import CoinCard from '../components/CoinCard.js';
 import styled from 'styled-components';
 import SearchBar from '../components/SearchBar.js';
 
+import useStore from '../hooks/useStore.js';
+
 function HomePage({ coins, currency }) {
-  const [search, setSearch] = useState('');
-  const [searchError, setSearchError] = useState(false);
+  const setSearchInput = useStore(state => state.setSearchInput);
+  const search = useStore(state => state.search);
 
   const filterdCoins = coins.filter(coin =>
-    coin.name.toLowerCase().includes(search.toLowerCase())
+    coin.name.toLowerCase().includes(search.input.toLowerCase())
   );
-
   const handleChange = e => {
     const trimmed = e.target.value.trim();
-    setSearch(trimmed);
     if (trimmed !== '' && !trimmed.match(/^[a-zA-Z0-9_. ]+$/)) {
-      setSearchError(true);
+      setSearchInput(trimmed, true);
     } else {
-      setSearchError(false);
+      setSearchInput(trimmed, false);
     }
   };
 
@@ -30,7 +29,7 @@ function HomePage({ coins, currency }) {
           }}
         >
           <SearchBar handleChange={handleChange} />
-          {searchError && (
+          {search.error && (
             <SearchErrorMessage>
               Please don't use special characters
             </SearchErrorMessage>

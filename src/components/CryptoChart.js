@@ -1,12 +1,12 @@
 import React from 'react';
 import { Line } from 'react-chartjs-2';
+// eslint-disable-next-line no-unused-vars
 import { Chart } from 'chart.js/auto';
-
 import styled from 'styled-components';
 
-function CryptoChart({ cryptoHistory, days, currency }) {
-  const coinPriceList = cryptoHistory.prices.map(coin => coin[1]);
-  const coinTimestampes = cryptoHistory.prices.map(coin => {
+function CryptoChart({ chartHistory, days, currency }) {
+  const coinPriceList = chartHistory.prices.map(coin => coin[1]);
+  const coinTimestampes = chartHistory.prices.map(coin => {
     const date = new Date(coin[0]);
     return days < 2
       ? date.toLocaleString('en-US', {

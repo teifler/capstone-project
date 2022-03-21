@@ -1,5 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import styled from 'styled-components';
 
 import spinner from './images/spinner.svg';
@@ -10,43 +10,28 @@ import CoinPage from './pages/CoinPage.js';
 import Navbar from './components/Navbar.js';
 import Header from './components/Header.js';
 
+import useStore from './hooks/useStore.js';
+
 function App() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [coins, setCoins] = useState([]);
-  const [currency, setCurrency] = useState('usd');
-  const [error, setError] = useState('');
+  const currency = useStore(state => state.currency);
+  const setCurrency = useStore(state => state.setCurrency);
+  const getData = useStore(state => state.getData);
+  const coins = useStore(state => state.coins);
+  const setBookmark = useStore(state => state.setBookmark);
 
   useEffect(() => {
-    setCurrency('eur');
-    const fetchData = async () => {
-      const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=100&page=1&sparkline=false`;
-      try {
-        const response = await fetch(url);
-        const data = await response.json();
-        setCoins(data);
-        setIsLoading(false);
-      } catch (error) {
-        setError(error.message);
-        setIsLoading(false);
-      }
-    };
-    fetchData();
+    getData(
+      `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=100&page=1&sparkline=false`,
+      'coins'
+    );
   }, [currency]);
 
-  if (isLoading) {
+  if (coins.loading) {
     return <SpinnerLogo src={spinner} height="80" width="80"></SpinnerLogo>;
   }
 
   function toggleBookmark(id) {
-    setCoins(
-      coins.map(coin => {
-        if (coin.id === id) {
-          return { ...coin, isBookmarked: !coin.isBookmarked };
-        } else {
-          return coin;
-        }
-      })
-    );
+    setBookmark(id);
   }
 
   return (
@@ -56,28 +41,29 @@ function App() {
         <Routes>
           <Route
             path="/Tracker"
-            element={<Tracker coins={coins} currency={currency} />}
+            element={<Tracker coins={coins.data} currency={currency} />}
           />
           <Route
             path="/"
             element={
-              error ? (
-                <ErrorMessage>
-                  We had issues fetching the coins for you. Please reload the
-                  page to try it again!
-                </ErrorMessage>
+              coins.error ? (
+                <>
+                  <ErrorMessage>
+                    We had issues fetching the coins for you. Please reload the
+                    page to try it again!
+                  </ErrorMessage>
+                </>
               ) : (
-                <HomePage coins={coins} currency={currency} />
+                <HomePage coins={coins.data} currency={currency} />
               )
             }
           />
-          {coins.map(coin => (
+          {coins.data?.map(coin => (
             <Route
               key={coin.id}
               path={`${coin.id}`}
               element={
                 <CoinPage
-                  title={coin.name}
                   coin={coin}
                   currency={currency}
                   toggleBookmark={toggleBookmark}
@@ -118,7 +104,12 @@ const Navigation = styled(Navbar)`
 `;
 
 const ErrorMessage = styled.h3`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   color: red;
+  text-align: center;
 `;
 
 const SpinnerLogo = styled.img`
