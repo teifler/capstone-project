@@ -13,13 +13,25 @@ const useStore = create((set, get) => {
   return {
     currency: 'eur',
     days: 1,
+    search: {
+      input: '',
+      error: null,
+    },
+    coins: initialize(),
+    chartHistory: initialize(),
+    setSearchInput(userInput, errorState) {
+      set({
+        search: {
+          input: userInput,
+          error: errorState,
+        },
+      });
+    },
     setDays(selectedTimeframe) {
       set({
         days: selectedTimeframe,
       });
     },
-    coins: initialize(),
-    chartHistory: initialize(),
     setCurrency(newCurrency) {
       set({
         currency: newCurrency,
@@ -27,19 +39,16 @@ const useStore = create((set, get) => {
     },
     setBookmark(id) {
       const allCoins = get().coins;
-      console.log('allCOin', allCoins.data);
-      const temp = allCoins.data.map(coin => {
-        console.log('in map', coin);
+      const bookmarkedCoins = allCoins.data.map(coin => {
         if (coin.id === id) {
           return { ...coin, isBookmarked: !coin.isBookmarked };
         } else {
           return coin;
         }
       });
-      console.log('temp', temp);
       set({
         coins: {
-          data: temp,
+          data: bookmarkedCoins,
           loading: false,
           error: null,
         },

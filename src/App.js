@@ -20,12 +20,10 @@ function App() {
   const setBookmark = useStore(state => state.setBookmark);
 
   useEffect(() => {
-    console.log('in use Effect');
     getData(
       `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=100&page=1&sparkline=false`,
       'coins'
     );
-    console.log(coins.data);
   }, [currency]);
 
   if (coins.loading) {
@@ -66,7 +64,6 @@ function App() {
               path={`${coin.id}`}
               element={
                 <CoinPage
-                  title={coin.name}
                   coin={coin}
                   currency={currency}
                   toggleBookmark={toggleBookmark}

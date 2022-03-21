@@ -1,6 +1,5 @@
 import CoinCard from '../components/CoinCard.js';
 import styled from 'styled-components';
-import useStore from '../hooks/useStore.js';
 
 function HomePage({ coins, currency }) {
   return (
@@ -45,12 +44,6 @@ const Container = styled.div`
 `;
 
 const CoinList = styled.ul``;
-
-const SearchErrorMessage = styled.p`
-  color: red;
-  text-align: center;
-  padding-bottom: 5px;
-`;
 
 const CoinNotFound = styled.p`
   color: black;
