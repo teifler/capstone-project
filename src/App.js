@@ -9,6 +9,7 @@ import Tracker from './pages/Tracker.js';
 import CoinPage from './pages/CoinPage.js';
 import Navbar from './components/Navbar.js';
 import Header from './components/Header.js';
+import ScrollToTop from './components/ScrollToTop.js';
 
 import useStore from './hooks/useStore.js';
 
@@ -73,6 +74,7 @@ function App() {
           ))}
         </Routes>
       </Main>
+      <ScrollToTop />
       <Navigation />
     </AppGrid>
   );

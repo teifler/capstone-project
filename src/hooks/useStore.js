@@ -13,12 +13,19 @@ const useStore = create((set, get) => {
   return {
     currency: 'eur',
     days: 1,
+    coins: initialize(),
+    isVisible: false,
+    setVisible(visibility) {
+      console.log('drinnen');
+      set({
+        isVisible: visibility,
+      });
+    },
+    chartHistory: initialize(),
     search: {
       input: '',
       error: null,
     },
-    coins: initialize(),
-    chartHistory: initialize(),
     setSearchInput(userInput, errorState) {
       set({
         search: {
