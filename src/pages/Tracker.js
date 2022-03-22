@@ -46,6 +46,7 @@ const Container = styled.div`
   margin-bottom: 60px;
   display: flex;
   justify-content: center;
+  margin-top: 20px;
 `;
 
 const CoinList = styled.ul``;
