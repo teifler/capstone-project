@@ -1,6 +1,7 @@
 import CoinCard from '../components/CoinCard.js';
 import styled from 'styled-components';
 import SearchBar from '../components/SearchBar.js';
+import ScrollToTop from '../components/ScrollToTop.js';
 
 import useStore from '../hooks/useStore.js';
 
@@ -54,6 +55,7 @@ function HomePage({ coins, currency }) {
           );
         })}
       </CoinList>
+      <ScrollToTop />
       {filterdCoins.length === 0 ? (
         <CoinNotFound>Searched coin is not in the database</CoinNotFound>
       ) : null}

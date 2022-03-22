@@ -38,6 +38,12 @@ const useStore = create((set, get) => {
       error: null,
     },
     coins: initialize(),
+    isVisible: false,
+    setVisible(visibility) {
+      set({
+        isVisible: visibility,
+      });
+    },
     chartHistory: initialize(),
     setSearchInput(userInput, errorState) {
       set({

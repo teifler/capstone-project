@@ -1,4 +1,6 @@
 import CoinCard from '../components/CoinCard.js';
+import ScrollToTop from '../components/ScrollToTop.js';
+
 import styled from 'styled-components';
 import useStore from '../hooks/useStore.js';
 
@@ -24,6 +26,7 @@ function HomePage({ coins, currency }) {
             );
           })}
       </CoinList>
+      <ScrollToTop />
       {coins.filter(coin => useStore.getState().meta.coins[coin.id]?.bookmarked)
         .length === 0 ? (
         <CoinNotFound>
@@ -43,6 +46,7 @@ const Container = styled.div`
   margin-bottom: 60px;
   display: flex;
   justify-content: center;
+  margin-top: 20px;
 `;
 
 const CoinList = styled.ul``;

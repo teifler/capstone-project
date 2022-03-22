@@ -34,36 +34,34 @@ function App() {
   return (
     <AppGrid>
       <Header title={'Crypto Cloud'} />
-      <Main>
-        <Routes>
+      <Routes>
+        <Route
+          path="/Tracker"
+          element={<Tracker coins={coins.data} currency={currency} />}
+        />
+        <Route
+          path="/"
+          element={
+            coins.error ? (
+              <>
+                <ErrorMessage>
+                  We had issues fetching the coins for you. Please reload the
+                  page to try it again!
+                </ErrorMessage>
+              </>
+            ) : (
+              <HomePage coins={coins.data} currency={currency} />
+            )
+          }
+        />
+        {coins.data?.map(coin => (
           <Route
-            path="/Tracker"
-            element={<Tracker coins={coins.data} currency={currency} />}
+            key={coin.id}
+            path={`${coin.id}`}
+            element={<CoinPage coin={coin} currency={currency} />}
           />
-          <Route
-            path="/"
-            element={
-              coins.error ? (
-                <>
-                  <ErrorMessage>
-                    We had issues fetching the coins for you. Please reload the
-                    page to try it again!
-                  </ErrorMessage>
-                </>
-              ) : (
-                <HomePage coins={coins.data} currency={currency} />
-              )
-            }
-          />
-          {coins.data?.map(coin => (
-            <Route
-              key={coin.id}
-              path={`${coin.id}`}
-              element={<CoinPage coin={coin} currency={currency} />}
-            />
-          ))}
-        </Routes>
-      </Main>
+        ))}
+      </Routes>
       <Navigation />
     </AppGrid>
   );
