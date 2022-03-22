@@ -15,23 +15,20 @@ import useStore from './hooks/useStore.js';
 function App() {
   const currency = useStore(state => state.currency);
   const setCurrency = useStore(state => state.setCurrency);
-  const getData = useStore(state => state.getData);
   const coins = useStore(state => state.coins);
   const setBookmark = useStore(state => state.setBookmark);
 
   useEffect(() => {
-    getData(
-      `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=100&page=1&sparkline=false`,
-      'coins'
-    );
+    useStore
+      .getState()
+      .getData(
+        `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=100&page=1&sparkline=false`,
+        'coins'
+      );
   }, [currency]);
 
   if (coins.loading) {
     return <SpinnerLogo src={spinner} height="80" width="80"></SpinnerLogo>;
-  }
-
-  function toggleBookmark(id) {
-    setBookmark(id);
   }
 
   return (
@@ -62,13 +59,7 @@ function App() {
             <Route
               key={coin.id}
               path={`${coin.id}`}
-              element={
-                <CoinPage
-                  coin={coin}
-                  currency={currency}
-                  toggleBookmark={toggleBookmark}
-                />
-              }
+              element={<CoinPage coin={coin} currency={currency} />}
             />
           ))}
         </Routes>
