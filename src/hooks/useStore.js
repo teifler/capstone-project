@@ -1,5 +1,6 @@
 import create from 'zustand';
 import axios from 'axios';
+import { produce } from 'immer';
 
 function initialize() {
   return {
@@ -13,6 +14,25 @@ const useStore = create((set, get) => {
   return {
     currency: 'eur',
     days: 1,
+    meta: {
+      coins: {},
+    },
+    setMeta(key, id, partial) {
+      set(
+        produce(draft => {
+          //draft.meta[key][id] = draft.meta[key][id] ?? partial;
+          //draft.meta[key][id] = draft.meta[key][id] ?? {};
+          if (draft.meta[key][id]) {
+            Object.entries(partial).forEach(entry => {
+              const [key_, value_] = entry;
+              draft.meta[key][id][key_] = value_;
+            });
+          } else {
+            draft.meta[key][id] = partial;
+          }
+        })
+      );
+    },
     search: {
       input: '',
       error: null,
@@ -35,23 +55,6 @@ const useStore = create((set, get) => {
     setCurrency(newCurrency) {
       set({
         currency: newCurrency,
-      });
-    },
-    setBookmark(id) {
-      const allCoins = get().coins;
-      const bookmarkedCoins = allCoins.data.map(coin => {
-        if (coin.id === id) {
-          return { ...coin, isBookmarked: !coin.isBookmarked };
-        } else {
-          return coin;
-        }
-      });
-      set({
-        coins: {
-          data: bookmarkedCoins,
-          loading: false,
-          error: null,
-        },
       });
     },
     async getData(url, key) {

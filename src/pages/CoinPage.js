@@ -12,19 +12,26 @@ import arrowUp from '../images/arrow-up.svg';
 import arrowDown from '../images/arrow-down.svg';
 import spinner from '../images/spinner.svg';
 
-function CoinPage({ coin, title, currency, toggleBookmark }) {
+function CoinPage({ coin, title, currency }) {
   const days = useStore(state => state.days);
   const setDays = useStore(state => state.setDays);
-  const getData = useStore(state => state.getData);
+  const meta = useStore(state => state.meta);
   const chartHistory = useStore(state => state.chartHistory);
 
+  const coinId = coin.id;
   useEffect(() => {
-    getData(
-      `https://api.coingecko.com/api/v3/coins/${coin.id}/market_chart?vs_currency=${currency}&days=${days}`,
-      'chartHistory'
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currency, days]);
+    useStore
+      .getState()
+      .getData(
+        `https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=${currency}&days=${days}`,
+        'chartHistory'
+      );
+  }, [coinId, currency, days]);
+
+  function toggleBookmark(id) {
+    const wasBookmarked = useStore.getState().meta.coins[id]?.bookmarked;
+    useStore.getState().setMeta('coins', id, { bookmarked: !wasBookmarked });
+  }
 
   if (coin.loading) {
     return <SpinnerLogo src={spinner} height="80" width="80"></SpinnerLogo>;
@@ -43,7 +50,7 @@ function CoinPage({ coin, title, currency, toggleBookmark }) {
             <img alt="arrow-left" src={arrowLeft} hight="35" width="35"></img>{' '}
           </GoBack>
           <TrackButton onClick={() => toggleBookmark(coin.id)}>
-            {coin.isBookmarked ? (
+            {meta.coins[coin.id]?.bookmarked ? (
               <img
                 src={starFilled}
                 alt="Remove coin of your tracking list"

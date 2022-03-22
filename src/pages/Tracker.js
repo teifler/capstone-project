@@ -1,12 +1,13 @@
 import CoinCard from '../components/CoinCard.js';
 import styled from 'styled-components';
+import useStore from '../hooks/useStore.js';
 
 function HomePage({ coins, currency }) {
   return (
     <Container>
       <CoinList role="list">
         {coins
-          .filter(coin => coin.isBookmarked)
+          .filter(coin => useStore.getState().meta.coins[coin.id]?.bookmarked)
           .map(coin => {
             return (
               <CoinCard
@@ -23,7 +24,8 @@ function HomePage({ coins, currency }) {
             );
           })}
       </CoinList>
-      {coins.filter(coin => coin.isBookmarked).length === 0 ? (
+      {coins.filter(coin => useStore.getState().meta.coins[coin.id]?.bookmarked)
+        .length === 0 ? (
         <CoinNotFound>
           There is nothing in your tracking list. You can add cryptocurrencys to
           your tracking list by clicking the star icon.
