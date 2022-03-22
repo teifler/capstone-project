@@ -1,4 +1,6 @@
 import CoinCard from '../components/CoinCard.js';
+import ScrollToTop from '../components/ScrollToTop.js';
+
 import styled from 'styled-components';
 
 function HomePage({ coins, currency }) {
@@ -23,6 +25,7 @@ function HomePage({ coins, currency }) {
             );
           })}
       </CoinList>
+      <ScrollToTop />
       {coins.filter(coin => coin.isBookmarked).length === 0 ? (
         <CoinNotFound>
           There is nothing in your tracking list. You can add cryptocurrencys to

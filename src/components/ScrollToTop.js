@@ -1,22 +1,18 @@
 import { useEffect } from 'react';
+import styled from 'styled-components';
 import useStore from '../hooks/useStore.js';
 
 function ScrollToTop() {
   const isVisible = useStore(state => state.isVisible);
   const setVisible = useStore(state => state.setVisible);
 
-  function toggleVisibility() {
-    console.log('in toggle');
-    window.pageYOffset > 300 ? setVisible(true) : setVisible(false);
-  }
-
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.parent.scrollTo(0, 0);
   };
 
   useEffect(() => {
     const toggleVisibility = () => {
-      if (window.pageYOffset > 300) {
+      if (window.pageYOffset > 400) {
         setVisible(true);
       } else {
         setVisible(false);
@@ -25,42 +21,53 @@ function ScrollToTop() {
 
     window.addEventListener('scroll', toggleVisibility);
     return () => {
-      '#parent'.removeEventListener('scroll', toggleVisibility);
+      window.removeEventListener('scroll', toggleVisibility);
     };
   }, []);
 
   return (
-    <>
-      <button type="button" onClick={scrollToTop}>
-        <svg xmlns="http://www.w3.org/2000/svg" height="38.735" width="33.749">
-          <g transform="translate(-18.121 -3.364)">
-            <rect
-              ry="4.928"
-              y="3.364"
-              x="18.121"
-              height="38.735"
-              width="33.749"
-              fill="#00f"
-            />
-            <g transform="translate(-.48 2.134)">
-              <rect
-                ry="4.928"
-                y="1.229"
-                x="18.601"
-                height="38.735"
-                width="33.749"
-                fill="url(#b)"
-              />
-              <g fill="#ececec">
-                <path d="M22.435 17.62l4.684 4.685 5.044-5.044v19.352h6.625V17.26l5.044 5.044 4.683-4.684-13.04-13.04z" />
-                <path d="M22.435 17.62l4.684 4.685 5.044-5.044v19.352h6.625V17.26l5.044 5.044 4.683-4.684-13.04-13.04z" />
-              </g>
+    <PositionFixed>
+      {isVisible && (
+        <Button type="button" onClick={scrollToTop}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 0 24 24"
+            width="24px"
+            fill="#000000"
+          >
+            <g>
+              <rect fill="none" height="24" width="24" />
+              <path d="M12,20c-4.41,0-8-3.59-8-8s3.59-8,8-8s8,3.59,8,8S16.41,20,12,20 M12,22c5.52,0,10-4.48,10-10c0-5.52-4.48-10-10-10 C6.48,2,2,6.48,2,12C2,17.52,6.48,22,12,22L12,22z M11,12l0,4h2l0-4h3l-4-4l-4,4H11z" />
             </g>
-          </g>
-        </svg>
-      </button>
-    </>
+          </svg>
+        </Button>
+      )}
+    </PositionFixed>
   );
 }
 
 export default ScrollToTop;
+
+const PositionFixed = styled.div`
+  position: fixed;
+  right: 8px;
+  bottom: 50px;
+  @media (min-width: 630px) {
+    left: 53%;
+    bottom: 50px;
+  }
+`;
+
+const Button = styled.button`
+  background: none;
+  border: none;
+  @media (min-width: 630px) {
+    align-self: center;
+    width: 390px;
+    svg {
+      height: 50px;
+      width: 50px;
+    }
+  }
+`;

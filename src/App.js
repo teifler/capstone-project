@@ -9,7 +9,6 @@ import Tracker from './pages/Tracker.js';
 import CoinPage from './pages/CoinPage.js';
 import Navbar from './components/Navbar.js';
 import Header from './components/Header.js';
-import ScrollToTop from './components/ScrollToTop.js';
 
 import useStore from './hooks/useStore.js';
 
@@ -38,43 +37,40 @@ function App() {
   return (
     <AppGrid>
       <Header title={'Crypto Cloud'} />
-      <Main>
-        <Routes>
+      <Routes>
+        <Route
+          path="/Tracker"
+          element={<Tracker coins={coins.data} currency={currency} />}
+        />
+        <Route
+          path="/"
+          element={
+            coins.error ? (
+              <>
+                <ErrorMessage>
+                  We had issues fetching the coins for you. Please reload the
+                  page to try it again!
+                </ErrorMessage>
+              </>
+            ) : (
+              <HomePage coins={coins.data} currency={currency} />
+            )
+          }
+        />
+        {coins.data?.map(coin => (
           <Route
-            path="/Tracker"
-            element={<Tracker coins={coins.data} currency={currency} />}
-          />
-          <Route
-            path="/"
+            key={coin.id}
+            path={`${coin.id}`}
             element={
-              coins.error ? (
-                <>
-                  <ErrorMessage>
-                    We had issues fetching the coins for you. Please reload the
-                    page to try it again!
-                  </ErrorMessage>
-                </>
-              ) : (
-                <HomePage coins={coins.data} currency={currency} />
-              )
+              <CoinPage
+                coin={coin}
+                currency={currency}
+                toggleBookmark={toggleBookmark}
+              />
             }
           />
-          {coins.data?.map(coin => (
-            <Route
-              key={coin.id}
-              path={`${coin.id}`}
-              element={
-                <CoinPage
-                  coin={coin}
-                  currency={currency}
-                  toggleBookmark={toggleBookmark}
-                />
-              }
-            />
-          ))}
-        </Routes>
-      </Main>
-      <ScrollToTop />
+        ))}
+      </Routes>
       <Navigation />
     </AppGrid>
   );
@@ -86,17 +82,6 @@ const AppGrid = styled.div`
   display: grid;
   grid-template-rows: 48px 1fr 48px;
   position: relative;
-`;
-
-const Main = styled.main`
-  height: 100vh;
-  padding: 1rem 0.5rem;
-  overflow-y: auto;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-  ::-webkit-scrollbar {
-    display: none;
-  }
 `;
 
 const Navigation = styled(Navbar)`

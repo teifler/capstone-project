@@ -16,7 +16,6 @@ const useStore = create((set, get) => {
     coins: initialize(),
     isVisible: false,
     setVisible(visibility) {
-      console.log('drinnen');
       set({
         isVisible: visibility,
       });

@@ -3,10 +3,10 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import GlobalStyle from './GlobalStyles.js';
+import ScrollToTopGlobal from './components/ScrollToTopGlobal.js';
 
 import { BrowserRouter } from 'react-router-dom';
 
-import ScrollToTopGlobal from './components/ScrollToTopGlobal.js';
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
