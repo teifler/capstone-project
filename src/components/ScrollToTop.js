@@ -23,7 +23,7 @@ function ScrollToTop() {
     return () => {
       window.removeEventListener('scroll', toggleVisibility);
     };
-  }, []);
+  }, [setVisible]);
 
   return (
     <PositionFixed>
@@ -31,10 +31,10 @@ function ScrollToTop() {
         <Button type="button" onClick={scrollToTop}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            height="24px"
+            height="28px"
             viewBox="0 0 24 24"
-            width="24px"
-            fill="#000000"
+            width="28px"
+            fill="#495057"
           >
             <g>
               <rect fill="none" height="24" width="24" />
