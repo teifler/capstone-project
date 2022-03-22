@@ -23,8 +23,6 @@ const useStore = create(
         setMeta(key, id, partial) {
           set(
             produce(draft => {
-              //draft.meta[key][id] = draft.meta[key][id] ?? partial;
-              //draft.meta[key][id] = draft.meta[key][id] ?? {};
               if (draft.meta[key][id]) {
                 Object.entries(partial).forEach(entry => {
                   const [key_, value_] = entry;
