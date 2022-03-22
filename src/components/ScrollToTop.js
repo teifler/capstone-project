@@ -7,7 +7,10 @@ function ScrollToTop() {
   const setVisible = useStore(state => state.setVisible);
 
   const scrollToTop = () => {
-    window.parent.scrollTo(0, 0);
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
   };
 
   useEffect(() => {
