@@ -14,6 +14,28 @@ const useStore = create((set, get) => {
   return {
     currency: 'eur',
     days: 1,
+    exchange: {},
+    amount: 0,
+    convertFetch: initialize(),
+    convert: {
+      from: '',
+      to: '',
+      amount: 1,
+      price: 0,
+    },
+    setConvert(key, value) {
+      const objConvert = get().convert;
+      set({
+        convert: {
+          ...objConvert,
+          [key]: value,
+        },
+      });
+      console.log(objConvert);
+      set({
+        [key]: value,
+      });
+    },
     meta: {
       coins: {},
     },
@@ -37,6 +59,7 @@ const useStore = create((set, get) => {
       input: '',
       error: null,
     },
+    coinsPaprika: initialize(),
     coins: initialize(),
     isVisible: false,
     setVisible(visibility) {
@@ -89,6 +112,41 @@ const useStore = create((set, get) => {
         set({
           [key]: {
             data: previousData,
+            loading: false,
+            error,
+          },
+        });
+      }
+    }, //end of coins fetch
+    async priceConverterFetch() {
+      try {
+        const { data } = await axios.get(
+          `https://api.coinpaprika.com/v1/price-converter?base_currency_id=${
+            get().convert.from.id
+          }&quote_currency_id=${get().convert.to.id}&amount=${
+            get().convert.amount
+          }`
+        );
+        const objConvert = get().convert;
+        setTimeout(
+          () =>
+            set({
+              convertFetch: {
+                data,
+                loading: false,
+                error: null,
+              },
+              convert: {
+                ...objConvert,
+                price: data.price,
+              },
+            }),
+          2000
+        );
+      } catch (error) {
+        set({
+          convertFetch: {
+            data: null,
             loading: false,
             error,
           },
