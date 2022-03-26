@@ -74,16 +74,6 @@ const Converter = ({ coins, currency }) => {
     );
   };
 
-  const handleChangeAmount = e => {
-    let input = e.target.value;
-    //input = input.replace(/[a-zA-Z]+/g);
-    if (input.match(/[a-zA-Z]+/g)) {
-      setConvert('amount', 1);
-    } else {
-      setConvert('amount', input);
-    }
-  };
-
   return (
     <Wrapper>
       <h2>Crypto Currency Converter</h2>
@@ -93,8 +83,10 @@ const Converter = ({ coins, currency }) => {
             <p>Enter Amount</p>
             <input
               type="number"
+              onChange={e => {
+                setConvert('amount', Number(e.target.value));
+              }}
               aria-label="Enter amount"
-              onChange={handleChangeAmount}
               value={convert.amount}
             ></input>
           </label>
@@ -200,14 +192,14 @@ const TextContainer = styled.div`
     top: 58px;
     right: 5px;
   }
-  //remove spin of input field
+
   input::-webkit-outer-spin-button,
   input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
   }
   input[type='number'] {
-    -moz-appearance: textfield; /* Firefox */
+    -moz-appearance: textfield;
   }
 `;
 const ConverterForm = styled.form`
