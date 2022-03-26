@@ -200,6 +200,15 @@ const TextContainer = styled.div`
     top: 58px;
     right: 5px;
   }
+  //remove spin of input field
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type='number'] {
+    -moz-appearance: textfield; /* Firefox */
+  }
 `;
 const ConverterForm = styled.form`
   margin: 40px;
@@ -241,8 +250,3 @@ const SvgContainer = styled.div`
 `;
 
 const Amount = styled.div;
-const SelectionContainer = styled.form`
-  margin: 10px;
-  width: 400px;
-  text-align: center;
-`;
