@@ -98,7 +98,7 @@ const Converter = ({ coins, currency }) => {
           <Select
             isDisabled={convertFetch?.loading ? true : false}
             value={
-              convert.from.id ? options[findOptionById(convert.to.id)] : null
+              convert.from.id ? options[findOptionById(convert.from.id)] : null
             }
             options={options}
             aria-label="Currrency to convert from"
@@ -132,7 +132,7 @@ const Converter = ({ coins, currency }) => {
           <Select
             isDisabled={convertFetch?.loading ? true : false}
             value={
-              convert.from.id ? options[findOptionById(convert.to.id)] : null
+              convert.to.id ? options[findOptionById(convert.to.id)] : null
             }
             options={options}
             aria-label="Currrency to convert to"
