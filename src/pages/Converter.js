@@ -31,8 +31,9 @@ const Converter = ({ coins, currency }) => {
   const createOptions = () => {
     options = coinsPaprika.data?.slice(0, 100).map((coin, index) => {
       return {
-        value: coin,
         label: coin.name,
+        value: coin.name,
+        obj: coin,
         icon: (
           <img
             src={`https://static.coinpaprika.com/coin/${coin.id}/logo-thumb.png`}
@@ -49,15 +50,15 @@ const Converter = ({ coins, currency }) => {
   // handle onChange event of the dropdown
   const handleChange = field => event => {
     if (field === 'convertFrom') {
-      setConvert('from', event.value);
+      setConvert('from', event.obj);
     } else {
-      setConvert('to', event.value);
+      setConvert('to', event.obj);
     }
   };
 
   const findOptionById = selectedOption => {
-    const id = selectedOption;
-    return options?.findIndex(option => option.value.id === id);
+    const name = selectedOption;
+    return options?.findIndex(option => option.obj.id === name);
   };
   const handleSwap = () => {
     const temp = convert.from;
@@ -97,7 +98,7 @@ const Converter = ({ coins, currency }) => {
           <Select
             isDisabled={convertFetch?.loading ? true : false}
             value={
-              convert.from.id ? options[findOptionById(convert.from.id)] : null
+              convert.from.id ? options[findOptionById(convert.to.id)] : null
             }
             options={options}
             aria-label="Currrency to convert from"
