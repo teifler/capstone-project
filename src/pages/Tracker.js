@@ -4,7 +4,7 @@ import ScrollToTop from '../components/ScrollToTop.js';
 import styled from 'styled-components';
 import useStore from '../hooks/useStore.js';
 
-function HomePage({ coins, currency }) {
+function Tracker({ coins, currency }) {
   return (
     <Container>
       <CoinList role="list">
@@ -40,7 +40,7 @@ function HomePage({ coins, currency }) {
   );
 }
 
-export default HomePage;
+export default Tracker;
 
 const Container = styled.div`
   margin-bottom: 60px;
