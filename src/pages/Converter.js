@@ -7,8 +7,9 @@ const Converter = ({ coins, currency }) => {
   const setConvert = useStore(state => state.setConvert);
   const convert = useStore(state => state.convert);
   const coinsPaprika = useStore(state => state.coinsPaprika);
+  const convertFetch = useStore(state => state.convertFetch);
+
   let options = [];
-  //For Testing
 
   useEffect(() => {
     useStore
@@ -18,12 +19,17 @@ const Converter = ({ coins, currency }) => {
 
   useEffect(() => {
     if (convert.from && convert.to) {
-      useStore.getState().priceConverterFetch();
+      useStore
+        .getState()
+        .getData(
+          `https://api.coinpaprika.com/v1/price-converter?base_currency_id=${convert.from.id}&quote_currency_id=${convert.to.id}&amount=${convert.amount}`,
+          'convertFetch'
+        );
     }
   }, [convert.from, convert.to, convert.amount]);
 
   const createOptions = () => {
-    options = coinsPaprika.data?.slice(0, 10).map((coin, index) => {
+    options = coinsPaprika.data?.slice(0, 100).map((coin, index) => {
       return {
         value: coin,
         label: coin.name,
@@ -42,41 +48,80 @@ const Converter = ({ coins, currency }) => {
 
   // handle onChange event of the dropdown
   const handleChange = field => event => {
-    field === 'convertFrom'
-      ? setConvert('from', event.value)
-      : setConvert('to', event.value);
+    if (field === 'convertFrom') {
+      setConvert('from', event.value);
+    } else {
+      setConvert('to', event.value);
+    }
   };
-  //handle onChange event of amount
-  const handleAmount = event => {
-    setConvert('amount', event.target.value);
+
+  const findOptionById = selectedOption => {
+    const id = selectedOption;
+    return options?.findIndex(option => option.value.id === id);
+  };
+  const handleSwap = () => {
+    const temp = convert.from;
+    setConvert('from', convert.to);
+    setConvert('to', temp);
+  };
+
+  const getLabelFrom = e => {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        {e.icon}
+        <span style={{ marginLeft: 5 }}>{e.label}</span>
+      </div>
+    );
+  };
+
+  const handleChangeAmount = e => {
+    let input = e.target.value;
+    //input = input.replace(/[a-zA-Z]+/g);
+    if (input.match(/[a-zA-Z]+/g)) {
+      setConvert('amount', 1);
+    } else {
+      setConvert('amount', input);
+    }
   };
 
   return (
     <Wrapper>
       <h2>Crypto Currency Converter</h2>
-      <ConverterForm>
+      <ConverterForm aria-label="Convert crypto currency">
         <TextContainer>
-          <p>Enter Amount</p>
-          <input value="1" onChange={handleAmount}></input>
+          <label>
+            <p>Enter Amount</p>
+            <input
+              type="number"
+              aria-label="Enter amount"
+              onChange={handleChangeAmount}
+              value={convert.amount}
+            ></input>
+          </label>
           <span>{convert.from?.symbol}</span>
         </TextContainer>
         <div className="from">
           <p>From</p>
           <Select
+            isDisabled={convertFetch?.loading ? true : false}
+            value={
+              convert.from.id ? options[findOptionById(convert.from.id)] : null
+            }
             options={options}
-            aria-label="choose a currency"
+            aria-label="Currrency to convert from"
             name="Currencys"
             onChange={handleChange('convertFrom')}
-            getOptionLabel={e => (
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                {e.icon}
-                <span style={{ marginLeft: 5 }}>{e.label}</span>
-              </div>
-            )}
+            getOptionLabel={getLabelFrom}
           />
           <SvgContainer>
-            <button type="button">
+            <button
+              aria-label="swap currencys"
+              type="button"
+              disabled={convertFetch?.loading ? true : false}
+              onClick={handleSwap}
+            >
               <svg
+                aria-label="swap icon"
                 xmlns="http://www.w3.org/2000/svg"
                 width="30"
                 height="30"
@@ -92,28 +137,35 @@ const Converter = ({ coins, currency }) => {
         <div>
           <p>To</p>
           <Select
+            isDisabled={convertFetch?.loading ? true : false}
+            value={
+              convert.from.id ? options[findOptionById(convert.to.id)] : null
+            }
             options={options}
-            aria-label="choose a currency"
+            aria-label="Currrency to convert to"
             name="Currencys"
-            autosize={true}
             onChange={handleChange('convertTo')}
-            getOptionLabel={e => (
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                {e.icon}
-                <span style={{ marginLeft: 5 }}>{e.label}</span>
-              </div>
-            )}
+            getOptionLabel={getLabelFrom}
           />
         </div>
         <div>
           {convert.to && convert.from ? (
             <TextContainer>
-              <p>Result</p>
-              <input value={convert.price?.toFixed(2)}></input>
+              <label>
+                <p>Result</p>
+                <input
+                  aria-label="Search"
+                  readOnly={true}
+                  value={
+                    convertFetch.data?.price?.toFixed(5)
+                      ? convertFetch.data?.price?.toFixed(5)
+                      : ''
+                  }
+                ></input>
+              </label>
               <span>{convert.to?.symbol}</span>
             </TextContainer>
           ) : null}
-          <button type="button">Click to exchange</button>
         </div>
       </ConverterForm>
     </Wrapper>
@@ -193,8 +245,4 @@ const SelectionContainer = styled.form`
   margin: 10px;
   width: 400px;
   text-align: center;
-`;
-
-const Output = styled.output`
-  margin-top: 50px;
 `;

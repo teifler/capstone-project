@@ -14,14 +14,16 @@ const useStore = create((set, get) => {
   return {
     currency: 'eur',
     days: 1,
-    exchange: {},
     amount: 0,
-    convertFetch: initialize(),
+    convertFetch: {
+      data: null,
+      loading: false,
+      error: null,
+    },
     convert: {
       from: '',
       to: '',
       amount: 1,
-      price: 0,
     },
     setConvert(key, value) {
       const objConvert = get().convert;
@@ -31,7 +33,6 @@ const useStore = create((set, get) => {
           [key]: value,
         },
       });
-      console.log(objConvert);
       set({
         [key]: value,
       });
@@ -42,8 +43,6 @@ const useStore = create((set, get) => {
     setMeta(key, id, partial) {
       set(
         produce(draft => {
-          //draft.meta[key][id] = draft.meta[key][id] ?? partial;
-          //draft.meta[key][id] = draft.meta[key][id] ?? {};
           if (draft.meta[key][id]) {
             Object.entries(partial).forEach(entry => {
               const [key_, value_] = entry;
@@ -112,41 +111,6 @@ const useStore = create((set, get) => {
         set({
           [key]: {
             data: previousData,
-            loading: false,
-            error,
-          },
-        });
-      }
-    }, //end of coins fetch
-    async priceConverterFetch() {
-      try {
-        const { data } = await axios.get(
-          `https://api.coinpaprika.com/v1/price-converter?base_currency_id=${
-            get().convert.from.id
-          }&quote_currency_id=${get().convert.to.id}&amount=${
-            get().convert.amount
-          }`
-        );
-        const objConvert = get().convert;
-        setTimeout(
-          () =>
-            set({
-              convertFetch: {
-                data,
-                loading: false,
-                error: null,
-              },
-              convert: {
-                ...objConvert,
-                price: data.price,
-              },
-            }),
-          2000
-        );
-      } catch (error) {
-        set({
-          convertFetch: {
-            data: null,
             loading: false,
             error,
           },
