@@ -27,7 +27,7 @@ function CoinPage({ coin, title, currency }) {
         'chartHistory'
       );
   }, [coinId, currency, days]);
-
+  useEffect(() => {});
   function toggleBookmark(id) {
     const wasBookmarked = useStore.getState().meta.coins[id]?.bookmarked;
     useStore.getState().setMeta('coins', id, { bookmarked: !wasBookmarked });

@@ -9,6 +9,7 @@ import Tracker from './pages/Tracker.js';
 import CoinPage from './pages/CoinPage.js';
 import Navbar from './components/Navbar.js';
 import Header from './components/Header.js';
+import Converter from './pages/Converter.js';
 
 import useStore from './hooks/useStore.js';
 
@@ -16,7 +17,6 @@ function App() {
   const currency = useStore(state => state.currency);
   const setCurrency = useStore(state => state.setCurrency);
   const coins = useStore(state => state.coins);
-  const setBookmark = useStore(state => state.setBookmark);
 
   useEffect(() => {
     useStore
@@ -61,6 +61,10 @@ function App() {
             element={<CoinPage coin={coin} currency={currency} />}
           />
         ))}
+        <Route
+          path="/converter"
+          element={<Converter coins={coins.data} currency={currency} />}
+        />
       </Routes>
       <Navigation />
     </AppGrid>
@@ -73,17 +77,6 @@ const AppGrid = styled.div`
   display: grid;
   grid-template-rows: 48px 1fr 48px;
   position: relative;
-`;
-
-const Main = styled.main`
-  height: 100vh;
-  padding: 1rem 0.5rem;
-  overflow-y: auto;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-  ::-webkit-scrollbar {
-    display: none;
-  }
 `;
 
 const Navigation = styled(Navbar)`
