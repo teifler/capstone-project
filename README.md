@@ -23,7 +23,7 @@ Please note that Cryptocloud is still under construction. Please let me know if 
 - Clone this repository
 - You don't need an API key
 - Install all dependencies with `$ npm install`
-- Run app in dev mode with `$ npm run dev`
+- Run app in dev mode with `$ npm start`
 - Server: [http://localhost:3000/](http://localhost:3000/)
 - Run the tests via `$ npm run test`
 - Run Storybook with `$ npm run storybook`
