@@ -12,15 +12,13 @@ import arrowUp from '../images/arrow-up.svg';
 import arrowDown from '../images/arrow-down.svg';
 import spinner from '../images/spinner.svg';
 
-function CoinPage({ coin, title, currency }) {
+function CoinPage({ coin, currency }) {
   const singleCoin = useStore(state => state.singleCoin);
   const days = useStore(state => state.days);
   const setDays = useStore(state => state.setDays);
   const meta = useStore(state => state.meta);
   const chartHistory = useStore(state => state.chartHistory);
-
   const coinId = coin.id;
-
   useEffect(() => {
     useStore
       .getState()
@@ -29,8 +27,6 @@ function CoinPage({ coin, title, currency }) {
         'singleCoin'
       );
   }, [coinId, currency, days]);
-
-  console.log('Single Coin', singleCoin.data);
 
   useEffect(() => {
     useStore
@@ -41,241 +37,208 @@ function CoinPage({ coin, title, currency }) {
       );
   }, [coinId, currency, days]);
   useEffect(() => {});
-  function toggleBookmark(id) {
-    const wasBookmarked = useStore.getState().meta.coins[id]?.bookmarked;
-    useStore.getState().setMeta('coins', id, { bookmarked: !wasBookmarked });
+  function toggleBookmark(coinid) {
+    const wasBookmarked = useStore.getState().meta.coins[coinid]?.bookmarked;
+    useStore
+      .getState()
+      .setMeta('coins', coinId, { bookmarked: !wasBookmarked });
   }
 
-  if (coin.loading) {
+  console.log(singleCoin.data);
+
+  if (singleCoin.loading) {
     return <SpinnerLogo src={spinner} height="80" width="80"></SpinnerLogo>;
+  }
+  //ADD MORE TO REDUCE CODE
+  function currencyChecker(coinProp) {
+    if (currency === 'eur' && coinProp) {
+      return `${coinProp
+        .toFixed(2)
+        .toString()
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}€`;
+    } else {
+      return `$${coinProp
+        .toFixed(2)
+        .toString()
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
+    }
   }
 
   return (
-    <div>
-      {chartHistory.error ? (
-        <ErrorMessage>
-          We had issues fetching the coins for you. Please reload the page to
-          try it again!
-        </ErrorMessage>
-      ) : (
-        <CardWrapper>
-          <InfoContainer>
-            <GoBack to="/">
-              <img alt="arrow-left" src={arrowLeft} hight="26" width="26"></img>{' '}
-            </GoBack>
-            <h4>
-              {coin.name} <span>({coin.symbol.toUpperCase()})</span>
-            </h4>
-            <TrackButton onClick={() => toggleBookmark(coin.id)}>
-              {meta.coins[coin.id]?.bookmarked ? (
+    singleCoin.data && (
+      <div>
+        {chartHistory.error ? (
+          <ErrorMessage>
+            We had issues fetching the coins for you. Please reload the page to
+            try it again!
+          </ErrorMessage>
+        ) : (
+          <CardWrapper>
+            <InfoContainer>
+              <GoBack to="/">
                 <img
-                  src={starFilled}
-                  alt="Remove coin of your tracking list"
-                  height="30"
-                  width="30"
-                ></img>
-              ) : (
-                <img
-                  src={star}
-                  alt="Add coin to your tracking list"
-                  height="30"
-                  width="30"
-                ></img>
-              )}
-            </TrackButton>
-          </InfoContainer>
-          <SideBarImageContainer>
-            <PriceContainer>
-              <p>{coin.name} Price</p>
+                  alt="arrow-left"
+                  src={arrowLeft}
+                  hight="26"
+                  width="26"
+                ></img>{' '}
+              </GoBack>
               <h4>
-                {currency === 'eur'
-                  ? `${coin.current_price
-                      .toFixed(2)
-                      .toString()
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}€`
-                  : `$${coin.current_price
-                      .toFixed(2)
-                      .toString()
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}
+                {coin.name} <span>({coin.symbol.toUpperCase()})</span>
               </h4>
-              <p>
-                Last 24hrs:
-                {coin.price_change_24h >= 0 ? (
-                  <PriceUp>
-                    {' +'}
-                    {currency === 'eur'
-                      ? `${coin.price_change_24h
-                          .toFixed(2)
-                          .toString()
-                          .replace(
-                            /\B(?=(\d{3})+(?!\d))/g,
-                            ','
-                          )}€ (+${coin.price_change_percentage_24h.toFixed(
-                          2
-                        )}%)`
-                      : `$${coin.price_change_24h
-                          .toFixed(2)
-                          .toString()
-                          .replace(
-                            /\B(?=(\d{3})+(?!\d))/g,
-                            ','
-                          )} (+${coin.price_change_percentage_24h.toFixed(
-                          2
-                        )}%)`}
-                  </PriceUp>
+              <TrackButton onClick={() => toggleBookmark(coin.id)}>
+                {meta.coins[coin.id]?.bookmarked ? (
+                  <img
+                    src={starFilled}
+                    alt="Remove coin of your tracking list"
+                    height="30"
+                    width="30"
+                  ></img>
                 ) : (
-                  <PriceDown>
-                    {' '}
-                    {currency === 'eur'
-                      ? `${coin.price_change_24h
-                          .toFixed(2)
-                          .toString()
-                          .replace(
-                            /\B(?=(\d{3})+(?!\d))/g,
-                            ','
-                          )}€ (-${coin.price_change_percentage_24h.toFixed(
-                          2
-                        )}%)`
-                      : `${coin.price_change_24h
-                          .toFixed(2)
-                          .toString()
-                          .replace(
-                            /\B(?=(\d{3})+(?!\d))/g,
-                            ','
-                          )}$ (${coin.price_change_percentage_24h.toFixed(
-                          2
-                        )}%)`}
-                  </PriceDown>
+                  <img
+                    src={star}
+                    alt="Add coin to your tracking list"
+                    height="30"
+                    width="30"
+                  ></img>
                 )}
-              </p>
-            </PriceContainer>
-            <CicleContainer>
-              <CircleImage>
-                <CoinImages>
-                  <img alt={coin.id} src={coin.image} height="32"></img>
-                </CoinImages>
-              </CircleImage>
-            </CicleContainer>
-          </SideBarImageContainer>
-          <MarketInformationContainer>
-            <div>
-              <h4>Market Cap</h4>
-              <h3>${coin.market_cap}</h3>
-            </div>
-            <div>
-              <h4>Volume (24h)</h4>
-              <h3></h3>
-            </div>
-            <div>
-              <h4>Popularity</h4>
-              <h3>#${coin.market_cap_rank}</h3>
-            </div>
-            <div>
-              <h4>Low (1 week)</h4>
-              <h3></h3>
-            </div>
-            <div>
-              <h4>High (1 week)</h4>
-              <h3></h3>
-            </div>
-            <div>
-              <h4>All time high</h4>
-              <h3></h3>
-            </div>
-          </MarketInformationContainer>
-          <InformationWrapper>
-            <h4>Market Information</h4>
-            <StyledList role="list">
-              <li>Rank: {coin.market_cap_rank}</li>
-              <li>
-                {currency.toUpperCase()}:{' '}
-                {currency === 'eur'
-                  ? `${coin.current_price
-                      .toFixed(2)
-                      .toString()
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} €`
-                  : `$${coin.current_price
-                      .toFixed(2)
-                      .toString()
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}
-              </li>
-            </StyledList>
-          </InformationWrapper>
-          <InformationWrapper>
-            <h4>Last day Information</h4>
-            <StyledList role="list">
-              <li>
-                High:{' '}
-                {currency === 'eur'
-                  ? `${coin.high_24h
-                      .toFixed(2)
-                      .toString()
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} €`
-                  : `$${coin.high_24h
-                      .toFixed(2)
-                      .toString()
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}
-              </li>
-              <li>
-                Low:{' '}
-                {currency === 'eur'
-                  ? `${coin.low_24h
-                      .toFixed(2)
-                      .toString()
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} €`
-                  : `$${coin.low_24h
-                      .toFixed(2)
-                      .toString()
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}
-              </li>
-              <li>
-                Last 24H:
-                {coin.market_cap_change_percentage_24h >= 0 ? (
-                  <PriceUp>
-                    <img
-                      alt="Arrow up"
-                      src={arrowUp}
-                      height="12"
-                      width="12"
-                    ></img>
-                    {coin.price_change_percentage_24h.toFixed(2)} %
-                  </PriceUp>
-                ) : (
-                  <PriceDown>
-                    <img
-                      alt="Arrow down"
-                      src={arrowDown}
-                      height="12"
-                      width="12"
-                    ></img>
-                    {coin.price_change_percentage_24h.toFixed(2)} %
-                  </PriceDown>
-                )}
-              </li>
-            </StyledList>
-          </InformationWrapper>
-          <SelectTimeFrame
-            id="dropdown"
-            placeholder="Set Timeframe"
-            defaultValue="1"
-            onChange={e => setDays(e.target.value)}
-          >
-            <option value="1">24h</option>
-            <option value="7">7D</option>
-            <option value="30">1M</option>
-            <option value="90">3M</option>
-            <option value="365">1Y</option>
-          </SelectTimeFrame>
-          {chartHistory.data && (
-            <CryptoChart
-              chartHistory={chartHistory.data}
-              currency={currency}
-              days={days}
-            />
-          )}
-        </CardWrapper>
-      )}
-    </div>
+              </TrackButton>
+            </InfoContainer>
+            <SideBarImageContainer>
+              <PriceContainer>
+                <p>{coin.name} Price</p>
+                <h4>{currencyChecker(coin?.current_price)}</h4>
+                <div>
+                  Last 24hrs:
+                  {coin.price_change_24h >= 0 ? (
+                    <PriceUp>
+                      {' +'}
+                      {currency === 'eur'
+                        ? `${coin.price_change_24h
+                            .toFixed(2)
+                            .toString()
+                            .replace(
+                              /\B(?=(\d{3})+(?!\d))/g,
+                              ','
+                            )}€ (+${coin.price_change_percentage_24h.toFixed(
+                            2
+                          )}%)`
+                        : `$${coin.price_change_24h
+                            .toFixed(2)
+                            .toString()
+                            .replace(
+                              /\B(?=(\d{3})+(?!\d))/g,
+                              ','
+                            )} (+${coin.price_change_percentage_24h.toFixed(
+                            2
+                          )}%)`}
+                    </PriceUp>
+                  ) : (
+                    <PriceDown>
+                      {' '}
+                      {currency === 'eur'
+                        ? `${coin.price_change_24h
+                            .toFixed(2)
+                            .toString()
+                            .replace(
+                              /\B(?=(\d{3})+(?!\d))/g,
+                              ','
+                            )}€ (-${coin.price_change_percentage_24h.toFixed(
+                            2
+                          )}%)`
+                        : `${coin.price_change_24h
+                            .toFixed(2)
+                            .toString()
+                            .replace(
+                              /\B(?=(\d{3})+(?!\d))/g,
+                              ','
+                            )}$ (${coin.price_change_percentage_24h.toFixed(
+                            2
+                          )}%)`}
+                    </PriceDown>
+                  )}
+                </div>
+              </PriceContainer>
+              <CicleContainer>
+                <CircleImage>
+                  <CoinImages>
+                    <img alt={coin.id} src={coin.image} height="32"></img>
+                  </CoinImages>
+                </CircleImage>
+              </CicleContainer>
+            </SideBarImageContainer>
+
+            <SelectTimeFrame
+              id="dropdown"
+              placeholder="Set Timeframe"
+              defaultValue="1"
+              onChange={e => setDays(e.target.value)}
+            >
+              <option value="1">24h</option>
+              <option value="7">7D</option>
+              <option value="30">1M</option>
+              <option value="90">3M</option>
+              <option value="365">1Y</option>
+            </SelectTimeFrame>
+            {chartHistory.data && (
+              <CryptoChart
+                chartHistory={chartHistory.data}
+                currency={currency}
+                days={days}
+              />
+            )}
+            <MarketInformationContainer>
+              <InfoBox>
+                <p>Market Cap</p>
+                <h3>
+                  $
+                  {coin.market_cap
+                    .toString()
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                </h3>
+              </InfoBox>
+              <InfoBox>
+                <p>Market Cap Change (24h)</p>
+                <h3>
+                  {singleCoin.data.market_data.market_cap_change_percentage_24h.toFixed(
+                    2
+                  )}
+                  %
+                </h3>
+              </InfoBox>
+              <InfoBox>
+                <p>Popularity</p>
+                <h3>#${coin.market_cap_rank}</h3>
+              </InfoBox>
+              <InfoBox>
+                <p>Low (24h)</p>
+                <h3>
+                  {currencyChecker(
+                    singleCoin.data.market_data.low_24h[currency]
+                  )}
+                </h3>
+              </InfoBox>
+              <InfoBox>
+                <p>All-Time Low</p>
+                <h3>
+                  {currencyChecker(singleCoin.data.market_data.atl[currency])}
+                </h3>
+              </InfoBox>
+              <InfoBox>
+                <p>All time high</p>
+                <h3>
+                  {currencyChecker(singleCoin.data.market_data.ath[currency])}
+                </h3>
+              </InfoBox>
+            </MarketInformationContainer>
+            <About>
+              <h3>About {coin.name}</h3>
+              <p>{singleCoin.data.description.en}</p>
+            </About>
+          </CardWrapper>
+        )}
+      </div>
+    )
   );
 }
 
@@ -284,6 +247,7 @@ export default CoinPage;
 const CardWrapper = styled.div`
   display: flex;
   margin-left: auto;
+  margin-right: auto;
   justify-content: center;
   align-items: center;
   flex-direction: column;
@@ -294,7 +258,7 @@ const CardWrapper = styled.div`
 
 const InfoContainer = styled.div`
   display: flex;
-  width: 90%;
+  width: 100%;
   justify-content: space-between;
 
   span {
@@ -308,7 +272,7 @@ const PriceContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  width: 90%;
+  width: 100%;
 `;
 
 const StyledList = styled.ul``;
@@ -386,6 +350,31 @@ const SideBarImageContainer = styled.div`
   display: flex;
   justify-content: space-between;
   width: 90%;
+`;
+
+const MarketInformationContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-top: 32px;
+
+  max-width: 550px;
+`;
+
+const InfoBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-right: 22px;
+  margin-bottom: 24px;
+  p {
+    color: #b6b9ce;
+  }
+`;
+
+const About = styled.section`
+  h3 {
+    text-align: center;
+  }
 `;
 
 const SelectTimeFrame = styled.select`
