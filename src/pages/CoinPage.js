@@ -1,9 +1,11 @@
 import { NavLink } from 'react-router-dom';
 import { useEffect } from 'react';
+
 import styled from 'styled-components';
 import useStore from '../hooks/useStore.js';
 
 import CryptoChart from '../components/CryptoChart.js';
+import parse from 'html-react-parser';
 
 import star from '../images/star.svg';
 import starFilled from '../images/star-filled.svg';
@@ -18,7 +20,10 @@ function CoinPage({ coin, currency }) {
   const setDays = useStore(state => state.setDays);
   const meta = useStore(state => state.meta);
   const chartHistory = useStore(state => state.chartHistory);
+
   const coinId = coin.id;
+  const parse = require('html-react-parser');
+
   useEffect(() => {
     useStore
       .getState()
@@ -233,7 +238,7 @@ function CoinPage({ coin, currency }) {
             </MarketInformationContainer>
             <About>
               <h3>About {coin.name}</h3>
-              <p>{singleCoin.data.description.en}</p>
+              <section>{parse(`${singleCoin.data.description.en}`)}</section>
             </About>
           </CardWrapper>
         )}
