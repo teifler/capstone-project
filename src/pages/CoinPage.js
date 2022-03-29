@@ -1,17 +1,15 @@
 import { NavLink } from 'react-router-dom';
 import { useEffect } from 'react';
+import Select from 'react-select';
 
 import styled from 'styled-components';
 import useStore from '../hooks/useStore.js';
 
 import CryptoChart from '../components/CryptoChart.js';
-import parse from 'html-react-parser';
 
 import star from '../images/star.svg';
 import starFilled from '../images/star-filled.svg';
 import arrowLeft from '../images/arrow-left.svg';
-import arrowUp from '../images/arrow-up.svg';
-import arrowDown from '../images/arrow-down.svg';
 import spinner from '../images/spinner.svg';
 
 function CoinPage({ coin, currency }) {
@@ -22,7 +20,14 @@ function CoinPage({ coin, currency }) {
   const chartHistory = useStore(state => state.chartHistory);
 
   const coinId = coin.id;
-  const parse = require('html-react-parser');
+
+  const options = [
+    { value: 7, label: '7 Days' },
+    { value: 14, label: '1 Week' },
+    { value: 30, label: '1 Month' },
+    { value: 90, label: '3 Months' },
+    { value: 365, label: '12 Months' },
+  ];
 
   useEffect(() => {
     useStore
@@ -31,7 +36,7 @@ function CoinPage({ coin, currency }) {
         `https://api.coingecko.com/api/v3/coins/${coinId}`,
         'singleCoin'
       );
-  }, [coinId, currency, days]);
+  }, [coinId, currency]);
 
   useEffect(() => {
     useStore
@@ -41,6 +46,7 @@ function CoinPage({ coin, currency }) {
         'chartHistory'
       );
   }, [coinId, currency, days]);
+
   useEffect(() => {});
   function toggleBookmark(coinid) {
     const wasBookmarked = useStore.getState().meta.coins[coinid]?.bookmarked;
@@ -49,13 +55,18 @@ function CoinPage({ coin, currency }) {
       .setMeta('coins', coinId, { bookmarked: !wasBookmarked });
   }
 
-  console.log(singleCoin.data);
-
   if (singleCoin.loading) {
-    return <SpinnerLogo src={spinner} height="80" width="80"></SpinnerLogo>;
+    return (
+      <SpinnerLogo
+        src={spinner}
+        alt="Loading spinner"
+        height="80"
+        width="80"
+      ></SpinnerLogo>
+    );
   }
-  //ADD MORE TO REDUCE CODE
-  function currencyChecker(coinProp) {
+
+  function currencyParser(coinProp) {
     if (currency === 'eur' && coinProp) {
       return `${coinProp
         .toFixed(2)
@@ -79,7 +90,7 @@ function CoinPage({ coin, currency }) {
           </ErrorMessage>
         ) : (
           <CardWrapper>
-            <InfoContainer>
+            <IconTextContainer>
               <GoBack to="/">
                 <img
                   alt="arrow-left"
@@ -88,9 +99,9 @@ function CoinPage({ coin, currency }) {
                   width="26"
                 ></img>{' '}
               </GoBack>
-              <h4>
+              <p>
                 {coin.name} <span>({coin.symbol.toUpperCase()})</span>
-              </h4>
+              </p>
               <TrackButton onClick={() => toggleBookmark(coin.id)}>
                 {meta.coins[coin.id]?.bookmarked ? (
                   <img
@@ -108,83 +119,61 @@ function CoinPage({ coin, currency }) {
                   ></img>
                 )}
               </TrackButton>
-            </InfoContainer>
-            <SideBarImageContainer>
+            </IconTextContainer>
+            <Sidebar>
               <PriceContainer>
-                <p>{coin.name} Price</p>
-                <h4>{currencyChecker(coin?.current_price)}</h4>
+                <p>
+                  <span>{coin.name} Price</span>
+                </p>
+                <h3>{currencyParser(coin?.current_price)}</h3>
                 <div>
                   Last 24hrs:
                   {coin.price_change_24h >= 0 ? (
                     <PriceUp>
                       {' +'}
                       {currency === 'eur'
-                        ? `${coin.price_change_24h
-                            .toFixed(2)
-                            .toString()
-                            .replace(
-                              /\B(?=(\d{3})+(?!\d))/g,
-                              ','
-                            )}€ (+${coin.price_change_percentage_24h.toFixed(
+                        ? `${currencyParser(
+                            coin.price_change_24h
+                          )}  (+${coin.price_change_percentage_24h.toFixed(
                             2
                           )}%)`
-                        : `$${coin.price_change_24h
-                            .toFixed(2)
-                            .toString()
-                            .replace(
-                              /\B(?=(\d{3})+(?!\d))/g,
-                              ','
-                            )} (+${coin.price_change_percentage_24h.toFixed(
+                        : `${currencyParser(
+                            coin.price_change_24h
+                          )} (+${coin.price_change_percentage_24h.toFixed(
                             2
                           )}%)`}
                     </PriceUp>
                   ) : (
                     <PriceDown>
-                      {' '}
+                      {' -'}
                       {currency === 'eur'
-                        ? `${coin.price_change_24h
-                            .toFixed(2)
-                            .toString()
-                            .replace(
-                              /\B(?=(\d{3})+(?!\d))/g,
-                              ','
-                            )}€ (-${coin.price_change_percentage_24h.toFixed(
-                            2
-                          )}%)`
-                        : `${coin.price_change_24h
-                            .toFixed(2)
-                            .toString()
-                            .replace(
-                              /\B(?=(\d{3})+(?!\d))/g,
-                              ','
-                            )}$ (${coin.price_change_percentage_24h.toFixed(
-                            2
-                          )}%)`}
+                        ? `${currencyParser(
+                            coin?.price_change_24h
+                          )} (${coin.price_change_percentage_24h.toFixed(2)}%)`
+                        : `${currencyParser(
+                            coin?.price_change_24h
+                          )} (${coin.price_change_percentage_24h.toFixed(2)}%)`}
                     </PriceDown>
                   )}
                 </div>
               </PriceContainer>
               <CicleContainer>
                 <CircleImage>
-                  <CoinImages>
+                  <CoinImageCircle>
                     <img alt={coin.id} src={coin.image} height="32"></img>
-                  </CoinImages>
+                  </CoinImageCircle>
                 </CircleImage>
               </CicleContainer>
-            </SideBarImageContainer>
-
-            <SelectTimeFrame
-              id="dropdown"
-              placeholder="Set Timeframe"
-              defaultValue="1"
-              onChange={e => setDays(e.target.value)}
-            >
-              <option value="1">24h</option>
-              <option value="7">7D</option>
-              <option value="30">1M</option>
-              <option value="90">3M</option>
-              <option value="365">1Y</option>
-            </SelectTimeFrame>
+            </Sidebar>
+            <LabelSelect>
+              <Select
+                aria-label="Select timeframe of chart"
+                options={options}
+                isSearchable={false}
+                placeholder="Select Timeframe"
+                onChange={e => setDays(e.value)}
+              />
+            </LabelSelect>
             {chartHistory.data && (
               <CryptoChart
                 chartHistory={chartHistory.data}
@@ -203,7 +192,7 @@ function CoinPage({ coin, currency }) {
                 </h3>
               </InfoBox>
               <InfoBox>
-                <p>Market Cap Change (24h)</p>
+                <p>Market Cap (24h)</p>
                 <h3>
                   {singleCoin.data.market_data.market_cap_change_percentage_24h.toFixed(
                     2
@@ -213,12 +202,12 @@ function CoinPage({ coin, currency }) {
               </InfoBox>
               <InfoBox>
                 <p>Popularity</p>
-                <h3>#${coin.market_cap_rank}</h3>
+                <h3>#{coin.market_cap_rank}</h3>
               </InfoBox>
               <InfoBox>
                 <p>Low (24h)</p>
                 <h3>
-                  {currencyChecker(
+                  {currencyParser(
                     singleCoin.data.market_data.low_24h[currency]
                   )}
                 </h3>
@@ -226,20 +215,16 @@ function CoinPage({ coin, currency }) {
               <InfoBox>
                 <p>All-Time Low</p>
                 <h3>
-                  {currencyChecker(singleCoin.data.market_data.atl[currency])}
+                  {currencyParser(singleCoin.data.market_data.atl[currency])}
                 </h3>
               </InfoBox>
               <InfoBox>
                 <p>All time high</p>
                 <h3>
-                  {currencyChecker(singleCoin.data.market_data.ath[currency])}
+                  {currencyParser(singleCoin.data.market_data.ath[currency])}
                 </h3>
               </InfoBox>
             </MarketInformationContainer>
-            <About>
-              <h3>About {coin.name}</h3>
-              <section>{parse(`${singleCoin.data.description.en}`)}</section>
-            </About>
           </CardWrapper>
         )}
       </div>
@@ -258,16 +243,20 @@ const CardWrapper = styled.div`
   flex-direction: column;
   padding: 2rem;
   margin-bottom: 65px;
-  width: 90%;
+  max-width: 700px;
+  position: relative;
 `;
 
-const InfoContainer = styled.div`
+const IconTextContainer = styled.div`
   display: flex;
+  align-items: center;
   width: 100%;
   justify-content: space-between;
-
+  p {
+    font-weight: bold;
+  }
   span {
-    color: var(--font-color-light);
+    color: var(--font-color-lightgray);
     font-size: 0.75;
   }
   margin-bottom: 30px;
@@ -278,48 +267,20 @@ const PriceContainer = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   width: 100%;
-`;
 
-const StyledList = styled.ul``;
+  span {
+    color: var(--font-color-lightgray);
+    font-size: 1rem;
+  }
+
+  h3 {
+    margin-bottom: 4px;
+  }
+`;
 
 const GoBack = styled(NavLink)``;
 
-const CoinName = styled.div`
-  width: 90%;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  margin: 20px 0 20px 0;
-
-  align-items: space-around;
-  h3 {
-    font-size: 1rem;
-  }
-  p {
-    color: #a9abb1;
-    font-size: 0.9rem;
-  }
-`;
-
-const InformationWrapper = styled.div`
-  text-align: center;
-  margin-bottom: 20px;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  width: 90%;
-  padding: 10px;
-  line-height: 130%;
-  font-size: 110%;
-  max-width: 400px;
-
-  li {
-    text-align: left;
-    font-size: 1rem;
-  }
-`;
-
 const TrackButton = styled.button`
-  top: 32px;
-  right: 15px;
   border-style: none;
   background-color: transparent;
 `;
@@ -344,52 +305,47 @@ const CircleImage = styled.div`
   border-radius: 25px;
   height: 50px;
   width: 50px;
-`;
-
-const CoinImages = styled.div`
-  margin-right: 0;
   padding-top: 2px;
 `;
 
-const SideBarImageContainer = styled.div`
+const CoinImageCircle = styled.div`
+  margin-right: 0;
+`;
+
+const Sidebar = styled.div`
   display: flex;
-  justify-content: space-between;
-  width: 90%;
+  justify-content: space-around;
+  width: 100%;
+  margin-bottom: 20px;
+`;
+
+const LabelSelect = styled.label`
+  width: 100%;
 `;
 
 const MarketInformationContainer = styled.div`
   display: flex;
-  flex-wrap: wrap;
   justify-content: space-between;
-  margin-top: 32px;
 
+  flex-wrap: wrap;
+  margin-top: 32px;
   max-width: 550px;
+  margin-left: 15px;
+  @media (min-width: 700px) {
+    div:nth-child(2n) {
+      align-items: flex-end;
+    }
+  }
 `;
 
 const InfoBox = styled.div`
   display: flex;
   flex-direction: column;
-  margin-right: 22px;
+  flex-basis: 50%;
   margin-bottom: 24px;
   p {
-    color: #b6b9ce;
+    color: var(--font-color-lightgray);
   }
-`;
-
-const About = styled.section`
-  h3 {
-    text-align: center;
-  }
-`;
-
-const SelectTimeFrame = styled.select`
-  width: 30%;
-  align-self: flex-start;
-  @media (min-width: 768px) {
-    align-self: center;
-    width: 390px;
-  }
-  margin-bottom: 5px;
 `;
 
 const PriceDown = styled.p`
@@ -402,10 +358,9 @@ const PriceUp = styled.p`
 `;
 
 const SpinnerLogo = styled.img`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  position: fixed;
+  top: 30%;
+  left: 45%;
 `;
 
 const ErrorMessage = styled.h3`
