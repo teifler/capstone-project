@@ -80,7 +80,6 @@ export default App;
 const AppGrid = styled.div`
   display: grid;
   position: relative;
-  background-color: #f7f8fd;
   overflow-y: hidden;
 `;
 

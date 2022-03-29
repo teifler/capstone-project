@@ -11,12 +11,13 @@ export default createGlobalStyle`
   :root{
     --font-color-light:#7B7D83;
     --font-color-lightgray: #6B7194;
-    --bg-color-main: #E5E5E5;
+    --bg-color-main: #f7f8fd;
     --bg-color-gradientblue: linear-gradient(90deg, #00CBFF -0.55%, #6721FF 101.05%), #160042;
   }
 
   body {
-    font-family: 'Nunito', sans-serif;    
+    font-family: 'Nunito', sans-serif;
+    background-color: var(--bg-color-main);
   }
 
   a {
