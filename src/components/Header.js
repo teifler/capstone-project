@@ -6,7 +6,7 @@ import logo from '../images/logo.svg';
 function Header({ title }) {
   return (
     <Headline>
-      <img src={logo} alt="logo"></img>
+      <img src={logo} width="84" height="67" alt="logo"></img>
       <h1>
         CRYPTO <span>CLOUD</span>
       </h1>
@@ -25,11 +25,10 @@ const Headline = styled.header`
   margin-top: 5px;
   align-items: center;
   justify-content: center;
-  text-align: center;
   width: 100%;
   height: 2.75rem;
-  margin-bottom: 0.9rem;
-  padding-top: 10px;
+  padding: 2.5rem 0.875rem 0 0;
+  margin: 5px 0 1.4rem 0;
 
   span {
     background: var(--bg-color-gradientblue);
