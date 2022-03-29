@@ -5,16 +5,18 @@ export default createGlobalStyle`
     box-sizing: border-box;
     padding: 0;
     margin: 0;
+    line-height: 1.2;
   }
 
   :root{
-    --bg-color-main: #F7F8FD;
+    --font-color-light:#7B7D83;
+    --font-color-lightgray: #6B7194;
+    --bg-color-main: #E5E5E5;
     --bg-color-gradientblue: linear-gradient(90deg, #00CBFF -0.55%, #6721FF 101.05%), #160042;
   }
 
   body {
-    font-family: 'Roboto', sans-serif;
-    background-color: --bg-color-main;
+    font-family: 'Nunito', sans-serif;    
   }
 
   a {
