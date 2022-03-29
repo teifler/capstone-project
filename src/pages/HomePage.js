@@ -38,10 +38,12 @@ function HomePage({ coins, currency }) {
         </form>
       </CoinSearch>
 
-      <CoinList role="list">
+      <CoinList aria-label="List of cryptocurrencies" role="list">
         {filterdCoins.map(coin => {
           return (
             <CoinCard
+              role="list"
+              aria-label={coin.id}
               currency={currency}
               rank={coin.market_cap_rank}
               id={coin.id}

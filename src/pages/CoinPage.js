@@ -145,7 +145,7 @@ function CoinPage({ coin, currency }) {
                     </PriceUp>
                   ) : (
                     <PriceDown>
-                      {' -'}
+                      {' '}
                       {currency === 'eur'
                         ? `${currencyParser(
                             coin?.price_change_24h
