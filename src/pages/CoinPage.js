@@ -1,5 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { useEffect } from 'react';
+import Select from 'react-select';
+
 import styled from 'styled-components';
 import useStore from '../hooks/useStore.js';
 
@@ -8,17 +10,34 @@ import CryptoChart from '../components/CryptoChart.js';
 import star from '../images/star.svg';
 import starFilled from '../images/star-filled.svg';
 import arrowLeft from '../images/arrow-left.svg';
-import arrowUp from '../images/arrow-up.svg';
-import arrowDown from '../images/arrow-down.svg';
 import spinner from '../images/spinner.svg';
 
-function CoinPage({ coin, title, currency }) {
+function CoinPage({ coin, currency }) {
+  const singleCoin = useStore(state => state.singleCoin);
   const days = useStore(state => state.days);
   const setDays = useStore(state => state.setDays);
   const meta = useStore(state => state.meta);
   const chartHistory = useStore(state => state.chartHistory);
 
   const coinId = coin.id;
+
+  const options = [
+    { value: 7, label: '7 Days' },
+    { value: 14, label: '1 Week' },
+    { value: 30, label: '1 Month' },
+    { value: 90, label: '3 Months' },
+    { value: 365, label: '12 Months' },
+  ];
+
+  useEffect(() => {
+    useStore
+      .getState()
+      .getData(
+        `https://api.coingecko.com/api/v3/coins/${coinId}`,
+        'singleCoin'
+      );
+  }, [coinId, currency]);
+
   useEffect(() => {
     useStore
       .getState()
@@ -27,144 +46,189 @@ function CoinPage({ coin, title, currency }) {
         'chartHistory'
       );
   }, [coinId, currency, days]);
+
   useEffect(() => {});
-  function toggleBookmark(id) {
-    const wasBookmarked = useStore.getState().meta.coins[id]?.bookmarked;
-    useStore.getState().setMeta('coins', id, { bookmarked: !wasBookmarked });
+  function toggleBookmark(coinid) {
+    const wasBookmarked = useStore.getState().meta.coins[coinid]?.bookmarked;
+    useStore
+      .getState()
+      .setMeta('coins', coinId, { bookmarked: !wasBookmarked });
   }
 
-  if (coin.loading) {
-    return <SpinnerLogo src={spinner} height="80" width="80"></SpinnerLogo>;
+  if (singleCoin.loading) {
+    return (
+      <SpinnerLogo
+        src={spinner}
+        alt="Loading spinner"
+        height="80"
+        width="80"
+      ></SpinnerLogo>
+    );
+  }
+
+  function currencyParser(coinProp) {
+    if (currency === 'eur' && coinProp) {
+      return `${coinProp
+        .toFixed(2)
+        .toString()
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}€`;
+    } else {
+      return `$${coinProp
+        .toFixed(2)
+        .toString()
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
+    }
   }
 
   return (
-    <div>
-      {chartHistory.error ? (
-        <ErrorMessage>
-          We had issues fetching the coins for you. Please reload the page to
-          try it again!
-        </ErrorMessage>
-      ) : (
-        <CardWrapper>
-          <GoBack to="/">
-            <img alt="arrow-left" src={arrowLeft} hight="35" width="35"></img>{' '}
-          </GoBack>
-          <TrackButton onClick={() => toggleBookmark(coin.id)}>
-            {meta.coins[coin.id]?.bookmarked ? (
-              <img
-                src={starFilled}
-                alt="Remove coin of your tracking list"
-                height="30"
-                width="30"
-              ></img>
-            ) : (
-              <img
-                src={star}
-                alt="Add coin to your tracking list"
-                height="30"
-                width="30"
-              ></img>
-            )}
-          </TrackButton>
-          <CoinImages>
-            <img alt={coin.id} src={coin.image} height="80"></img>
-          </CoinImages>
-          <CoinName>
-            <h2>{coin.name}</h2>
-          </CoinName>
-          <InformationWrapper>
-            <h4>Market Information</h4>
-            <StyledList role="list">
-              <li>Rank: {coin.market_cap_rank}</li>
-              <li>
-                {currency.toUpperCase()}:{' '}
-                {currency === 'eur'
-                  ? `${coin.current_price
-                      .toFixed(2)
-                      .toString()
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} €`
-                  : `$${coin.current_price
-                      .toFixed(2)
-                      .toString()
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}
-              </li>
-            </StyledList>
-          </InformationWrapper>
-          <InformationWrapper>
-            <h4>Last day Information</h4>
-            <StyledList role="list">
-              <li>
-                High:{' '}
-                {currency === 'eur'
-                  ? `${coin.high_24h
-                      .toFixed(2)
-                      .toString()
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} €`
-                  : `$${coin.high_24h
-                      .toFixed(2)
-                      .toString()
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}
-              </li>
-              <li>
-                Low:{' '}
-                {currency === 'eur'
-                  ? `${coin.low_24h
-                      .toFixed(2)
-                      .toString()
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} €`
-                  : `$${coin.low_24h
-                      .toFixed(2)
-                      .toString()
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}
-              </li>
-              <li>
-                Last 24H:
-                {coin.market_cap_change_percentage_24h >= 0 ? (
-                  <PriceUp>
-                    <img
-                      alt="Arrow up"
-                      src={arrowUp}
-                      height="12"
-                      width="12"
-                    ></img>
-                    {coin.price_change_percentage_24h.toFixed(2)} %
-                  </PriceUp>
+    singleCoin.data && (
+      <div>
+        {chartHistory.error ? (
+          <ErrorMessage>
+            We had issues fetching the coins for you. Please reload the page to
+            try it again!
+          </ErrorMessage>
+        ) : (
+          <CardWrapper>
+            <IconTextContainer>
+              <GoBack to="/">
+                <img
+                  alt="arrow-left"
+                  src={arrowLeft}
+                  hight="26"
+                  width="26"
+                ></img>{' '}
+              </GoBack>
+              <p>
+                {coin.name} <span>({coin.symbol.toUpperCase()})</span>
+              </p>
+              <TrackButton onClick={() => toggleBookmark(coin.id)}>
+                {meta.coins[coin.id]?.bookmarked ? (
+                  <img
+                    src={starFilled}
+                    alt="Remove coin of your tracking list"
+                    height="30"
+                    width="30"
+                  ></img>
                 ) : (
-                  <PriceDown>
-                    <img
-                      alt="Arrow down"
-                      src={arrowDown}
-                      height="12"
-                      width="12"
-                    ></img>
-                    {coin.price_change_percentage_24h.toFixed(2)} %
-                  </PriceDown>
+                  <img
+                    src={star}
+                    alt="Add coin to your tracking list"
+                    height="30"
+                    width="30"
+                  ></img>
                 )}
-              </li>
-            </StyledList>
-          </InformationWrapper>
-          <SelectTimeFrame
-            id="dropdown"
-            placeholder="Set Timeframe"
-            defaultValue="1"
-            onChange={e => setDays(e.target.value)}
-          >
-            <option value="1">24h</option>
-            <option value="7">7D</option>
-            <option value="30">1M</option>
-            <option value="90">3M</option>
-            <option value="365">1Y</option>
-          </SelectTimeFrame>
-          {chartHistory.data && (
-            <CryptoChart
-              chartHistory={chartHistory.data}
-              currency={currency}
-              days={days}
-            />
-          )}
-        </CardWrapper>
-      )}
-    </div>
+              </TrackButton>
+            </IconTextContainer>
+            <Sidebar>
+              <PriceContainer>
+                <p>
+                  <span>{coin.name} Price</span>
+                </p>
+                <h3>{currencyParser(coin?.current_price)}</h3>
+                <div>
+                  Last 24hrs:
+                  {coin.price_change_24h >= 0 ? (
+                    <PriceUp>
+                      {' +'}
+                      {currency === 'eur'
+                        ? `${currencyParser(
+                            coin.price_change_24h
+                          )}  (+${coin.price_change_percentage_24h.toFixed(
+                            2
+                          )}%)`
+                        : `${currencyParser(
+                            coin.price_change_24h
+                          )} (+${coin.price_change_percentage_24h.toFixed(
+                            2
+                          )}%)`}
+                    </PriceUp>
+                  ) : (
+                    <PriceDown>
+                      {' '}
+                      {currency === 'eur'
+                        ? `${currencyParser(
+                            coin?.price_change_24h
+                          )} (${coin.price_change_percentage_24h.toFixed(2)}%)`
+                        : `${currencyParser(
+                            coin?.price_change_24h
+                          )} (${coin.price_change_percentage_24h.toFixed(2)}%)`}
+                    </PriceDown>
+                  )}
+                </div>
+              </PriceContainer>
+              <CicleContainer>
+                <CircleBg>
+                  <CoinImageCircle>
+                    <img alt={coin.id} src={coin.image} height="32"></img>
+                  </CoinImageCircle>
+                </CircleBg>
+              </CicleContainer>
+            </Sidebar>
+            <LabelSelect>
+              <Select
+                aria-label="Select timeframe of chart"
+                options={options}
+                isSearchable={false}
+                placeholder="Select Timeframe"
+                onChange={e => setDays(e.value)}
+              />
+            </LabelSelect>
+            {chartHistory.data && (
+              <CryptoChart
+                chartHistory={chartHistory.data}
+                currency={currency}
+                days={days}
+              />
+            )}
+            <MarketInformationContainer>
+              <InfoBox>
+                <p>Market Cap</p>
+                <h3>
+                  $
+                  {coin.market_cap
+                    .toString()
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                </h3>
+              </InfoBox>
+              <InfoBox>
+                <p>Market Cap (24h)</p>
+                <h3>
+                  {singleCoin.data.market_data.market_cap_change_percentage_24h.toFixed(
+                    2
+                  )}
+                  %
+                </h3>
+              </InfoBox>
+              <InfoBox>
+                <p>Popularity</p>
+                <h3>#{coin.market_cap_rank}</h3>
+              </InfoBox>
+              <InfoBox>
+                <p>Low (24h)</p>
+                <h3>
+                  {currencyParser(
+                    singleCoin.data.market_data.low_24h[currency]
+                  )}
+                </h3>
+              </InfoBox>
+              <InfoBox>
+                <p>All-Time Low</p>
+                <h3>
+                  {currencyParser(singleCoin.data.market_data.atl[currency])}
+                </h3>
+              </InfoBox>
+              <InfoBox>
+                <p>All time high</p>
+                <h3>
+                  {currencyParser(singleCoin.data.market_data.ath[currency])}
+                </h3>
+              </InfoBox>
+            </MarketInformationContainer>
+          </CardWrapper>
+        )}
+      </div>
+    )
   );
 }
 
@@ -173,79 +237,115 @@ export default CoinPage;
 const CardWrapper = styled.div`
   display: flex;
   margin-left: auto;
+  margin-right: auto;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  min-width: 340px;
   padding: 2rem;
-  position: relative;
   margin-bottom: 65px;
+  max-width: 700px;
+  position: relative;
 `;
 
-const StyledList = styled.ul``;
-
-const GoBack = styled(NavLink)`
-  align-self: flex-start;
+const IconTextContainer = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+  p {
+    font-weight: bold;
+  }
+  span {
+    color: var(--font-color-lightgray);
+    font-size: 0.75;
+  }
+  margin-bottom: 30px;
 `;
 
-const CoinName = styled.div`
-  width: 90%;
-  text-align: center;
+const PriceContainer = styled.div`
   display: flex;
   flex-direction: column;
-  margin: 20px 0 20px 0;
+  justify-content: flex-start;
+  width: 100%;
 
-  align-items: space-around;
+  span {
+    color: var(--font-color-lightgray);
+    font-size: 1rem;
+  }
+
   h3 {
-    font-size: 1rem;
-  }
-  p {
-    color: #a9abb1;
-    font-size: 0.9rem;
+    margin-bottom: 4px;
   }
 `;
 
-const InformationWrapper = styled.div`
-  text-align: center;
-  margin-bottom: 20px;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  width: 90%;
-  padding: 10px;
-  line-height: 130%;
-  font-size: 110%;
-  max-width: 400px;
-
-  li {
-    text-align: left;
-    font-size: 1rem;
-  }
-`;
+const GoBack = styled(NavLink)``;
 
 const TrackButton = styled.button`
-  position: absolute;
-  top: 32px;
-  right: 15px;
   border-style: none;
   background-color: transparent;
 `;
 
-const CoinImages = styled.div`
+const CicleContainer = styled.div`
   display: flex;
   justify-content: center;
-  width: 90%;
-  margin-bottom: 15px;
+  align-items: center;
+  background: rgba(182, 185, 206, 0.09) center;
+  border-radius: 36px;
+  height: 72px;
+  width: 72px;
+  background-position: center;
+`;
+
+const CircleBg = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(182, 185, 206, 0.16) center;
+  background-position: center;
+  border-radius: 25px;
+  height: 50px;
+  width: 50px;
+  padding-top: 2px;
+`;
+
+const CoinImageCircle = styled.div`
   margin-right: 0;
 `;
 
-const SelectTimeFrame = styled.select`
-  width: 30%;
-  align-self: flex-start;
-  @media (min-width: 768px) {
-    align-self: center;
-    width: 390px;
+const Sidebar = styled.div`
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  margin-bottom: 20px;
+`;
+
+const LabelSelect = styled.label`
+  width: 100%;
+`;
+
+const MarketInformationContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+
+  flex-wrap: wrap;
+  margin-top: 32px;
+  max-width: 550px;
+  margin-left: 15px;
+  @media (min-width: 700px) {
+    div:nth-child(2n) {
+      align-items: flex-end;
+    }
   }
-  margin-bottom: 5px;
+`;
+
+const InfoBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-basis: 50%;
+  margin-bottom: 24px;
+  p {
+    color: var(--font-color-lightgray);
+  }
 `;
 
 const PriceDown = styled.p`
@@ -258,10 +358,9 @@ const PriceUp = styled.p`
 `;
 
 const SpinnerLogo = styled.img`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  position: fixed;
+  top: 30%;
+  left: 45%;
 `;
 
 const ErrorMessage = styled.h3`

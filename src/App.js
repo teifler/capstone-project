@@ -28,7 +28,14 @@ function App() {
   }, [currency]);
 
   if (coins.loading) {
-    return <SpinnerLogo src={spinner} height="80" width="80"></SpinnerLogo>;
+    return (
+      <SpinnerLogo
+        src={spinner}
+        height="80"
+        alt="Loading spinner"
+        width="80"
+      ></SpinnerLogo>
+    );
   }
 
   return (
@@ -61,10 +68,7 @@ function App() {
             element={<CoinPage coin={coin} currency={currency} />}
           />
         ))}
-        <Route
-          path="/converter"
-          element={<Converter coins={coins.data} currency={currency} />}
-        />
+        <Route path="/converter" element={<Converter currency={currency} />} />
       </Routes>
       <Navigation />
     </AppGrid>
@@ -75,8 +79,8 @@ export default App;
 
 const AppGrid = styled.div`
   display: grid;
-  grid-template-rows: 48px 1fr 48px;
   position: relative;
+  overflow-y: hidden;
 `;
 
 const Navigation = styled(Navbar)`
@@ -96,7 +100,6 @@ const ErrorMessage = styled.h3`
 
 const SpinnerLogo = styled.img`
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: 30%;
+  left: 45%;
 `;

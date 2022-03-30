@@ -70,6 +70,18 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 250px;
-  width: 400px;
+  height: 270px;
+  width: 100%;
+  margin-top: 10px;
+  background-color: white;
+
+  box-shadow: 0px 3px 8px rgba(78, 84, 126, 0.02),
+    0px 6px 16px rgba(78, 84, 126, 0.04), 0px 11px 24px rgba(78, 84, 126, 0.02);
+  border-radius: 10px;
+  padding-bottom: 20px;
+  @media (min-width: 600px) {
+    flex-grow: 1;
+    height: 320px;
+    width: 100%;
+  }
 `;

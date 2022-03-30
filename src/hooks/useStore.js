@@ -60,6 +60,7 @@ const useStore = create((set, get) => {
     },
     coinsPaprika: initialize(),
     coins: initialize(),
+    singleCoin: initialize(),
     isVisible: false,
     setVisible(visibility) {
       set({

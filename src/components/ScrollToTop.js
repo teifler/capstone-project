@@ -55,10 +55,10 @@ export default ScrollToTop;
 const PositionFixed = styled.div`
   position: fixed;
   right: 8px;
-  bottom: 50px;
+  bottom: 75px;
   @media (min-width: 630px) {
     left: 53%;
-    bottom: 50px;
+    bottom: 80px;
   }
 `;
 
@@ -69,8 +69,8 @@ const Button = styled.button`
     align-self: center;
     width: 390px;
     svg {
-      height: 50px;
-      width: 50px;
+      height: 35px;
+      width: 35px;
     }
   }
 `;
