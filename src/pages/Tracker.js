@@ -54,4 +54,6 @@ const CoinList = styled.ul``;
 const CoinNotFound = styled.p`
   color: black;
   text-align: center;
+  margin-left: 30px;
+  margin-right: 30px;
 `;

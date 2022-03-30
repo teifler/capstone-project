@@ -158,11 +158,11 @@ function CoinPage({ coin, currency }) {
                 </div>
               </PriceContainer>
               <CicleContainer>
-                <CircleImage>
+                <CircleBg>
                   <CoinImageCircle>
                     <img alt={coin.id} src={coin.image} height="32"></img>
                   </CoinImageCircle>
-                </CircleImage>
+                </CircleBg>
               </CicleContainer>
             </Sidebar>
             <LabelSelect>
@@ -296,7 +296,7 @@ const CicleContainer = styled.div`
   background-position: center;
 `;
 
-const CircleImage = styled.div`
+const CircleBg = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
