@@ -2,7 +2,8 @@
 
 > This is my capstone project for the web development bootcamp at [neueFische](https://www.neuefische.de/weiterbildung/web-development) 🦈
 
-<img align="right" src="https://user-images.githubusercontent.com/79465800/155761801-eb3c9008-8860-4c3c-8f8e-c8f81f14a2cb.gif" alt="coin ghost preview" width="250px" />
+<img align="right" src="https://user-images.githubusercontent.com/10044263/161130557-2e4aed54-dd6b-4621-8fed-b8f3f3514055.gif" alt="crypto cloud preview" width="250px" />
+
 
 
 ## `About`
