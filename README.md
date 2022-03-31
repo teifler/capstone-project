@@ -8,7 +8,7 @@
 
 ## `About`
 
-CryptoCloud makes it easy to track and convert your favorite cryptocurrencies. Add your favorites coins to your trackinglist, so you'll get a quick overview of all price movements in one place. You can also convert the current top 100 crypto currencys instantly.
+CryptoCloud makes it easy to track and convert your favorite cryptocurrencies. Add your favorites coins to your trackinglist, so you'll get an easy overview of all price movements in one place. You can also convert the current top 100 crypto currencys instantly.
 
 Please note that Cryptocloud is still under construction. Please let me know if you find a bug, I would be happy to fix it :)
 
