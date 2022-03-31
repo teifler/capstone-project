@@ -1,6 +1,7 @@
 import create from 'zustand';
 import { persist } from 'zustand/middleware';
 import axios from 'axios';
+
 import { produce } from 'immer';
 
 function initialize() {
@@ -123,7 +124,12 @@ const useStore = create(
         },
       };
     },
-    { name: 'CryptoCloud' }
+    {
+      name: 'CryptoCloud',
+      partialize: state => ({
+        meta: state.meta,
+      }),
+    }
   )
 );
 
