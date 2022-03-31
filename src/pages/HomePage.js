@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+
 import CoinCard from '../components/CoinCard.js';
 import styled from 'styled-components';
 import SearchBar from '../components/SearchBar.js';
@@ -8,6 +10,10 @@ import useStore from '../hooks/useStore.js';
 function HomePage({ coins, currency }) {
   const setSearchInput = useStore(state => state.setSearchInput);
   const search = useStore(state => state.search);
+
+  useEffect(() => {
+    useStore.getState().setSearchInput('', false);
+  }, []);
 
   const filterdCoins = coins.filter(coin =>
     coin.name.toLowerCase().includes(search.input.toLowerCase())
