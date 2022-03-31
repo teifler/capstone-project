@@ -57,12 +57,9 @@ function CoinPage({ coin, currency }) {
 
   if (singleCoin.loading) {
     return (
-      <SpinnerLogo
-        src={spinner}
-        alt="Loading spinner"
-        height="80"
-        width="80"
-      ></SpinnerLogo>
+      <SpinnerContainer>
+        <img src={spinner} alt="spinner" height="80" width="80"></img>
+      </SpinnerContainer>
     );
   }
 
@@ -357,10 +354,14 @@ const PriceUp = styled.p`
   display: inline;
 `;
 
-const SpinnerLogo = styled.img`
+const SpinnerContainer = styled.div`
   position: fixed;
-  top: 30%;
-  left: 45%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transform: -webkit-translate(-50%, -50%);
+  transform: -moz-translate(-50%, -50%);
+  transform: -ms-translate(-50%, -50%);
 `;
 
 const ErrorMessage = styled.h3`
