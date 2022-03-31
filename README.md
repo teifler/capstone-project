@@ -2,6 +2,9 @@
 
 > This is my capstone project for the web development bootcamp at [neueFische](https://www.neuefische.de/weiterbildung/web-development) 🦈
 
+<img align="right" src="https://user-images.githubusercontent.com/79465800/155761801-eb3c9008-8860-4c3c-8f8e-c8f81f14a2cb.gif" alt="coin ghost preview" width="250px" />
+
+
 ## `About`
 
 CryptoCloud makes it easy to track and convert your favorite cryptocurrencies. Add your favorites coins to your trackinglist, so you'll get a quick overview of all price movements in one place. You can also convert the current top 100 crypto currencys instantly.
@@ -60,7 +63,7 @@ Start the server
 You don't need an API key. You can find the two APIs I used below:
 
 - Coin Gecko: [https://www.coingecko.com/en/api](https://www.coingecko.com/en/api)
-  -Coin Paprika: [https://api.coinpaprika.com/](https://api.coinpaprika.com/)
+- Coin Paprika: [https://api.coinpaprika.com/](https://api.coinpaprika.com/)
 
 ## Running Tests
 
