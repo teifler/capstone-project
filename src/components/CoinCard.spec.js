@@ -77,16 +77,17 @@ describe('CoinCard', () => {
         <Home coins={sample} currency="usd" />
       </MemoryRouter>
     );
-    const btc = screen.getByText('Bitcoin');
-    const eth = screen.getByText('Ethereum');
+    const bitcoinInfo = screen.getByText('Bitcoin');
+    const ethereumInfo = screen.getByText('Ethereum');
 
     const image = screen.getByAltText('Bitcoin');
 
+    const allImages = screen.getAllByRole('img');
+
+    expect(bitcoinInfo && ethereumInfo).toBeInTheDocument();
     expect(image.src).toContain(
       'https://assets.coingecko.com/coins/images/1/large/bitcoin.png?1547033579'
     );
-
-    expect(btc).toBeInTheDocument();
-    expect(eth).toBeInTheDocument();
+    expect(allImages).toHaveLength(4);
   });
 });

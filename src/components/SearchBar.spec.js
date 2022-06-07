@@ -3,18 +3,31 @@ import SearchBar from './SearchBar.js';
 import userEvent from '@testing-library/user-event';
 
 describe('SearchBar', () => {
-  it('Check if SearchBar gets rendered', () => {
+  it('renders searchbar', () => {
     render(<SearchBar />);
-    const SearchInputField = screen.getByRole('textbox', {
+    const searchInputField = screen.getByRole('textbox', {
       name: 'search-input',
     });
 
-    expect(SearchInputField).toBeInTheDocument();
+    expect(searchInputField).toBeInTheDocument();
   });
 
-  it('Check if you can write input into searchbar', () => {
+  it('Renders searchbar with user input', () => {
     render(<SearchBar />);
-    userEvent.type(screen.getByRole('textbox'), 'Bitcoin');
-    expect(screen.getByRole('textbox')).toHaveValue('Bitcoin');
+    const searchInputField = screen.getByRole('textbox', {
+      name: 'search-input',
+    });
+
+    userEvent.type(searchInputField, 'Bitcoin');
+    expect(searchInputField).toHaveValue('Bitcoin');
+  });
+
+  it('Renders searchbar without user input', () => {
+    render(<SearchBar />);
+    const searchInputField = screen.getByRole('textbox', {
+      name: 'search-input',
+    });
+
+    expect(searchInputField).toHaveValue('');
   });
 });
