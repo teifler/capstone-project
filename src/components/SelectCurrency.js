@@ -21,7 +21,7 @@ function SelectCurrency() {
         options={options}
         isSearchable={false}
         value={options.label}
-        onChange={() => setCurrency(option.value)}
+        onChange={option => setCurrency(option.value)}
       ></Select>
     </div>
   );
