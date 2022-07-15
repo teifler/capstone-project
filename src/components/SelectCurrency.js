@@ -13,10 +13,6 @@ function SelectCurrency() {
     { value: 'cad', label: 'Canadian dollar', disabled: true },
   ];
 
-  const handleChange = e => {
-    setCurrency(e.value);
-  };
-
   console.log(currency);
 
   return (
@@ -24,19 +20,8 @@ function SelectCurrency() {
       <Select
         options={options}
         isSearchable={false}
-        value={currency}
-        defaultValue={currency}
-        onChange={handleChange}
-
-        // theme={theme => ({
-        //   ...theme,
-        //   borderRadius: 0,
-        //   colors: {
-        //     ...theme.colors,
-        //     primary25: 'hotpink',
-        //     primary: 'black',
-        //   },
-        // })}
+        value={options.label}
+        onChange={() => setCurrency(option.value)}
       ></Select>
     </div>
   );
