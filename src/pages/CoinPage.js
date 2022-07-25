@@ -12,14 +12,10 @@ import starFilled from '../images/star-filled.svg';
 import arrowLeft from '../images/arrow-left.svg';
 import spinner from '../images/spinner.svg';
 
-function CoinPage({ coin, currency }) {
-  const singleCoin = useStore(state => state.singleCoin);
-  const days = useStore(state => state.days);
-  const setDays = useStore(state => state.setDays);
-  const meta = useStore(state => state.meta);
-  const chartHistory = useStore(state => state.chartHistory);
-
-  const coinId = coin.id;
+function CoinPage({ coin }) {
+  const { singleCoin, days, setDays, meta, chartHistory, currency } = useStore(
+    state => state
+  );
 
   const options = [
     { value: 7, label: '7 Days' },
@@ -33,26 +29,26 @@ function CoinPage({ coin, currency }) {
     useStore
       .getState()
       .getData(
-        `https://api.coingecko.com/api/v3/coins/${coinId}`,
+        `https://api.coingecko.com/api/v3/coins/${coin.id}`,
         'singleCoin'
       );
-  }, [coinId, currency]);
+  }, [coin.id, currency]);
 
   useEffect(() => {
     useStore
       .getState()
       .getData(
-        `https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=${currency}&days=${days}`,
+        `https://api.coingecko.com/api/v3/coins/${coin.id}/market_chart?vs_currency=${currency.value}&days=${days}`,
         'chartHistory'
       );
   }, [coinId, currency, days]);
 
   useEffect(() => {});
   function toggleBookmark(coinid) {
-    const wasBookmarked = useStore.getState().meta.coins[coinid]?.bookmarked;
+    const wasBookmarked = useStore.getState().meta.coins[coin.id]?.bookmarked;
     useStore
       .getState()
-      .setMeta('coins', coinId, { bookmarked: !wasBookmarked });
+      .setMeta('coins', coin.id, { bookmarked: !wasBookmarked });
   }
 
   if (singleCoin.loading) {

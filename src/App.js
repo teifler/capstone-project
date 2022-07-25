@@ -13,8 +13,7 @@ import Converter from './pages/Converter.js';
 import useStore from './hooks/useStore.js';
 
 function App() {
-  const currency = useStore(state => state.currency);
-  const setCurrency = useStore(state => state.setCurrency);
+  const currency = useStore(state => state.currency.value);
   const coins = useStore(state => state.coins);
 
   useEffect(() => {
@@ -38,10 +37,7 @@ function App() {
     <AppGrid>
       <Header title={'Crypto Cloud'} />
       <Routes>
-        <Route
-          path="/Tracker"
-          element={<Tracker coins={coins.data} currency={currency} />}
-        />
+        <Route path="/Tracker" element={<Tracker coins={coins.data} />} />
         <Route
           path="/"
           element={
@@ -53,7 +49,7 @@ function App() {
                 </ErrorMessage>
               </>
             ) : (
-              <HomePage coins={coins.data} currency={currency} />
+              <HomePage coins={coins.data} />
             )
           }
         />
@@ -61,7 +57,7 @@ function App() {
           <Route
             key={coin.id}
             path={`${coin.id}`}
-            element={<CoinPage coin={coin} currency={currency} />}
+            element={<CoinPage coin={coin} } />}
           />
         ))}
         <Route path="/converter" element={<Converter currency={currency} />} />

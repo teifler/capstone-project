@@ -1,16 +1,13 @@
-import { useRef } from 'react';
-import styled from 'styled-components';
 import Select from 'react-select';
-
 import useStore from '../hooks/useStore.js';
 
 function SelectCurrency() {
   const { currency, setCurrency } = useStore(state => state);
 
-  const options = [
+  const optionsMenu = [
     { value: 'eur', label: 'Euro' },
     { value: 'usd', label: 'United States dollar' },
-    { value: 'cad', label: 'Canadian dollar', disabled: true },
+    { value: 'cad', label: 'Canadian dollar' },
   ];
 
   console.log(currency);
@@ -18,10 +15,13 @@ function SelectCurrency() {
   return (
     <div>
       <Select
-        options={options}
+        options={optionsMenu}
         isSearchable={false}
-        value={options.label}
-        onChange={option => setCurrency(option.value)}
+        onChange={option => {
+          setCurrency(option);
+        }}
+        value={currency}
+        label={currency}
       ></Select>
     </div>
   );

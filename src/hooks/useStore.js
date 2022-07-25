@@ -16,7 +16,7 @@ const useStore = create(
   persist(
     (set, get) => {
       return {
-        currency: 'eur',
+        currency: { value: 'eur', label: 'Euro' },
         days: 1,
         amount: 0,
         convertFetch: {

@@ -5,7 +5,6 @@ import arrowDown from '../images/arrow-down.svg';
 import { NavLink } from 'react-router-dom';
 
 CoinCard.propTypes = {
-  currency: PropTypes.string.isRequired,
   rank: PropTypes.number.isRequired,
   name: PropTypes.string,
   symbol: PropTypes.string,
@@ -15,7 +14,6 @@ CoinCard.propTypes = {
 };
 
 function CoinCard({
-  currency,
   rank,
   id,
   name,
@@ -36,7 +34,7 @@ function CoinCard({
       </CoinName>
       <CoinDetails>
         <p>
-          {currency === 'eur'
+          {currency.value === 'eur'
             ? `${price
                 .toFixed(2)
                 .toString()

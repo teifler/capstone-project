@@ -3,11 +3,9 @@ import useStore from '../hooks/useStore.js';
 import styled from 'styled-components';
 import Select from 'react-select';
 
-const Converter = ({ coins, currency }) => {
-  const setConvert = useStore(state => state.setConvert);
-  const convert = useStore(state => state.convert);
-  const coinsPaprika = useStore(state => state.coinsPaprika);
-  const convertFetch = useStore(state => state.convertFetch);
+const Converter = ({ coins }) => {
+  const { currency, convert, setConvert, convertFetch, coinsPaprika } =
+    useStore(state => state);
 
   let options = [];
 
