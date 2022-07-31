@@ -9,7 +9,7 @@ import SelectCurrency from '../components/SelectCurrency.js';
 import useStore from '../hooks/useStore.js';
 
 function HomePage({ coins }) {
-  const [currency, search, setSearchInput] = useStore(state => state);
+  const { currency, search, setSearchInput } = useStore(state => state);
 
   useEffect(() => {
     useStore.getState().setSearchInput('', false);

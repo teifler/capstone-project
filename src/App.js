@@ -13,14 +13,14 @@ import Converter from './pages/Converter.js';
 import useStore from './hooks/useStore.js';
 
 function App() {
-  const currency = useStore(state => state.currency.value);
+  const currency = useStore(state => state.currency);
   const coins = useStore(state => state.coins);
 
   useEffect(() => {
     useStore
       .getState()
       .getData(
-        `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=100&page=1&sparkline=false`,
+        `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency.value}&order=market_cap_desc&per_page=100&page=1&sparkline=false`,
         'coins'
       );
   }, [currency]);
@@ -57,10 +57,10 @@ function App() {
           <Route
             key={coin.id}
             path={`${coin.id}`}
-            element={<CoinPage coin={coin} } />}
+            element={<CoinPage coin={coin} />}
           />
         ))}
-        <Route path="/converter" element={<Converter currency={currency} />} />
+        <Route path="/converter" element={<Converter />} />
       </Routes>
       <Navigation />
     </AppGrid>

@@ -41,10 +41,10 @@ function CoinPage({ coin }) {
         `https://api.coingecko.com/api/v3/coins/${coin.id}/market_chart?vs_currency=${currency.value}&days=${days}`,
         'chartHistory'
       );
-  }, [coinId, currency, days]);
+  }, [coin.id, currency, days]);
 
   useEffect(() => {});
-  function toggleBookmark(coinid) {
+  function toggleBookmark(coinId) {
     const wasBookmarked = useStore.getState().meta.coins[coin.id]?.bookmarked;
     useStore
       .getState()
@@ -124,7 +124,7 @@ function CoinPage({ coin }) {
                   {coin.price_change_24h >= 0 ? (
                     <PriceUp>
                       {' +'}
-                      {currency === 'eur'
+                      {currency.value === 'eur'
                         ? `${currencyParser(
                             coin.price_change_24h
                           )}  (+${coin.price_change_percentage_24h.toFixed(
@@ -139,7 +139,7 @@ function CoinPage({ coin }) {
                   ) : (
                     <PriceDown>
                       {' '}
-                      {currency === 'eur'
+                      {currency.value === 'eur'
                         ? `${currencyParser(
                             coin?.price_change_24h
                           )} (${coin.price_change_percentage_24h.toFixed(2)}%)`
@@ -170,7 +170,7 @@ function CoinPage({ coin }) {
             {chartHistory.data && (
               <CryptoChart
                 chartHistory={chartHistory.data}
-                currency={currency}
+                currency={currency.value}
                 days={days}
               />
             )}
@@ -201,20 +201,24 @@ function CoinPage({ coin }) {
                 <p>Low (24h)</p>
                 <h3>
                   {currencyParser(
-                    singleCoin.data.market_data.low_24h[currency]
+                    singleCoin.data.market_data.low_24h[currency.value]
                   )}
                 </h3>
               </InfoBox>
               <InfoBox>
                 <p>All-Time Low</p>
                 <h3>
-                  {currencyParser(singleCoin.data.market_data.atl[currency])}
+                  {currencyParser(
+                    singleCoin.data.market_data.atl[currency.value]
+                  )}
                 </h3>
               </InfoBox>
               <InfoBox>
                 <p>All time high</p>
                 <h3>
-                  {currencyParser(singleCoin.data.market_data.ath[currency])}
+                  {currencyParser(
+                    singleCoin.data.market_data.ath[currency.value]
+                  )}
                 </h3>
               </InfoBox>
             </MarketInformationContainer>

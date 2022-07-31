@@ -3,11 +3,59 @@ import useStore from '../hooks/useStore.js';
 import styled from 'styled-components';
 import Select from 'react-select';
 
-const Converter = ({ coins }) => {
+const Converter = () => {
   const { currency, convert, setConvert, convertFetch, coinsPaprika } =
     useStore(state => state);
 
   let options = [];
+
+  const fiats = [
+    {
+      label: 'US dollar',
+      value: 'usd',
+      obj: {
+        id: 'usd-usdollar',
+      },
+      icon: (
+        <img
+          src={`https://static.coinpaprika.com/coin/usd-us-dollars/logo-thumb.png`}
+          height="25"
+          width="25"
+          alt={`US dollar`}
+        ></img>
+      ),
+    },
+    {
+      label: 'Euro',
+      value: 'eur',
+      obj: {
+        id: 'eur-euro',
+      },
+      icon: (
+        <img
+          src={`https://static.coinpaprika.com/coin/eur-euro/logo-thumb.png`}
+          height="25"
+          width="25"
+          alt={`Euro`}
+        ></img>
+      ),
+    },
+    {
+      label: 'CAD dollar',
+      value: 'cad',
+      obj: {
+        id: 'cad-canadian-dollar',
+      },
+      icon: (
+        <img
+          src={`https://static.coinpaprika.com/coin/cad-canadian-dollar/logo-thumb.png`}
+          height="25"
+          width="25"
+          alt={`Canadian dollar`}
+        ></img>
+      ),
+    },
+  ];
 
   useEffect(() => {
     useStore
@@ -27,7 +75,7 @@ const Converter = ({ coins }) => {
   }, [convert.from, convert.to, convert.amount]);
 
   const createOptions = () => {
-    options = coinsPaprika.data?.slice(0, 100).map((coin, index) => {
+    options = coinsPaprika.data?.slice(0, 100).map(coin => {
       return {
         label: coin.symbol,
         value: coin.name,
@@ -42,6 +90,9 @@ const Converter = ({ coins }) => {
         ),
       };
     });
+    if (options?.length >= 100) {
+      options.unshift(...fiats);
+    }
   };
   createOptions();
 

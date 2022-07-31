@@ -3,8 +3,10 @@ import { Line } from 'react-chartjs-2';
 // eslint-disable-next-line no-unused-vars
 import { Chart } from 'chart.js/auto';
 import styled from 'styled-components';
+import useStore from '../hooks/useStore.js';
 
-function CryptoChart({ chartHistory, days, currency }) {
+function CryptoChart({ chartHistory, days }) {
+  const currency = useStore(state => state.currency);
   const coinPriceList = chartHistory.prices.map(coin => coin[1]);
   const coinTimestampes = chartHistory.prices.map(coin => {
     const date = new Date(coin[0]);
@@ -26,7 +28,7 @@ function CryptoChart({ chartHistory, days, currency }) {
           responsive: true,
           datasets: [
             {
-              label: `Price last ${days} days in ${currency}`,
+              label: `Price last ${days} days in ${currency.value}`,
               data: coinPriceList,
               fill: true,
               backgroundColor: '#88A6E7',

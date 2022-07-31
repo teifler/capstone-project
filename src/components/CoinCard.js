@@ -4,6 +4,8 @@ import arrowUp from '../images/arrow-up.svg';
 import arrowDown from '../images/arrow-down.svg';
 import { NavLink } from 'react-router-dom';
 
+import useStore from '../hooks/useStore.js';
+
 CoinCard.propTypes = {
   rank: PropTypes.number.isRequired,
   name: PropTypes.string,
@@ -22,6 +24,8 @@ function CoinCard({
   price,
   price_change_percentage_24h,
 }) {
+  const currency = useStore(state => state.currency);
+
   return (
     <CardWrapper to={`/${id}`}>
       <CoinRank>{rank}.</CoinRank>
