@@ -13,8 +13,7 @@ import Converter from './pages/Converter.js';
 import useStore from './hooks/useStore.js';
 
 function App() {
-  const currency = useStore(state => state.currency);
-  const coins = useStore(state => state.coins);
+  const { currency, coins } = useStore(state => state);
 
   useEffect(() => {
     useStore

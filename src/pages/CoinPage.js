@@ -18,6 +18,7 @@ function CoinPage({ coin }) {
   );
 
   const options = [
+    { value: 1, label: 'Last 24h' },
     { value: 7, label: '7 Days' },
     { value: 14, label: '1 Week' },
     { value: 30, label: '1 Month' },
@@ -44,7 +45,7 @@ function CoinPage({ coin }) {
   }, [coin.id, currency, days]);
 
   useEffect(() => {});
-  function toggleBookmark(coinId) {
+  function toggleBookmark() {
     const wasBookmarked = useStore.getState().meta.coins[coin.id]?.bookmarked;
     useStore
       .getState()
