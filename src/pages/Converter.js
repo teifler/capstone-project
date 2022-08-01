@@ -11,10 +11,10 @@ const Converter = () => {
 
   const fiats = [
     {
-      label: 'US dollar',
+      label: 'USD',
       value: 'usd',
       obj: {
-        id: 'usd-usdollar',
+        id: 'usd-us-dollars',
       },
       icon: (
         <img
@@ -26,7 +26,7 @@ const Converter = () => {
       ),
     },
     {
-      label: 'Euro',
+      label: 'EUR',
       value: 'eur',
       obj: {
         id: 'eur-euro',
@@ -41,7 +41,7 @@ const Converter = () => {
       ),
     },
     {
-      label: 'CAD dollar',
+      label: 'CAD',
       value: 'cad',
       obj: {
         id: 'cad-canadian-dollar',
@@ -61,7 +61,7 @@ const Converter = () => {
     useStore
       .getState()
       .getData(`https://api.coinpaprika.com/v1/coins`, 'coinsPaprika');
-  }, [currency]);
+  }, []);
 
   useEffect(() => {
     if (convert.from && convert.to) {
