@@ -12,14 +12,10 @@ import starFilled from '../images/star-filled.svg';
 import arrowLeft from '../images/arrow-left.svg';
 import spinner from '../images/spinner.svg';
 
-function CoinPage({ coin, currency }) {
-  const singleCoin = useStore(state => state.singleCoin);
-  const days = useStore(state => state.days);
-  const setDays = useStore(state => state.setDays);
-  const meta = useStore(state => state.meta);
-  const chartHistory = useStore(state => state.chartHistory);
-
-  const coinId = coin.id;
+function CoinPage({ coin }) {
+  const { singleCoin, days, setDays, meta, chartHistory, currency } = useStore(
+    state => state
+  );
 
   const options = [
     { value: 7, label: '7 Days' },
@@ -33,26 +29,26 @@ function CoinPage({ coin, currency }) {
     useStore
       .getState()
       .getData(
-        `https://api.coingecko.com/api/v3/coins/${coinId}`,
+        `https://api.coingecko.com/api/v3/coins/${coin.id}`,
         'singleCoin'
       );
-  }, [coinId, currency]);
+  }, [coin.id, currency]);
 
   useEffect(() => {
     useStore
       .getState()
       .getData(
-        `https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=${currency}&days=${days}`,
+        `https://api.coingecko.com/api/v3/coins/${coin.id}/market_chart?vs_currency=${currency.value}&days=${days}`,
         'chartHistory'
       );
-  }, [coinId, currency, days]);
+  }, [coin.id, currency, days]);
 
   useEffect(() => {});
-  function toggleBookmark(coinid) {
-    const wasBookmarked = useStore.getState().meta.coins[coinid]?.bookmarked;
+  function toggleBookmark(coinId) {
+    const wasBookmarked = useStore.getState().meta.coins[coin.id]?.bookmarked;
     useStore
       .getState()
-      .setMeta('coins', coinId, { bookmarked: !wasBookmarked });
+      .setMeta('coins', coin.id, { bookmarked: !wasBookmarked });
   }
 
   if (singleCoin.loading) {
@@ -128,7 +124,7 @@ function CoinPage({ coin, currency }) {
                   {coin.price_change_24h >= 0 ? (
                     <PriceUp>
                       {' +'}
-                      {currency === 'eur'
+                      {currency.value === 'eur'
                         ? `${currencyParser(
                             coin.price_change_24h
                           )}  (+${coin.price_change_percentage_24h.toFixed(
@@ -143,7 +139,7 @@ function CoinPage({ coin, currency }) {
                   ) : (
                     <PriceDown>
                       {' '}
-                      {currency === 'eur'
+                      {currency.value === 'eur'
                         ? `${currencyParser(
                             coin?.price_change_24h
                           )} (${coin.price_change_percentage_24h.toFixed(2)}%)`
@@ -174,7 +170,7 @@ function CoinPage({ coin, currency }) {
             {chartHistory.data && (
               <CryptoChart
                 chartHistory={chartHistory.data}
-                currency={currency}
+                currency={currency.value}
                 days={days}
               />
             )}
@@ -205,20 +201,24 @@ function CoinPage({ coin, currency }) {
                 <p>Low (24h)</p>
                 <h3>
                   {currencyParser(
-                    singleCoin.data.market_data.low_24h[currency]
+                    singleCoin.data.market_data.low_24h[currency.value]
                   )}
                 </h3>
               </InfoBox>
               <InfoBox>
                 <p>All-Time Low</p>
                 <h3>
-                  {currencyParser(singleCoin.data.market_data.atl[currency])}
+                  {currencyParser(
+                    singleCoin.data.market_data.atl[currency.value]
+                  )}
                 </h3>
               </InfoBox>
               <InfoBox>
                 <p>All time high</p>
                 <h3>
-                  {currencyParser(singleCoin.data.market_data.ath[currency])}
+                  {currencyParser(
+                    singleCoin.data.market_data.ath[currency.value]
+                  )}
                 </h3>
               </InfoBox>
             </MarketInformationContainer>

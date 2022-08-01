@@ -14,14 +14,13 @@ import useStore from './hooks/useStore.js';
 
 function App() {
   const currency = useStore(state => state.currency);
-  const setCurrency = useStore(state => state.setCurrency);
   const coins = useStore(state => state.coins);
 
   useEffect(() => {
     useStore
       .getState()
       .getData(
-        `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=100&page=1&sparkline=false`,
+        `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency.value}&order=market_cap_desc&per_page=100&page=1&sparkline=false`,
         'coins'
       );
   }, [currency]);
@@ -38,10 +37,7 @@ function App() {
     <AppGrid>
       <Header title={'Crypto Cloud'} />
       <Routes>
-        <Route
-          path="/Tracker"
-          element={<Tracker coins={coins.data} currency={currency} />}
-        />
+        <Route path="/Tracker" element={<Tracker coins={coins.data} />} />
         <Route
           path="/"
           element={
@@ -53,7 +49,7 @@ function App() {
                 </ErrorMessage>
               </>
             ) : (
-              <HomePage coins={coins.data} currency={currency} />
+              <HomePage coins={coins.data} />
             )
           }
         />
@@ -61,10 +57,10 @@ function App() {
           <Route
             key={coin.id}
             path={`${coin.id}`}
-            element={<CoinPage coin={coin} currency={currency} />}
+            element={<CoinPage coin={coin} />}
           />
         ))}
-        <Route path="/converter" element={<Converter currency={currency} />} />
+        <Route path="/converter" element={<Converter />} />
       </Routes>
       <Navigation />
     </AppGrid>
