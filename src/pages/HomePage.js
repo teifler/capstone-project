@@ -4,12 +4,12 @@ import CoinCard from '../components/CoinCard.js';
 import styled from 'styled-components';
 import SearchBar from '../components/SearchBar.js';
 import ScrollToTop from '../components/ScrollToTop.js';
+import SelectCurrency from '../components/SelectCurrency.js';
 
 import useStore from '../hooks/useStore.js';
 
-function HomePage({ coins, currency }) {
-  const setSearchInput = useStore(state => state.setSearchInput);
-  const search = useStore(state => state.search);
+function HomePage({ coins }) {
+  const { currency, search, setSearchInput } = useStore(state => state);
 
   useEffect(() => {
     useStore.getState().setSearchInput('', false);
@@ -43,6 +43,8 @@ function HomePage({ coins, currency }) {
           )}
         </form>
       </CoinSearch>
+
+      <SelectCurrency />
 
       <CoinList role="list">
         {filterdCoins.map(coin => {

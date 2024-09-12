@@ -4,7 +4,8 @@ import ScrollToTop from '../components/ScrollToTop.js';
 import styled from 'styled-components';
 import useStore from '../hooks/useStore.js';
 
-function Tracker({ coins, currency }) {
+function Tracker({ coins }) {
+  const currency = useStore(state => state.currency);
   return (
     <Container>
       <CoinList role="list">
@@ -13,7 +14,7 @@ function Tracker({ coins, currency }) {
           .map(coin => {
             return (
               <CoinCard
-                currency={currency}
+                currency={currency.value}
                 rank={coin.market_cap_rank}
                 id={coin.id}
                 key={coin.id}
