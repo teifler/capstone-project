@@ -2,11 +2,11 @@ import CoinCard from '../components/CoinCard.jsx';
 import ScrollToTop from '../components/ScrollToTop.jsx';
 
 import styled from 'styled-components';
-import useStore from '../hooks/useStore.js';
+import { useFavorites } from '../store/favorites.js';
 
 function Tracker({ coins, currency }) {
-  const meta = useStore(state => state.meta);
-  const tracked = (coins ?? []).filter(coin => meta.coins[coin.id]?.bookmarked);
+  const favorites = useFavorites(state => state.favorites);
+  const tracked = (coins ?? []).filter(coin => favorites.includes(coin.id));
   return (
     <Container>
       <CoinList role="list">

@@ -4,6 +4,7 @@ import Select from 'react-select';
 
 import styled from 'styled-components';
 import useStore from '../hooks/useStore.js';
+import { useFavorites } from '../store/favorites.js';
 
 import CryptoChart from '../components/CryptoChart.jsx';
 import {
@@ -33,7 +34,8 @@ const options = [
 function CoinPage({ coin, currency }) {
   const days = useStore(state => state.days);
   const setDays = useStore(state => state.setDays);
-  const meta = useStore(state => state.meta);
+  const isFavorite = useFavorites(state => state.favorites.includes(coin.id));
+  const toggleFavorite = useFavorites(state => state.toggleFavorite);
   const chartHistory = useStore(state => state.chartHistory);
 
   const coinId = coin.id;
@@ -47,13 +49,6 @@ function CoinPage({ coin, currency }) {
       );
   }, [coinId, currency, days]);
 
-  function toggleBookmark() {
-    const wasBookmarked = useStore.getState().meta.coins[coinId]?.bookmarked;
-    useStore
-      .getState()
-      .setMeta('coins', coinId, { bookmarked: !wasBookmarked });
-  }
-
   const changeTrend = trend(coin.change24h);
 
   return (
@@ -66,22 +61,18 @@ function CoinPage({ coin, currency }) {
           <p>
             {coin.name} <span>({coin.symbol})</span>
           </p>
-          <TrackButton onClick={toggleBookmark}>
-            {meta.coins[coinId]?.bookmarked ? (
-              <img
-                src={starFilled}
-                alt="Remove coin of your tracking list"
-                height="30"
-                width="30"
-              />
-            ) : (
-              <img
-                src={star}
-                alt="Add coin to your tracking list"
-                height="30"
-                width="30"
-              />
-            )}
+          <TrackButton
+            type="button"
+            aria-pressed={isFavorite}
+            aria-label={`Track ${coin.name}`}
+            onClick={() => toggleFavorite(coinId)}
+          >
+            <img
+              src={isFavorite ? starFilled : star}
+              alt=""
+              height="30"
+              width="30"
+            />
           </TrackButton>
         </IconTextContainer>
         <Sidebar>
