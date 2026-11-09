@@ -15,7 +15,7 @@ function HomePage({ coins, currency }) {
     useStore.getState().setSearchInput('', false);
   }, []);
 
-  const filterdCoins = coins.filter(coin =>
+  const filterdCoins = (coins ?? []).filter(coin =>
     coin.name.toLowerCase().includes(search.input.toLowerCase())
   );
   const handleChange = e => {
@@ -46,19 +46,7 @@ function HomePage({ coins, currency }) {
 
       <CoinList role="list">
         {filterdCoins.map(coin => {
-          return (
-            <CoinCard
-              currency={currency}
-              rank={coin.market_cap_rank}
-              id={coin.id}
-              key={coin.id}
-              name={coin.name}
-              symbol={coin.symbol}
-              image={coin.image}
-              price={coin.current_price}
-              price_change_percentage_24h={coin.price_change_percentage_24h}
-            />
-          );
+          return <CoinCard key={coin.id} coin={coin} currency={currency} />;
         })}
       </CoinList>
       <ScrollToTop />

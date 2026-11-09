@@ -5,30 +5,17 @@ import styled from 'styled-components';
 import useStore from '../hooks/useStore.js';
 
 function Tracker({ coins, currency }) {
+  const meta = useStore(state => state.meta);
+  const tracked = (coins ?? []).filter(coin => meta.coins[coin.id]?.bookmarked);
   return (
     <Container>
       <CoinList role="list">
-        {coins
-          .filter(coin => useStore.getState().meta.coins[coin.id]?.bookmarked)
-          .map(coin => {
-            return (
-              <CoinCard
-                currency={currency}
-                rank={coin.market_cap_rank}
-                id={coin.id}
-                key={coin.id}
-                name={coin.name}
-                symbol={coin.symbol}
-                image={coin.image}
-                price={coin.current_price}
-                price_change_percentage_24h={coin.price_change_percentage_24h}
-              />
-            );
-          })}
+        {tracked.map(coin => {
+          return <CoinCard key={coin.id} coin={coin} currency={currency} />;
+        })}
       </CoinList>
       <ScrollToTop />
-      {coins.filter(coin => useStore.getState().meta.coins[coin.id]?.bookmarked)
-        .length === 0 ? (
+      {tracked.length === 0 ? (
         <CoinNotFound>
           There is nothing in your tracking list. You can add cryptocurrencys to
           your tracking list by clicking the star icon.

@@ -1,60 +1,50 @@
 import styled from 'styled-components';
+import { NavLink } from 'react-router';
 import arrowUp from '../images/arrow-up.svg';
 import arrowDown from '../images/arrow-down.svg';
-import { NavLink } from 'react-router';
+import { formatPercent, formatPrice, trend } from '../lib/format.js';
+import { coinPath } from '../lib/validate.js';
 
-function CoinCard({
-  currency,
-  rank,
-  id,
-  name,
-  symbol,
-  image,
-  price,
-  price_change_percentage_24h,
-}) {
-  return (
-    <CardWrapper to={`/${id}`}>
-      <CoinRank>{rank}.</CoinRank>
+function CoinCard({ coin, currency }) {
+  const path = coinPath(coin.id);
+  const direction = trend(coin.changePercent24h);
+  const content = (
+    <>
+      <CoinRank>{coin.rank ?? '–'}.</CoinRank>
       <CoinImage>
-        <img alt={name} src={image} height="32" width="32"></img>
+        {coin.image && (
+          <img alt={coin.name} src={coin.image} height="32" width="32" />
+        )}
       </CoinImage>
       <CoinName>
-        <h3>{name}</h3>
-        <p>{symbol.toUpperCase()}</p>
+        <h3>{coin.name}</h3>
+        <p>{coin.symbol}</p>
       </CoinName>
       <CoinDetails>
-        <p>
-          {currency === 'eur'
-            ? `${price
-                .toFixed(2)
-                .toString()
-                .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} €`
-            : `$${price
-                .toFixed(2)
-                .toString()
-                .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}
-        </p>
-
-        {price_change_percentage_24h >= 0 ? (
-          <PriceUp>
-            <img alt="Arrow up" src={arrowUp} height="12" width="12"></img>
-            {price_change_percentage_24h.toFixed(2)} %
-          </PriceUp>
-        ) : (
-          <PriceDown>
-            <img alt="Arrow down" src={arrowDown} height="12" width="12"></img>
-            {price_change_percentage_24h.toFixed(2)} %
-          </PriceDown>
-        )}
+        <p>{formatPrice(coin.price, currency)}</p>
+        <Change $trend={direction}>
+          {direction === 'up' && (
+            <img alt="Arrow up" src={arrowUp} height="12" width="12" />
+          )}
+          {direction === 'down' && (
+            <img alt="Arrow down" src={arrowDown} height="12" width="12" />
+          )}
+          {formatPercent(coin.changePercent24h)}
+        </Change>
       </CoinDetails>
-    </CardWrapper>
+    </>
+  );
+  // A card only becomes a link for an id that passed validation.
+  return path ? (
+    <CardLink to={path}>{content}</CardLink>
+  ) : (
+    <CardBox>{content}</CardBox>
   );
 }
 
 export default CoinCard;
 
-const CardWrapper = styled(NavLink)`
+const cardStyles = `
   display: flex;
   margin: 0 0 24px;
   padding: 16px;
@@ -62,13 +52,20 @@ const CardWrapper = styled(NavLink)`
   height: 69px;
   background: #ffffff;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  text-decoration: none;
   border-radius: 8px;
   justify-content: center;
   text-decoration: none;
+`;
+
+const CardLink = styled(NavLink)`
+  ${cardStyles}
   &:hover {
     text-decoration: underline;
   }
+`;
+
+const CardBox = styled.div`
+  ${cardStyles}
 `;
 
 const CoinRank = styled.div`
@@ -79,6 +76,7 @@ const CoinRank = styled.div`
 
 const CoinImage = styled.div`
   display: flex;
+  width: 44px;
   padding-right: 12px;
 `;
 
@@ -104,9 +102,7 @@ const CoinDetails = styled.div`
   align-items: flex-end;
 `;
 
-const PriceDown = styled.p`
-  color: red;
-`;
-const PriceUp = styled.p`
-  color: green;
+const Change = styled.p`
+  color: ${({ $trend }) =>
+    $trend === 'down' ? 'red' : $trend === 'up' ? 'green' : 'inherit'};
 `;

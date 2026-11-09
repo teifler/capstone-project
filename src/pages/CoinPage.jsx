@@ -6,37 +6,37 @@ import styled from 'styled-components';
 import useStore from '../hooks/useStore.js';
 
 import CryptoChart from '../components/CryptoChart.jsx';
+import {
+  formatCompactCurrency,
+  formatPercent,
+  formatPrice,
+  formatPriceChange,
+  trend,
+} from '../lib/format.js';
 
 import star from '../images/star.svg';
 import starFilled from '../images/star-filled.svg';
 import arrowLeft from '../images/arrow-left.svg';
 import spinner from '../images/spinner.svg';
 
+const options = [
+  { value: 7, label: '7 Days' },
+  { value: 14, label: '1 Week' },
+  { value: 30, label: '1 Month' },
+  { value: 90, label: '3 Months' },
+  { value: 365, label: '12 Months' },
+];
+
+// `coin` is a normalised record from the markets list (see api/coingecko.js);
+// it already carries low/ATH/ATL and the market cap change, so the page no
+// longer loads the 100 kB /coins/{id} payload.
 function CoinPage({ coin, currency }) {
-  const singleCoin = useStore(state => state.singleCoin);
   const days = useStore(state => state.days);
   const setDays = useStore(state => state.setDays);
   const meta = useStore(state => state.meta);
   const chartHistory = useStore(state => state.chartHistory);
 
   const coinId = coin.id;
-
-  const options = [
-    { value: 7, label: '7 Days' },
-    { value: 14, label: '1 Week' },
-    { value: 30, label: '1 Month' },
-    { value: 90, label: '3 Months' },
-    { value: 365, label: '12 Months' },
-  ];
-
-  useEffect(() => {
-    useStore
-      .getState()
-      .getData(
-        `https://api.coingecko.com/api/v3/coins/${coinId}`,
-        'singleCoin'
-      );
-  }, [coinId, currency]);
 
   useEffect(() => {
     useStore
@@ -47,185 +47,120 @@ function CoinPage({ coin, currency }) {
       );
   }, [coinId, currency, days]);
 
-  useEffect(() => {});
-  function toggleBookmark(coinid) {
-    const wasBookmarked = useStore.getState().meta.coins[coinid]?.bookmarked;
+  function toggleBookmark() {
+    const wasBookmarked = useStore.getState().meta.coins[coinId]?.bookmarked;
     useStore
       .getState()
       .setMeta('coins', coinId, { bookmarked: !wasBookmarked });
   }
 
-  if (singleCoin.loading) {
-    return (
-      <SpinnerContainer>
-        <img src={spinner} alt="spinner" height="80" width="80"></img>
-      </SpinnerContainer>
-    );
-  }
-
-  function currencyParser(coinProp) {
-    if (currency === 'eur' && coinProp) {
-      return `${coinProp
-        .toFixed(2)
-        .toString()
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}€`;
-    } else {
-      return `$${coinProp
-        .toFixed(2)
-        .toString()
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
-    }
-  }
+  const changeTrend = trend(coin.change24h);
 
   return (
-    singleCoin.data && (
-      <div>
-        {chartHistory.error ? (
-          <ErrorMessage>
-            We had issues fetching the coins for you. Please reload the page to
-            try it again!
-          </ErrorMessage>
-        ) : (
-          <CardWrapper>
-            <IconTextContainer>
-              <GoBack to="/">
-                <img
-                  alt="arrow-left"
-                  src={arrowLeft}
-                  height="26"
-                  width="26"
-                ></img>{' '}
-              </GoBack>
-              <p>
-                {coin.name} <span>({coin.symbol.toUpperCase()})</span>
-              </p>
-              <TrackButton onClick={() => toggleBookmark(coin.id)}>
-                {meta.coins[coin.id]?.bookmarked ? (
-                  <img
-                    src={starFilled}
-                    alt="Remove coin of your tracking list"
-                    height="30"
-                    width="30"
-                  ></img>
-                ) : (
-                  <img
-                    src={star}
-                    alt="Add coin to your tracking list"
-                    height="30"
-                    width="30"
-                  ></img>
-                )}
-              </TrackButton>
-            </IconTextContainer>
-            <Sidebar>
-              <PriceContainer>
-                <p>
-                  <span>{coin.name} Price</span>
-                </p>
-                <h3>{currencyParser(coin?.current_price)}</h3>
-                <div>
-                  Last 24hrs:
-                  {coin.price_change_24h >= 0 ? (
-                    <PriceUp>
-                      {' +'}
-                      {currency === 'eur'
-                        ? `${currencyParser(
-                            coin.price_change_24h
-                          )}  (+${coin.price_change_percentage_24h.toFixed(
-                            2
-                          )}%)`
-                        : `${currencyParser(
-                            coin.price_change_24h
-                          )} (+${coin.price_change_percentage_24h.toFixed(
-                            2
-                          )}%)`}
-                    </PriceUp>
-                  ) : (
-                    <PriceDown>
-                      {' '}
-                      {currency === 'eur'
-                        ? `${currencyParser(
-                            coin?.price_change_24h
-                          )} (${coin.price_change_percentage_24h.toFixed(2)}%)`
-                        : `${currencyParser(
-                            coin?.price_change_24h
-                          )} (${coin.price_change_percentage_24h.toFixed(2)}%)`}
-                    </PriceDown>
-                  )}
-                </div>
-              </PriceContainer>
-              <CicleContainer>
-                <CircleBg>
-                  <CoinImageCircle>
-                    <img alt={coin.id} src={coin.image} height="32"></img>
-                  </CoinImageCircle>
-                </CircleBg>
-              </CicleContainer>
-            </Sidebar>
-            <LabelSelect>
-              <Select
-                aria-label="Select timeframe of chart"
-                options={options}
-                isSearchable={false}
-                placeholder="Select Timeframe"
-                onChange={e => setDays(e.value)}
+    <div>
+      <CardWrapper>
+        <IconTextContainer>
+          <GoBack to="/">
+            <img alt="arrow-left" src={arrowLeft} height="26" width="26" />
+          </GoBack>
+          <p>
+            {coin.name} <span>({coin.symbol})</span>
+          </p>
+          <TrackButton onClick={toggleBookmark}>
+            {meta.coins[coinId]?.bookmarked ? (
+              <img
+                src={starFilled}
+                alt="Remove coin of your tracking list"
+                height="30"
+                width="30"
               />
-            </LabelSelect>
-            {chartHistory.data && (
-              <CryptoChart
-                chartHistory={chartHistory.data}
-                currency={currency}
-                days={days}
+            ) : (
+              <img
+                src={star}
+                alt="Add coin to your tracking list"
+                height="30"
+                width="30"
               />
             )}
-            <MarketInformationContainer>
-              <InfoBox>
-                <p>Market Cap</p>
-                <h3>
-                  $
-                  {coin.market_cap
-                    .toString()
-                    .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                </h3>
-              </InfoBox>
-              <InfoBox>
-                <p>Market Cap (24h)</p>
-                <h3>
-                  {singleCoin.data.market_data.market_cap_change_percentage_24h.toFixed(
-                    2
-                  )}
-                  %
-                </h3>
-              </InfoBox>
-              <InfoBox>
-                <p>Popularity</p>
-                <h3>#{coin.market_cap_rank}</h3>
-              </InfoBox>
-              <InfoBox>
-                <p>Low (24h)</p>
-                <h3>
-                  {currencyParser(
-                    singleCoin.data.market_data.low_24h[currency]
-                  )}
-                </h3>
-              </InfoBox>
-              <InfoBox>
-                <p>All-Time Low</p>
-                <h3>
-                  {currencyParser(singleCoin.data.market_data.atl[currency])}
-                </h3>
-              </InfoBox>
-              <InfoBox>
-                <p>All time high</p>
-                <h3>
-                  {currencyParser(singleCoin.data.market_data.ath[currency])}
-                </h3>
-              </InfoBox>
-            </MarketInformationContainer>
-          </CardWrapper>
+          </TrackButton>
+        </IconTextContainer>
+        <Sidebar>
+          <PriceContainer>
+            <p>
+              <span>{coin.name} Price</span>
+            </p>
+            <h3>{formatPrice(coin.price, currency)}</h3>
+            <div>
+              Last 24hrs:{' '}
+              <Change $trend={changeTrend}>
+                {formatPriceChange(coin.change24h, currency)} (
+                {formatPercent(coin.changePercent24h)})
+              </Change>
+            </div>
+          </PriceContainer>
+          <CicleContainer>
+            <CircleBg>
+              <CoinImageCircle>
+                {coin.image && (
+                  <img alt={coin.id} src={coin.image} height="32" />
+                )}
+              </CoinImageCircle>
+            </CircleBg>
+          </CicleContainer>
+        </Sidebar>
+        <LabelSelect>
+          <Select
+            aria-label="Select timeframe of chart"
+            options={options}
+            isSearchable={false}
+            placeholder="Select Timeframe"
+            onChange={e => setDays(e.value)}
+          />
+        </LabelSelect>
+        {chartHistory.loading && (
+          <img src={spinner} alt="spinner" height="80" width="80" />
         )}
-      </div>
-    )
+        {chartHistory.error && (
+          <ErrorMessage>
+            We had issues fetching the chart for you. Please reload the page to
+            try it again!
+          </ErrorMessage>
+        )}
+        {chartHistory.data && !chartHistory.loading && !chartHistory.error && (
+          <CryptoChart
+            chartHistory={chartHistory.data}
+            currency={currency}
+            days={days}
+          />
+        )}
+        <MarketInformationContainer>
+          <InfoBox>
+            <p>Market Cap</p>
+            <h3>{formatCompactCurrency(coin.marketCap, currency)}</h3>
+          </InfoBox>
+          <InfoBox>
+            <p>Market Cap (24h)</p>
+            <h3>{formatPercent(coin.marketCapChangePercent24h)}</h3>
+          </InfoBox>
+          <InfoBox>
+            <p>Popularity</p>
+            <h3>{coin.rank === null ? '–' : `#${coin.rank}`}</h3>
+          </InfoBox>
+          <InfoBox>
+            <p>Low (24h)</p>
+            <h3>{formatPrice(coin.low24h, currency)}</h3>
+          </InfoBox>
+          <InfoBox>
+            <p>All-Time Low</p>
+            <h3>{formatPrice(coin.atl, currency)}</h3>
+          </InfoBox>
+          <InfoBox>
+            <p>All time high</p>
+            <h3>{formatPrice(coin.ath, currency)}</h3>
+          </InfoBox>
+        </MarketInformationContainer>
+      </CardWrapper>
+    </div>
   );
 }
 
@@ -254,7 +189,7 @@ const IconTextContainer = styled.div`
   }
   span {
     color: var(--font-color-lightgray);
-    font-size: 0.75;
+    font-size: 0.75rem;
   }
   margin-bottom: 30px;
 `;
@@ -316,7 +251,7 @@ const Sidebar = styled.div`
   margin-bottom: 20px;
 `;
 
-const LabelSelect = styled.label`
+const LabelSelect = styled.div`
   width: 100%;
 `;
 
@@ -345,25 +280,11 @@ const InfoBox = styled.div`
   }
 `;
 
-const PriceDown = styled.p`
-  color: red;
-  display: inline;
-`;
-const PriceUp = styled.p`
-  color: green;
-  display: inline;
+const Change = styled.span`
+  color: ${({ $trend }) =>
+    $trend === 'down' ? 'red' : $trend === 'up' ? 'green' : 'inherit'};
 `;
 
-const SpinnerContainer = styled.div`
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  transform: -webkit-translate(-50%, -50%);
-  transform: -moz-translate(-50%, -50%);
-  transform: -ms-translate(-50%, -50%);
-`;
-
-const ErrorMessage = styled.h3`
+const ErrorMessage = styled.p`
   color: red;
 `;

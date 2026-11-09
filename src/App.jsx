@@ -1,5 +1,6 @@
-import { Routes, Route } from 'react-router';
-import { useEffect } from 'react';
+import { Routes, Route, useLocation } from 'react-router';
+import { useEffect, useMemo } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 import styled from 'styled-components';
 
 import spinner from './images/spinner.svg';
@@ -11,10 +12,13 @@ import Navbar from './components/Navbar.jsx';
 import Header from './components/Header.jsx';
 import Converter from './pages/Converter.jsx';
 import useStore from './hooks/useStore.js';
+import ErrorFallback from './components/ErrorFallback.jsx';
+import { parseMarkets } from './api/coingecko.js';
 
 function App() {
   const currency = useStore(state => state.currency);
-  const coins = useStore(state => state.coins);
+  const coinsState = useStore(state => state.coins);
+  const { pathname } = useLocation();
 
   useEffect(() => {
     useStore
@@ -25,7 +29,14 @@ function App() {
       );
   }, [currency]);
 
-  if (coins.loading) {
+  // Validate and normalise the API answer once, at the boundary.
+  const coins = useMemo(
+    () =>
+      Array.isArray(coinsState.data) ? parseMarkets(coinsState.data) : null,
+    [coinsState.data]
+  );
+
+  if (coinsState.loading) {
     return (
       <SpinnerContainer>
         <img src={spinner} alt="spinner" height="80" width="80"></img>
@@ -36,35 +47,40 @@ function App() {
   return (
     <AppGrid>
       <Header title={'Crypto Cloud'} />
-      <Routes>
-        <Route
-          path="/Tracker"
-          element={<Tracker coins={coins.data} currency={currency} />}
-        />
-        <Route
-          path="/"
-          element={
-            coins.error ? (
-              <>
-                <ErrorMessage>
-                  We had issues fetching the coins for you. Please reload the
-                  page to try it again!
-                </ErrorMessage>
-              </>
-            ) : (
-              <HomePage coins={coins.data} currency={currency} />
-            )
-          }
-        />
-        {coins.data?.map(coin => (
+      <ErrorBoundary FallbackComponent={ErrorFallback} resetKeys={[pathname]}>
+        <Routes>
           <Route
-            key={coin.id}
-            path={`${coin.id}`}
-            element={<CoinPage coin={coin} currency={currency} />}
+            path="/Tracker"
+            element={<Tracker coins={coins} currency={currency} />}
           />
-        ))}
-        <Route path="/converter" element={<Converter currency={currency} />} />
-      </Routes>
+          <Route
+            path="/"
+            element={
+              coinsState.error || !coins ? (
+                <>
+                  <ErrorMessage>
+                    We had issues fetching the coins for you. Please reload the
+                    page to try it again!
+                  </ErrorMessage>
+                </>
+              ) : (
+                <HomePage coins={coins} currency={currency} />
+              )
+            }
+          />
+          {coins?.map(coin => (
+            <Route
+              key={coin.id}
+              path={`${coin.id}`}
+              element={<CoinPage coin={coin} currency={currency} />}
+            />
+          ))}
+          <Route
+            path="/converter"
+            element={<Converter currency={currency} />}
+          />
+        </Routes>
+      </ErrorBoundary>
       <Navigation />
     </AppGrid>
   );
