@@ -46,6 +46,8 @@ describe('formatPriceChange', () => {
 describe('formatCompactCurrency', () => {
   it('abbreviates market caps in the active currency', () => {
     expect(formatCompactCurrency(1335956665055, 'eur')).toBe('€1.34T');
+    expect(formatCompactCurrency(1_000_000_000, 'eur')).toBe('€1B');
+    expect(formatCompactCurrency(66000, 'eur')).toBe('€66K');
     expect(formatCompactCurrency(null, 'eur')).toBe(MISSING);
   });
 });

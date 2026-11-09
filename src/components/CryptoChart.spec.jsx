@@ -1,6 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import CryptoChart, { chartSummary, timeLabel } from './CryptoChart.jsx';
+import CryptoChart, {
+  axisPrice,
+  chartSummary,
+  timeLabel,
+} from './CryptoChart.jsx';
 import { parseChart } from '../api/coingecko.js';
 import { rawChart } from '../test/fixtures.js';
 
@@ -73,5 +77,13 @@ describe('CryptoChart', () => {
       screen.getByText('No price data for this period.')
     ).toBeInTheDocument();
     expect(screen.queryByTestId('price-chart')).toBeNull();
+  });
+});
+
+describe('axisPrice', () => {
+  it('abbreviates large values and keeps small ones precise', () => {
+    expect(axisPrice(66000, 'eur')).toBe('€66K');
+    expect(axisPrice(950, 'eur')).toBe('€950.00');
+    expect(axisPrice(0.0000039, 'eur')).toBe('€0.0000039');
   });
 });

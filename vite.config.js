@@ -39,6 +39,8 @@ export default defineConfig({
         'src/test/**',
       ],
       reporter: ['text', 'html', 'json-summary'],
+      // CI fails if coverage drops below these floors.
+      thresholds: { statements: 90, branches: 85, functions: 85, lines: 90 },
     },
   },
 });

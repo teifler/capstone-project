@@ -45,6 +45,7 @@ export function formatCompactCurrency(value, currency) {
     style: 'currency',
     currency: currency.toUpperCase(),
     notation: 'compact',
+    minimumFractionDigits: 0,
     maximumFractionDigits: 2,
   }).format(value);
 }

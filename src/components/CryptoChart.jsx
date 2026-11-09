@@ -55,7 +55,7 @@ export function chartSummary(points, { coinName, days, currency }) {
   return `${coinName} price, last ${label.toLowerCase()}: from ${first} to ${last}, low ${low}, high ${high}.`;
 }
 
-function axisPrice(value, currency) {
+export function axisPrice(value, currency) {
   return Math.abs(value) >= 1000
     ? formatCompactCurrency(value, currency)
     : formatPrice(value, currency);
