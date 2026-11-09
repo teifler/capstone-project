@@ -1,9 +1,8 @@
 import Header from './Header.jsx';
+
 export default {
-  title: 'Component/Header',
+  title: 'Components/Header',
   component: Header,
 };
-const Template = args => <Header {...args} />;
 
-export const Default = Template.bind({});
-Default.args = {};
+export const Default = {};

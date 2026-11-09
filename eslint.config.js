@@ -25,6 +25,9 @@ export default [
     rules: {
       // Function components ignore propTypes from React 19 on.
       'react/prop-types': 'off',
+      // role="list" is kept on purpose: Safari/VoiceOver drops list
+      // semantics from lists styled with list-style: none.
+      'jsx-a11y/no-redundant-roles': ['error', { ul: ['list'] }],
     },
   },
   {
