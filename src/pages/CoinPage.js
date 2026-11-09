@@ -4,6 +4,7 @@ import Select from 'react-select';
 
 import styled from 'styled-components';
 import useStore from '../hooks/useStore.js';
+import { formatNumber } from '../utils/format.js';
 
 import CryptoChart from '../components/CryptoChart.js';
 
@@ -64,17 +65,8 @@ function CoinPage({ coin, currency }) {
   }
 
   function currencyParser(coinProp) {
-    if (currency === 'eur' && coinProp) {
-      return `${coinProp
-        .toFixed(2)
-        .toString()
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}€`;
-    } else {
-      return `$${coinProp
-        .toFixed(2)
-        .toString()
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
-    }
+    const amount = formatNumber(coinProp);
+    return currency === 'eur' ? `${amount}€` : `$${amount}`;
   }
 
   return (
@@ -131,13 +123,13 @@ function CoinPage({ coin, currency }) {
                       {currency === 'eur'
                         ? `${currencyParser(
                             coin.price_change_24h
-                          )}  (+${coin.price_change_percentage_24h.toFixed(
-                            2
+                          )}  (+${formatNumber(
+                            coin.price_change_percentage_24h
                           )}%)`
                         : `${currencyParser(
                             coin.price_change_24h
-                          )} (+${coin.price_change_percentage_24h.toFixed(
-                            2
+                          )} (+${formatNumber(
+                            coin.price_change_percentage_24h
                           )}%)`}
                     </PriceUp>
                   ) : (
@@ -146,10 +138,14 @@ function CoinPage({ coin, currency }) {
                       {currency === 'eur'
                         ? `${currencyParser(
                             coin?.price_change_24h
-                          )} (${coin.price_change_percentage_24h.toFixed(2)}%)`
+                          )} (${formatNumber(
+                            coin.price_change_percentage_24h
+                          )}%)`
                         : `${currencyParser(
                             coin?.price_change_24h
-                          )} (${coin.price_change_percentage_24h.toFixed(2)}%)`}
+                          )} (${formatNumber(
+                            coin.price_change_percentage_24h
+                          )}%)`}
                     </PriceDown>
                   )}
                 </div>
@@ -181,18 +177,13 @@ function CoinPage({ coin, currency }) {
             <MarketInformationContainer>
               <InfoBox>
                 <p>Market Cap</p>
-                <h3>
-                  $
-                  {coin.market_cap
-                    .toString()
-                    .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                </h3>
+                <h3>${formatNumber(coin.market_cap, 0)}</h3>
               </InfoBox>
               <InfoBox>
                 <p>Market Cap (24h)</p>
                 <h3>
-                  {singleCoin.data.market_data.market_cap_change_percentage_24h.toFixed(
-                    2
+                  {formatNumber(
+                    singleCoin.data.market_data.market_cap_change_percentage_24h
                   )}
                   %
                 </h3>

@@ -91,3 +91,28 @@ describe('CoinCard', () => {
     expect(allImages).toHaveLength(4);
   });
 });
+
+describe('CoinCard with incomplete API data', () => {
+  it('renders a coin whose 24h change is null instead of crashing', () => {
+    // CoinGecko returned exactly this for "figure-heloc" on 2026-11-09,
+    // which blanked the whole home page.
+    const incomplete = [
+      {
+        id: 'figure-heloc',
+        symbol: 'figr_heloc',
+        name: 'Figure Heloc',
+        image: 'https://example.invalid/coin.png',
+        current_price: 1.02,
+        market_cap_rank: 20,
+        price_change_percentage_24h: null,
+      },
+    ];
+    render(
+      <MemoryRouter>
+        <Home coins={incomplete} currency="usd" />
+      </MemoryRouter>
+    );
+    expect(screen.getByText('Figure Heloc')).toBeInTheDocument();
+    expect(screen.getByText('– %')).toBeInTheDocument();
+  });
+});

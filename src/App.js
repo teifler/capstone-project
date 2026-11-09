@@ -1,4 +1,5 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
+import { ErrorBoundary } from 'react-error-boundary';
 import { useEffect } from 'react';
 import styled from 'styled-components';
 
@@ -14,8 +15,8 @@ import useStore from './hooks/useStore.js';
 
 function App() {
   const currency = useStore(state => state.currency);
-  const setCurrency = useStore(state => state.setCurrency);
   const coins = useStore(state => state.coins);
+  const location = useLocation();
 
   useEffect(() => {
     useStore
@@ -37,41 +38,59 @@ function App() {
   return (
     <AppGrid>
       <Header title={'Crypto Cloud'} />
-      <Routes>
-        <Route
-          path="/Tracker"
-          element={<Tracker coins={coins.data} currency={currency} />}
-        />
-        <Route
-          path="/"
-          element={
-            coins.error ? (
-              <>
-                <ErrorMessage>
-                  We had issues fetching the coins for you. Please reload the
-                  page to try it again!
-                </ErrorMessage>
-              </>
-            ) : (
-              <HomePage coins={coins.data} currency={currency} />
-            )
-          }
-        />
-        {coins.data?.map(coin => (
+      <ErrorBoundary
+        FallbackComponent={PageError}
+        resetKeys={[location.pathname]}
+      >
+        <Routes>
           <Route
-            key={coin.id}
-            path={`${coin.id}`}
-            element={<CoinPage coin={coin} currency={currency} />}
+            path="/Tracker"
+            element={<Tracker coins={coins.data} currency={currency} />}
           />
-        ))}
-        <Route path="/converter" element={<Converter currency={currency} />} />
-      </Routes>
+          <Route
+            path="/"
+            element={
+              coins.error ? (
+                <>
+                  <ErrorMessage>
+                    We had issues fetching the coins for you. Please reload the
+                    page to try it again!
+                  </ErrorMessage>
+                </>
+              ) : (
+                <HomePage coins={coins.data} currency={currency} />
+              )
+            }
+          />
+          {coins.data?.map(coin => (
+            <Route
+              key={coin.id}
+              path={`${coin.id}`}
+              element={<CoinPage coin={coin} currency={currency} />}
+            />
+          ))}
+          <Route
+            path="/converter"
+            element={<Converter currency={currency} />}
+          />
+        </Routes>
+      </ErrorBoundary>
       <Navigation />
     </AppGrid>
   );
 }
 
 export default App;
+
+// Shown instead of a blank page when a page crashes; navigating away resets it.
+function PageError() {
+  return (
+    <ErrorMessage role="alert">
+      Something went wrong while showing this page. Please reload the page or
+      try again later.
+    </ErrorMessage>
+  );
+}
 
 const AppGrid = styled.div`
   display: grid;
