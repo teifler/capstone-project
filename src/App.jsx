@@ -16,7 +16,7 @@ function App() {
       <Route element={<Layout />}>
         <Route index element={<HomePage />} />
         <Route path="tracker" element={<Tracker />} />
-        <Route path="converter" element={<Converter currency="eur" />} />
+        <Route path="converter" element={<Converter />} />
         <Route path=":coinId" element={<CoinPage />} />
         <Route path="*" element={<NotFound />} />
       </Route>

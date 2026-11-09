@@ -1,23 +1,26 @@
-import { useEffect } from 'react';
-
-import CoinCard from '../components/CoinCard.jsx';
+import { useState } from 'react';
 import styled from 'styled-components';
+import CoinCard from '../components/CoinCard.jsx';
 import SearchBar from '../components/SearchBar.jsx';
 import ScrollToTop from '../components/ScrollToTop.jsx';
-
-import useStore from '../hooks/useStore.js';
-import { useTopCoins, VS_CURRENCY } from '../api/coingecko.js';
 import ApiErrorNotice from '../components/ApiErrorNotice.jsx';
 import Loading from '../components/Loading.jsx';
+import { useTopCoins, VS_CURRENCY } from '../api/coingecko.js';
+
+// Case-insensitive match on name or symbol. Any input is fine: the query
+// only filters a local array and React escapes what is rendered.
+export function matchesQuery(coin, query) {
+  const needle = query.trim().toLowerCase();
+  if (needle === '') return true;
+  return (
+    coin.name.toLowerCase().includes(needle) ||
+    coin.symbol.toLowerCase().includes(needle)
+  );
+}
 
 function HomePage() {
   const top = useTopCoins();
-  const setSearchInput = useStore(state => state.setSearchInput);
-  const search = useStore(state => state.search);
-
-  useEffect(() => {
-    useStore.getState().setSearchInput('', false);
-  }, []);
+  const [query, setQuery] = useState('');
 
   if (top.isLoading) return <Loading label="Loading coins…" />;
   if (top.error) {
@@ -31,44 +34,25 @@ function HomePage() {
     );
   }
 
-  const filterdCoins = (top.data ?? []).filter(coin =>
-    coin.name.toLowerCase().includes(search.input.toLowerCase())
-  );
-  const handleChange = e => {
-    const trimmed = e.target.value.trim();
-    if (trimmed !== '' && !trimmed.match(/^[a-zA-Z0-9_. ]+$/)) {
-      setSearchInput(trimmed, true);
-    } else {
-      setSearchInput(trimmed, false);
-    }
-  };
+  const coins = (top.data ?? []).filter(coin => matchesQuery(coin, query));
 
   return (
     <Container>
-      <CoinSearch>
-        <form
-          onSubmit={e => {
-            e.preventDefault();
-          }}
-        >
-          <SearchBar handleChange={handleChange} />
-          {search.error && (
-            <SearchErrorMessage>
-              Please do not use special characters
-            </SearchErrorMessage>
-          )}
-        </form>
-      </CoinSearch>
+      <form role="search" onSubmit={event => event.preventDefault()}>
+        <SearchBar handleChange={event => setQuery(event.target.value)} />
+      </form>
 
       <CoinList role="list">
-        {filterdCoins.map(coin => {
-          return <CoinCard key={coin.id} coin={coin} currency={VS_CURRENCY} />;
-        })}
+        {coins.map(coin => (
+          <CoinCard key={coin.id} coin={coin} currency={VS_CURRENCY} />
+        ))}
       </CoinList>
+      {coins.length === 0 && (
+        <CoinNotFound>
+          No coin in today’s top 100 matches “{query}”.
+        </CoinNotFound>
+      )}
       <ScrollToTop />
-      {filterdCoins.length === 0 ? (
-        <CoinNotFound>Searched coin is not in the database</CoinNotFound>
-      ) : null}
     </Container>
   );
 }
@@ -80,16 +64,9 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
 `;
+
 const CoinList = styled.ul`
   margin-bottom: 55px;
-`;
-
-const CoinSearch = styled.div``;
-
-const SearchErrorMessage = styled.p`
-  color: red;
-  text-align: center;
-  padding-bottom: 5px;
 `;
 
 const CoinNotFound = styled.p`

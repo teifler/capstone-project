@@ -1,226 +1,178 @@
-import { useEffect } from 'react';
-import useStore from '../hooks/useStore.js';
-import styled from 'styled-components';
+import { useState } from 'react';
 import Select from 'react-select';
+import styled from 'styled-components';
+import ApiErrorNotice from '../components/ApiErrorNotice.jsx';
+import Loading from '../components/Loading.jsx';
+import { useTopCoins } from '../api/coingecko.js';
+import { convertAmount, parseAmount } from '../lib/convert.js';
+import { formatAmount } from '../lib/format.js';
 
-const Converter = ({ currency }) => {
-  const setConvert = useStore(state => state.setConvert);
-  const convert = useStore(state => state.convert);
-  const coinsPaprika = useStore(state => state.coinsPaprika);
-  const convertFetch = useStore(state => state.convertFetch);
+const formatTime = new Intl.DateTimeFormat('en-US', {
+  hour: 'numeric',
+  minute: '2-digit',
+});
 
-  let options = [];
+function CoinOption({ coin }) {
+  return (
+    <OptionLabel>
+      {coin.image && <img src={coin.image} alt="" height="24" width="24" />}
+      <span>
+        {coin.symbol} <small>{coin.name}</small>
+      </span>
+    </OptionLabel>
+  );
+}
 
-  useEffect(() => {
-    useStore
-      .getState()
-      .getData(`https://api.coinpaprika.com/v1/coins`, 'coinsPaprika');
-  }, [currency]);
+// Converts between two of today's top-100 coins with the EUR prices of the
+// list the app already loaded: no request per keystroke, no 7.6 MB coin
+// directory, and a failed list shows an error instead of an old result.
+function Converter() {
+  const top = useTopCoins();
+  const [fromId, setFromId] = useState('');
+  const [toId, setToId] = useState('');
+  const [amountText, setAmountText] = useState('1');
 
-  useEffect(() => {
-    if (convert.from && convert.to) {
-      useStore
-        .getState()
-        .getData(
-          `https://api.coinpaprika.com/v1/price-converter?base_currency_id=${convert.from.id}&quote_currency_id=${convert.to.id}&amount=${convert.amount}`,
-          'convertFetch'
-        );
-    }
-  }, [convert.from, convert.to, convert.amount]);
-
-  const createOptions = () => {
-    options = coinsPaprika.data?.slice(0, 100).map(coin => {
-      return {
-        label: coin.symbol,
-        value: coin.name,
-        obj: coin,
-        icon: (
-          <img
-            src={`https://static.coinpaprika.com/coin/${coin.id}/logo-thumb.png`}
-            height="30"
-            width="30"
-            alt={coin.id}
-          ></img>
-        ),
-      };
-    });
-  };
-  createOptions();
-
-  // handle onChange event of the dropdown
-  const handleChange = field => event => {
-    if (field === 'convertFrom') {
-      setConvert('from', event.obj);
-    } else {
-      setConvert('to', event.obj);
-    }
-  };
-
-  const findOptionById = selectedOption => {
-    const name = selectedOption;
-    return options?.findIndex(option => option.obj.id === name);
-  };
-  const handleSwap = () => {
-    const temp = convert.from;
-    setConvert('from', convert.to);
-    setConvert('to', temp);
-  };
-
-  const getLabelFrom = e => {
+  if (top.isLoading) return <Loading label="Loading prices…" />;
+  if (top.error) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        {e.icon}
-        <span style={{ marginLeft: 5 }}>{e.label}</span>
-      </div>
+      <ApiErrorNotice
+        what="the prices"
+        error={top.error}
+        retryInSeconds={top.retryInSeconds}
+        onRetry={top.retry}
+      />
     );
-  };
+  }
+
+  const coins = top.data ?? [];
+  const options = coins.map(coin => ({ value: coin.id, coin }));
+  const from = coins.find(coin => coin.id === fromId);
+  const to = coins.find(coin => coin.id === toId);
+  const amount = parseAmount(amountText);
+  const result =
+    from && to ? convertAmount(amount.value, from.price, to.price) : null;
+  const updatedAt = coins
+    .map(coin => Date.parse(coin.lastUpdated ?? ''))
+    .filter(Number.isFinite)
+    .sort((a, b) => b - a)[0];
+
+  let resultText = 'Choose two coins and an amount.';
+  if (from && to && amount.value !== null) {
+    resultText =
+      result === null
+        ? `No current price for ${from.price === null ? from.name : to.name}.`
+        : `${formatAmount(amount.value)} ${from.symbol} = ${formatAmount(result)} ${to.symbol}`;
+  }
 
   return (
     <Wrapper>
       <h2>Crypto Currency Converter</h2>
-      <ConverterForm aria-label="Convert crypto currency">
-        <h3>Convert from </h3>
-        <SelectContainer>
-          <div>
-            <Select
-              isDisabled={convertFetch?.loading ? true : false}
-              value={
-                convert.from.id
-                  ? options[findOptionById(convert.from.id)]
-                  : null
-              }
-              options={options}
-              aria-label="Currrency from"
-              name="Currency from"
-              onChange={handleChange('convertFrom')}
-              getOptionLabel={getLabelFrom}
-            />
-          </div>
-        </SelectContainer>
-        <TextContainer>
-          <label>
+      <ConverterForm onSubmit={event => event.preventDefault()}>
+        <Field>
+          <label htmlFor="convert-from">Convert from</label>
+          <Select
+            inputId="convert-from"
+            options={options}
+            value={options.find(option => option.value === fromId) ?? null}
+            onChange={option => setFromId(option?.value ?? '')}
+            getOptionLabel={option =>
+              `${option.coin.symbol} ${option.coin.name}`
+            }
+            formatOptionLabel={option => <CoinOption coin={option.coin} />}
+            placeholder="Select a coin"
+          />
+        </Field>
+
+        <Field>
+          <label htmlFor="convert-amount">Amount</label>
+          <AmountInput>
             <input
-              type="number"
-              onChange={e => {
-                setConvert('amount', Number(e.target.value));
-              }}
-              aria-label="Enter amount"
-              value={convert.amount}
-            ></input>
-          </label>
-          <span>{convert.from?.symbol}</span>
-        </TextContainer>
-
-        <SvgContainer>
-          <button
-            aria-label="swap currencys"
-            type="button"
-            disabled={convertFetch?.loading ? true : false}
-            onClick={handleSwap}
-          >
-            <svg
-              aria-label="swap icon"
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              fill="currentColor"
-              viewBox="0 0 16 16"
-            >
-              <path d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z" />
-            </svg>
-          </button>
-        </SvgContainer>
-
-        {convert.to && convert.from ? (
-          <TextContainer>
-            <label>
-              <input
-                aria-label="Search"
-                readOnly={true}
-                value={
-                  convertFetch.data?.price?.toFixed(5)
-                    ? convertFetch.data?.price?.toFixed(5)
-                    : ''
-                }
-              ></input>
-            </label>
-            <span>{convert.to?.symbol}</span>
-          </TextContainer>
-        ) : null}
-        <SelectContainer>
-          <div>
-            <Select
-              isDisabled={convertFetch?.loading ? true : false}
-              value={
-                convert.to.id ? options[findOptionById(convert.to.id)] : null
+              id="convert-amount"
+              inputMode="decimal"
+              autoComplete="off"
+              value={amountText}
+              onChange={event => setAmountText(event.target.value)}
+              aria-invalid={amount.error ? true : undefined}
+              aria-describedby={
+                amount.error ? 'convert-amount-error' : undefined
               }
-              options={options}
-              aria-label="Currrency to convert to"
-              name="Currencys"
-              onChange={handleChange('convertTo')}
-              getOptionLabel={getLabelFrom}
             />
-          </div>
-        </SelectContainer>
-        <h3>Covert to</h3>
-      </ConverterForm>
-      {convert.to && convert.from ? (
-        <ExchangeFees>
-          <ExchangeImage>
-            <svg
-              width="40"
-              height="40"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <rect width="100%" height="100%" />
-              <g className="currentLayer">
-                <path
-                  d="M20.001 17v-1m0 7v1m-1.735-1.714v0c.256.44.726.713 1.236.717h1.096v0a1.404 1.404 0 0 0 .34-2.766l-1.874-.471v0a1.404 1.404 0 0 1 .34-2.767H20.5v0c.51.003.978.275 1.235.714"
-                  stroke="#160042"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M20 11v0a9 9 0 1 1-9 9v0a9 9 0 0 1 9-9"
-                  stroke="#160042"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M20 11v0a9 9 0 1 1-9 9v0a9 9 0 0 1 9-9"
-                  stroke="#160042"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </g>
-            </svg>
-          </ExchangeImage>
+            {from && <span aria-hidden="true">{from.symbol}</span>}
+          </AmountInput>
+          {amount.error && (
+            <FieldError id="convert-amount-error">{amount.error}</FieldError>
+          )}
+        </Field>
 
-          <ExchangeText>
-            <p>Exchange Fee</p>
-            <p>
-              <span>0.10%</span>
-            </p>
-          </ExchangeText>
-          <ExchangePrice>
-            <p>$25</p>
-          </ExchangePrice>
-        </ExchangeFees>
-      ) : null}
+        <SwapButton
+          type="button"
+          onClick={() => {
+            setFromId(toId);
+            setToId(fromId);
+          }}
+        >
+          <svg
+            aria-hidden="true"
+            focusable="false"
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            fill="currentColor"
+            viewBox="0 0 16 16"
+          >
+            <path d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z" />
+          </svg>
+          Swap coins
+        </SwapButton>
+
+        <Field>
+          <label htmlFor="convert-to">Convert to</label>
+          <Select
+            inputId="convert-to"
+            options={options}
+            value={options.find(option => option.value === toId) ?? null}
+            onChange={option => setToId(option?.value ?? '')}
+            getOptionLabel={option =>
+              `${option.coin.symbol} ${option.coin.name}`
+            }
+            formatOptionLabel={option => <CoinOption coin={option.coin} />}
+            placeholder="Select a coin"
+          />
+        </Field>
+
+        <Result>
+          <span id="convert-result-label">Result</span>
+          <output
+            aria-labelledby="convert-result-label"
+            htmlFor="convert-from convert-amount convert-to"
+          >
+            {resultText}
+          </output>
+        </Result>
+      </ConverterForm>
       <Description>
-        Simply choose two different cryptocurrencies from the current top 100,
-        enter the amount of units you wish to convert and you will see the
-        conversion result of the chosen currencies.
+        Choose two coins from today’s top 100 and enter an amount. The result is
+        calculated from CoinGecko’s current EUR prices
+        {updatedAt ? ` (as of ${formatTime.format(updatedAt)})` : ''} and does
+        not include exchange fees.
       </Description>
     </Wrapper>
   );
-};
+}
 
 export default Converter;
+
+const Wrapper = styled.div`
+  margin: 0 auto;
+  width: 100%;
+  max-width: 365px;
+  padding: 5px 16px 120px;
+  h2 {
+    font-size: 1.8rem;
+    font-weight: 500;
+    text-align: center;
+  }
+`;
 
 const ConverterForm = styled.form`
   padding: 14px;
@@ -232,139 +184,85 @@ const ConverterForm = styled.form`
   margin-top: 30px;
   display: flex;
   flex-direction: column;
-
-  h3 {
-    align-self: center;
-    margin: 10px 0;
-  }
-
-  p {
-    font-size: 1.2rem;
-    margin-bottom: 5px;
-    margin-top: 20px;
-  }
+  gap: 14px;
 `;
 
-const SelectContainer = styled.div`
+const Field = styled.div`
   display: flex;
-  justify-content: center;
-  > div {
-    width: 150px;
+  flex-direction: column;
+  gap: 6px;
+  label {
+    font-weight: 700;
+    font-size: 1.05rem;
   }
 `;
 
-const Wrapper = styled.div`
-  margin-left: auto;
-  margin-right: auto;
-  width: 365px;
-  padding: 5px;
-  padding-bottom: 350px;
-  h2 {
-    font-size: 1.8rem;
-    font-weight: 500;
-    text-align: center;
+const OptionLabel = styled.span`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  small {
+    color: #4f5469;
   }
 `;
 
-const TextContainer = styled.div`
-  display: inline-block;
+const AmountInput = styled.div`
   position: relative;
-  text-align: center;
-  margin-bottom: 15px;
-  margin-top: 15px;
-
+  input {
+    width: 100%;
+    height: 40px;
+    padding: 0 64px 0 12px;
+    font-size: 1.1rem;
+    border: 1px solid #6b6e76;
+    border-radius: 4px;
+    background: #fff;
+  }
   span {
     position: absolute;
-    top: 11px;
-    right: 40px;
-  }
-
-  input::-webkit-outer-spin-button,
-  input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-  input[type='number'] {
-    -moz-appearance: textfield;
-  }
-
-  input {
-    margin: 0 auto;
-    width: 80%;
-    height: 40px;
-    padding: 0 15px;
-    font-size: 1.1rem;
-    border: 1px solid #999;
-    border-radius: 3px;
-    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-  }
-  input:focus {
-    border: 1px solid #675afe;
-    padding: 0 15px;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
   }
 `;
 
-const SvgContainer = styled.div`
-  margin: 15px 0;
-  button {
-    height: 35px;
-    padding: top;
-    width: 100%;
-    color: #fff;
-    font-size: 1.1rem;
-    cursor: pointer;
-    background-color: #675afe;
-    border: none;
-  }
+const FieldError = styled.p`
+  color: #b3261e;
 `;
 
-const ExchangeFees = styled.div`
-  display: flex;
-  flex-direction: row;
+const SwapButton = styled.button`
+  display: inline-flex;
   align-items: center;
-  width: 360px;
-  padding: 24px 16px;
-  box-shadow:
-    0 10px 20px rgba(0, 0, 0, 0.19),
-    0 6px 6px rgba(0, 0, 0, 0.23);
-  border-radius: 10px;
-  margin-top: 20px;
-  background: #e9ecff;
-`;
-
-const ExchangeImage = styled.div`
-  width: 40px;
+  justify-content: center;
+  gap: 8px;
   height: 40px;
-
-  border-radius: 8px;
-
-  background-color: rgba(212, 212, 212, 0.5);
+  width: 100%;
+  color: #fff;
+  font-size: 1.05rem;
+  cursor: pointer;
+  background-color: #5a49f0;
+  border: none;
+  border-radius: 4px;
 `;
 
-const ExchangeText = styled.div`
-  margin-left: 15px;
-  color: #6b7194;
+const Result = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
   span {
-    color: #160042;
-    font-size: 1rem;
-    font-weight: bold;
+    font-weight: 700;
   }
-`;
-
-const ExchangePrice = styled.div`
-  color: #160042;
-  text-align: right;
-  align-self: center;
-  flex: 1;
-  font-weight: bold;
+  output {
+    display: block;
+    min-height: 40px;
+    padding: 9px 12px;
+    background: #fff;
+    border-radius: 4px;
+    overflow-wrap: anywhere;
+  }
 `;
 
 const Description = styled.p`
   margin: 15px 0;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  width: 360px;
   padding: 24px 16px;
   box-shadow:
     0 10px 20px rgba(0, 0, 0, 0.19),
