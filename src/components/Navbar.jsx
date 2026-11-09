@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 
@@ -73,7 +72,9 @@ const NavContainer = styled.nav`
   z-index: 10;
 
   background-color: #f0f2f8;
-  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  box-shadow:
+    0 14px 28px rgba(0, 0, 0, 0.25),
+    0 10px 10px rgba(0, 0, 0, 0.22);
   @media (min-width: 400px) {
     width: 400px;
   }

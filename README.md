@@ -4,8 +4,6 @@
 
 <img align="right" src="https://user-images.githubusercontent.com/10044263/161130557-2e4aed54-dd6b-4621-8fed-b8f3f3514055.gif" alt="crypto cloud preview" width="350px" height="500px" />
 
-
-
 ## `About`
 
 CryptoCloud makes it easy to track and convert your favorite cryptocurrencies. Add your favorites coins to your trackinglist, so you'll get an easy overview of all price movements in one place. You can also convert the current top 100 crypto currencys instantly.

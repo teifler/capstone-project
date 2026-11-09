@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import SearchBar from './SearchBar.js';
+import SearchBar from './SearchBar.jsx';
 import userEvent from '@testing-library/user-event';
 
 describe('SearchBar', () => {

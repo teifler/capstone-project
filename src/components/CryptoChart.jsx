@@ -1,7 +1,5 @@
-import React from 'react';
 import { Line } from 'react-chartjs-2';
-// eslint-disable-next-line no-unused-vars
-import { Chart } from 'chart.js/auto';
+import 'chart.js/auto';
 import styled from 'styled-components';
 
 function CryptoChart({ chartHistory, days, currency }) {
@@ -75,8 +73,10 @@ const Wrapper = styled.div`
   margin-top: 10px;
   background-color: white;
 
-  box-shadow: 0px 3px 8px rgba(78, 84, 126, 0.02),
-    0px 6px 16px rgba(78, 84, 126, 0.04), 0px 11px 24px rgba(78, 84, 126, 0.02);
+  box-shadow:
+    0px 3px 8px rgba(78, 84, 126, 0.02),
+    0px 6px 16px rgba(78, 84, 126, 0.04),
+    0px 11px 24px rgba(78, 84, 126, 0.02);
   border-radius: 10px;
   padding-bottom: 20px;
   @media (min-width: 600px) {

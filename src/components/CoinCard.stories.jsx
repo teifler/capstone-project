@@ -1,4 +1,4 @@
-import CoinCard from './CoinCard.js';
+import CoinCard from './CoinCard.jsx';
 export default {
   title: 'Component/CoinCard',
   component: CoinCard,

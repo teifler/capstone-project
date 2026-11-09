@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 function SearchBar({ handleChange }) {
   return (
-    <label>
+    <div>
       <SearchBarContainer>
         <SearchInputContainer>
           <InputField
@@ -28,7 +28,7 @@ function SearchBar({ handleChange }) {
           </SearchIcon>
         </SearchInputContainer>
       </SearchBarContainer>
-    </label>
+    </div>
   );
 }
 

@@ -1,9 +1,8 @@
-import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import logo from '../images/logo.svg';
 
-function Header({ title }) {
+function Header() {
   return (
     <Headline>
       <img src={logo} width="84" height="67" alt="logo"></img>

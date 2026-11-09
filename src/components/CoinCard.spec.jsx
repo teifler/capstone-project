@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 
-import Home from '../pages/HomePage.js';
+import Home from '../pages/HomePage.jsx';
 
 // Sample data for test
 const sample = [

@@ -5,7 +5,7 @@ import Select from 'react-select';
 import styled from 'styled-components';
 import useStore from '../hooks/useStore.js';
 
-import CryptoChart from '../components/CryptoChart.js';
+import CryptoChart from '../components/CryptoChart.jsx';
 
 import star from '../images/star.svg';
 import starFilled from '../images/star-filled.svg';
@@ -92,7 +92,7 @@ function CoinPage({ coin, currency }) {
                 <img
                   alt="arrow-left"
                   src={arrowLeft}
-                  hight="26"
+                  height="26"
                   width="26"
                 ></img>{' '}
               </GoBack>

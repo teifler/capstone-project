@@ -1,5 +1,5 @@
-import CoinCard from '../components/CoinCard.js';
-import ScrollToTop from '../components/ScrollToTop.js';
+import CoinCard from '../components/CoinCard.jsx';
+import ScrollToTop from '../components/ScrollToTop.jsx';
 
 import styled from 'styled-components';
 import useStore from '../hooks/useStore.js';

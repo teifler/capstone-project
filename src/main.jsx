@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import App from './App.jsx';
 import GlobalStyle from './GlobalStyles.js';
 import { BrowserRouter } from 'react-router-dom';
-import GlobalScrollToTop from './components/GlobalScrollToTop.js';
+import GlobalScrollToTop from './components/GlobalScrollToTop.jsx';
 
 ReactDOM.render(
   <React.StrictMode>

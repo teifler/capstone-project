@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 
-import CoinCard from '../components/CoinCard.js';
+import CoinCard from '../components/CoinCard.jsx';
 import styled from 'styled-components';
-import SearchBar from '../components/SearchBar.js';
-import ScrollToTop from '../components/ScrollToTop.js';
+import SearchBar from '../components/SearchBar.jsx';
+import ScrollToTop from '../components/ScrollToTop.jsx';
 
 import useStore from '../hooks/useStore.js';
 
@@ -38,7 +38,7 @@ function HomePage({ coins, currency }) {
           <SearchBar handleChange={handleChange} />
           {search.error && (
             <SearchErrorMessage>
-              Please don't use special characters
+              Please do not use special characters
             </SearchErrorMessage>
           )}
         </form>

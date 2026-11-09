@@ -3,7 +3,7 @@ import useStore from '../hooks/useStore.js';
 import styled from 'styled-components';
 import Select from 'react-select';
 
-const Converter = ({ coins, currency }) => {
+const Converter = ({ currency }) => {
   const setConvert = useStore(state => state.setConvert);
   const convert = useStore(state => state.convert);
   const coinsPaprika = useStore(state => state.coinsPaprika);
@@ -29,7 +29,7 @@ const Converter = ({ coins, currency }) => {
   }, [convert.from, convert.to, convert.amount]);
 
   const createOptions = () => {
-    options = coinsPaprika.data?.slice(0, 100).map((coin, index) => {
+    options = coinsPaprika.data?.slice(0, 100).map(coin => {
       return {
         label: coin.symbol,
         value: coin.name,
@@ -81,7 +81,7 @@ const Converter = ({ coins, currency }) => {
       <ConverterForm aria-label="Convert crypto currency">
         <h3>Convert from </h3>
         <SelectContainer>
-          <label>
+          <div>
             <Select
               isDisabled={convertFetch?.loading ? true : false}
               value={
@@ -95,7 +95,7 @@ const Converter = ({ coins, currency }) => {
               onChange={handleChange('convertFrom')}
               getOptionLabel={getLabelFrom}
             />
-          </label>
+          </div>
         </SelectContainer>
         <TextContainer>
           <label>
@@ -148,7 +148,7 @@ const Converter = ({ coins, currency }) => {
           </TextContainer>
         ) : null}
         <SelectContainer>
-          <label>
+          <div>
             <Select
               isDisabled={convertFetch?.loading ? true : false}
               value={
@@ -160,7 +160,7 @@ const Converter = ({ coins, currency }) => {
               onChange={handleChange('convertTo')}
               getOptionLabel={getLabelFrom}
             />
-          </label>
+          </div>
         </SelectContainer>
         <h3>Covert to</h3>
       </ConverterForm>
@@ -174,27 +174,27 @@ const Converter = ({ coins, currency }) => {
               xmlns="http://www.w3.org/2000/svg"
             >
               <rect width="100%" height="100%" />
-              <g class="currentLayer">
+              <g className="currentLayer">
                 <path
                   d="M20.001 17v-1m0 7v1m-1.735-1.714v0c.256.44.726.713 1.236.717h1.096v0a1.404 1.404 0 0 0 .34-2.766l-1.874-.471v0a1.404 1.404 0 0 1 .34-2.767H20.5v0c.51.003.978.275 1.235.714"
                   stroke="#160042"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
                 <path
                   d="M20 11v0a9 9 0 1 1-9 9v0a9 9 0 0 1 9-9"
                   stroke="#160042"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
                 <path
                   d="M20 11v0a9 9 0 1 1-9 9v0a9 9 0 0 1 9-9"
                   stroke="#160042"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
               </g>
             </svg>
@@ -212,8 +212,8 @@ const Converter = ({ coins, currency }) => {
         </ExchangeFees>
       ) : null}
       <Description>
-        Simply choose two different cryptocurrency's from the current top 100,
-        enter the amount of units you wish to convert and you'll see the
+        Simply choose two different cryptocurrencies from the current top 100,
+        enter the amount of units you wish to convert and you will see the
         conversion result of the chosen currencies.
       </Description>
     </Wrapper>
@@ -225,7 +225,9 @@ export default Converter;
 const ConverterForm = styled.form`
   padding: 14px;
   background: #e9ecff;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  box-shadow:
+    0 3px 6px rgba(0, 0, 0, 0.16),
+    0 3px 6px rgba(0, 0, 0, 0.23);
   border-radius: 10px;
   margin-top: 30px;
   display: flex;
@@ -246,7 +248,7 @@ const ConverterForm = styled.form`
 const SelectContainer = styled.div`
   display: flex;
   justify-content: center;
-  label {
+  > div {
     width: 150px;
   }
 `;
@@ -322,7 +324,9 @@ const ExchangeFees = styled.div`
   align-items: center;
   width: 360px;
   padding: 24px 16px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  box-shadow:
+    0 10px 20px rgba(0, 0, 0, 0.19),
+    0 6px 6px rgba(0, 0, 0, 0.23);
   border-radius: 10px;
   margin-top: 20px;
   background: #e9ecff;
@@ -362,7 +366,9 @@ const Description = styled.p`
   align-items: center;
   width: 360px;
   padding: 24px 16px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  box-shadow:
+    0 10px 20px rgba(0, 0, 0, 0.19),
+    0 6px 6px rgba(0, 0, 0, 0.23);
   border-radius: 10px;
   background: #e9ecff;
 `;

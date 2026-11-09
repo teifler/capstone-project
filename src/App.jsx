@@ -4,17 +4,16 @@ import styled from 'styled-components';
 
 import spinner from './images/spinner.svg';
 
-import HomePage from './pages/HomePage.js';
-import Tracker from './pages/Tracker.js';
-import CoinPage from './pages/CoinPage.js';
-import Navbar from './components/Navbar.js';
-import Header from './components/Header.js';
-import Converter from './pages/Converter.js';
+import HomePage from './pages/HomePage.jsx';
+import Tracker from './pages/Tracker.jsx';
+import CoinPage from './pages/CoinPage.jsx';
+import Navbar from './components/Navbar.jsx';
+import Header from './components/Header.jsx';
+import Converter from './pages/Converter.jsx';
 import useStore from './hooks/useStore.js';
 
 function App() {
   const currency = useStore(state => state.currency);
-  const setCurrency = useStore(state => state.setCurrency);
   const coins = useStore(state => state.coins);
 
   useEffect(() => {
