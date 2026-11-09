@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import arrowUp from '../images/arrow-up.svg';
 import arrowDown from '../images/arrow-down.svg';
 import { NavLink } from 'react-router-dom';
+import { formatNumber } from '../utils/format.js';
 
 CoinCard.propTypes = {
   currency: PropTypes.string.isRequired,
@@ -37,25 +38,21 @@ function CoinCard({
       <CoinDetails>
         <p>
           {currency === 'eur'
-            ? `${price
-                .toFixed(2)
-                .toString()
-                .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} €`
-            : `$${price
-                .toFixed(2)
-                .toString()
-                .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}
+            ? `${formatNumber(price)} €`
+            : `$${formatNumber(price)}`}
         </p>
 
-        {price_change_percentage_24h >= 0 ? (
+        {!Number.isFinite(price_change_percentage_24h) ? (
+          <p>– %</p>
+        ) : price_change_percentage_24h >= 0 ? (
           <PriceUp>
             <img alt="Arrow up" src={arrowUp} height="12" width="12"></img>
-            {price_change_percentage_24h.toFixed(2)} %
+            {formatNumber(price_change_percentage_24h)} %
           </PriceUp>
         ) : (
           <PriceDown>
             <img alt="Arrow down" src={arrowDown} height="12" width="12"></img>
-            {price_change_percentage_24h.toFixed(2)} %
+            {formatNumber(price_change_percentage_24h)} %
           </PriceDown>
         )}
       </CoinDetails>
