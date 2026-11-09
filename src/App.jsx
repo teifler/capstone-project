@@ -1,10 +1,13 @@
+import { lazy } from 'react';
 import { Route, Routes } from 'react-router';
 import Layout from './components/Layout.jsx';
 import HomePage from './pages/HomePage.jsx';
 import Tracker from './pages/Tracker.jsx';
-import CoinPage from './pages/CoinPage.jsx';
-import Converter from './pages/Converter.jsx';
 import NotFound from './pages/NotFound.jsx';
+
+// Chart.js and react-select load only with the pages that use them.
+const CoinPage = lazy(() => import('./pages/CoinPage.jsx'));
+const Converter = lazy(() => import('./pages/Converter.jsx'));
 
 // One parameter route for every coin instead of one generated route per API
 // record: deep links work for any coin, unknown ids get a "not found" page,

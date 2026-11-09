@@ -49,11 +49,11 @@ describe('routing', () => {
     '/bit.coin',
     '/bitcoin/extra',
     '/*',
-  ])('answers %s with the 404 page without calling the API', path => {
+  ])('answers %s with the 404 page without calling the API', async path => {
     const fetchMock = mockFetch(coinGecko());
     renderApp(path);
     expect(
-      screen.getByRole('heading', { name: 'Page not found' })
+      await screen.findByRole('heading', { name: 'Page not found' })
     ).toBeInTheDocument();
     expect(fetchMock).not.toHaveBeenCalled();
     shell();

@@ -150,7 +150,12 @@ function CoinPage() {
           />
         )}
         {chart.data && (
-          <CryptoChart points={chart.data} currency={currency} days={days} />
+          <CryptoChart
+            points={chart.data}
+            currency={currency}
+            days={days}
+            coinName={coin.name}
+          />
         )}
         <MarketInformationContainer>
           <InfoBox>
