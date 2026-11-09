@@ -48,7 +48,7 @@ function CoinPage() {
   const chart = useChart(coin ? coinId : null, days);
   const isFavorite = useFavorites(state => state.favorites.includes(coinId));
   const toggleFavorite = useFavorites(state => state.toggleFavorite);
-  useDocumentTitle(coin ? `${coin.name} (${coin.symbol})` : null);
+  useDocumentTitle(coin ? `${coin.name} (${coin.symbol})` : undefined);
 
   if (!valid) {
     // /Bitcoin -> /bitcoin; anything else that is not a coin id is a 404.

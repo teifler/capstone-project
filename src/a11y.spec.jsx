@@ -87,6 +87,16 @@ describe('layout', () => {
     );
   });
 
+  it.each([
+    ['/no-such-coin', 'Coin not found – Crypto Cloud'],
+    ['/__proto__', 'Page not found – Crypto Cloud'],
+  ])('titles %s correctly', async (path, title) => {
+    mockFetch(coinGecko());
+    renderApp(path);
+    await screen.findByRole('heading', { name: title.split(' – ')[0] });
+    await waitFor(() => expect(document.title).toBe(title));
+  });
+
   it('keeps focus where it is when only the timeframe changes', async () => {
     mockFetch(coinGecko());
     renderApp('/bitcoin');
