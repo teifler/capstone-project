@@ -6,6 +6,7 @@ import ScrollToTop from '../components/ScrollToTop.jsx';
 import ApiErrorNotice from '../components/ApiErrorNotice.jsx';
 import Loading from '../components/Loading.jsx';
 import { useTopCoins, VS_CURRENCY } from '../api/coingecko.js';
+import { useDocumentTitle } from '../hooks/useDocumentTitle.js';
 
 // Case-insensitive match on name or symbol. Any input is fine: the query
 // only filters a local array and React escapes what is rendered.
@@ -21,6 +22,7 @@ export function matchesQuery(coin, query) {
 function HomePage() {
   const top = useTopCoins();
   const [query, setQuery] = useState('');
+  useDocumentTitle('Top 100 coins');
 
   if (top.isLoading) return <Loading label="Loading coins…" />;
   if (top.error) {
@@ -38,13 +40,18 @@ function HomePage() {
 
   return (
     <Container>
+      <h2 className="visually-hidden">
+        Top 100 cryptocurrencies by market cap
+      </h2>
       <form role="search" onSubmit={event => event.preventDefault()}>
         <SearchBar handleChange={event => setQuery(event.target.value)} />
       </form>
 
       <CoinList role="list">
         {coins.map(coin => (
-          <CoinCard key={coin.id} coin={coin} currency={VS_CURRENCY} />
+          <li key={coin.id}>
+            <CoinCard coin={coin} currency={VS_CURRENCY} />
+          </li>
         ))}
       </CoinList>
       {coins.length === 0 && (
@@ -66,10 +73,11 @@ const Container = styled.div`
 `;
 
 const CoinList = styled.ul`
+  width: 100%;
+  max-width: 338px;
   margin-bottom: 55px;
 `;
 
 const CoinNotFound = styled.p`
-  color: black;
   text-align: center;
 `;

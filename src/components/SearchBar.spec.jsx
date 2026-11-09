@@ -1,34 +1,17 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import SearchBar from './SearchBar.jsx';
 import userEvent from '@testing-library/user-event';
+import SearchBar from './SearchBar.jsx';
 
 describe('SearchBar', () => {
-  it('renders searchbar', () => {
-    render(<SearchBar />);
-    const searchInputField = screen.getByRole('textbox', {
-      name: 'search-input',
+  it('is a labelled search field that reports every change', async () => {
+    const handleChange = vi.fn();
+    render(<SearchBar handleChange={handleChange} />);
+    const field = screen.getByRole('searchbox', {
+      name: 'Search coins by name or symbol',
     });
-
-    expect(searchInputField).toBeInTheDocument();
-  });
-
-  it('Renders searchbar with user input', async () => {
-    render(<SearchBar />);
-    const searchInputField = screen.getByRole('textbox', {
-      name: 'search-input',
-    });
-
-    await userEvent.setup().type(searchInputField, 'Bitcoin');
-    expect(searchInputField).toHaveValue('Bitcoin');
-  });
-
-  it('Renders searchbar without user input', () => {
-    render(<SearchBar />);
-    const searchInputField = screen.getByRole('textbox', {
-      name: 'search-input',
-    });
-
-    expect(searchInputField).toHaveValue('');
+    await userEvent.setup().type(field, 'eth');
+    expect(handleChange).toHaveBeenCalledTimes(3);
+    expect(handleChange.mock.calls.at(-1)[0].target.value).toBe('eth');
   });
 });

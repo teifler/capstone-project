@@ -20,6 +20,7 @@ import {
   VS_CURRENCY,
 } from '../api/coingecko.js';
 import { useFavorites } from '../store/favorites.js';
+import { useDocumentTitle } from '../hooks/useDocumentTitle.js';
 import { isValidCoinId } from '../lib/validate.js';
 import {
   formatCompactCurrency,
@@ -47,6 +48,7 @@ function CoinPage() {
   const chart = useChart(coin ? coinId : null, days);
   const isFavorite = useFavorites(state => state.favorites.includes(coinId));
   const toggleFavorite = useFavorites(state => state.toggleFavorite);
+  useDocumentTitle(coin ? `${coin.name} (${coin.symbol})` : null);
 
   if (!valid) {
     // /Bitcoin -> /bitcoin; anything else that is not a coin id is a 404.
@@ -82,64 +84,61 @@ function CoinPage() {
   const changeTrend = trend(coin.change24h);
 
   return (
-    <div>
-      <CardWrapper>
-        <IconTextContainer>
-          <GoBack to="/">
-            <img alt="arrow-left" src={arrowLeft} height="26" width="26" />
-          </GoBack>
-          <p>
-            {coin.name} <span>({coin.symbol})</span>
-          </p>
-          <TrackButton
-            type="button"
-            aria-pressed={isFavorite}
-            aria-label={`Track ${coin.name}`}
-            onClick={() => toggleFavorite(coinId)}
-          >
-            <img
-              src={isFavorite ? starFilled : star}
-              alt=""
-              height="30"
-              width="30"
-            />
-          </TrackButton>
-        </IconTextContainer>
-        <Sidebar>
-          <PriceContainer>
-            <p>
-              <span>{coin.name} Price</span>
-            </p>
-            <h3>{formatPrice(coin.price, currency)}</h3>
-            <div>
-              Last 24hrs:{' '}
-              <Change $trend={changeTrend}>
-                {formatPriceChange(coin.change24h, currency)} (
-                {formatPercent(coin.changePercent24h)})
-              </Change>
-            </div>
-          </PriceContainer>
-          <CicleContainer>
-            <CircleBg>
-              <CoinImageCircle>
-                {coin.image && (
-                  <img alt={coin.id} src={coin.image} height="32" />
-                )}
-              </CoinImageCircle>
-            </CircleBg>
-          </CicleContainer>
-        </Sidebar>
-        <LabelSelect>
-          <Select
-            aria-label="Select timeframe of chart"
-            options={options}
-            isSearchable={false}
-            value={options.find(option => option.value === days)}
-            onChange={option =>
-              setSearchParams({ days: String(option.value) }, { replace: true })
-            }
+    <Page>
+      <TitleRow>
+        <BackLink to="/">
+          <img alt="Back to all coins" src={arrowLeft} height="26" width="26" />
+        </BackLink>
+        <h2>
+          {coin.name} <span>({coin.symbol})</span>
+        </h2>
+        <TrackButton
+          type="button"
+          aria-pressed={isFavorite}
+          aria-label={`Track ${coin.name}`}
+          onClick={() => toggleFavorite(coinId)}
+        >
+          <img
+            src={isFavorite ? starFilled : star}
+            alt=""
+            height="30"
+            width="30"
           />
-        </LabelSelect>
+        </TrackButton>
+      </TitleRow>
+
+      <PriceRow>
+        <PriceContainer>
+          <p>{coin.name} Price</p>
+          <Price>{formatPrice(coin.price, currency)}</Price>
+          <p>
+            Last 24 hours:{' '}
+            <Change $trend={changeTrend}>
+              {formatPriceChange(coin.change24h, currency)} (
+              {formatPercent(coin.changePercent24h)})
+            </Change>
+          </p>
+        </PriceContainer>
+        <CoinLogo>
+          {coin.image && <img alt="" src={coin.image} height="32" width="32" />}
+        </CoinLogo>
+      </PriceRow>
+
+      <TimeframeSelect>
+        <label htmlFor="chart-timeframe" className="visually-hidden">
+          Chart timeframe
+        </label>
+        <Select
+          inputId="chart-timeframe"
+          options={options}
+          isSearchable={false}
+          value={options.find(option => option.value === days)}
+          onChange={option =>
+            setSearchParams({ days: String(option.value) }, { replace: true })
+          }
+        />
+      </TimeframeSelect>
+      <ChartArea>
         {chart.isLoading && <Loading label="Loading chart…" />}
         {chart.error && (
           <ApiErrorNotice
@@ -157,154 +156,159 @@ function CoinPage() {
             coinName={coin.name}
           />
         )}
-        <MarketInformationContainer>
-          <InfoBox>
-            <p>Market Cap</p>
-            <h3>{formatCompactCurrency(coin.marketCap, currency)}</h3>
-          </InfoBox>
-          <InfoBox>
-            <p>Market Cap (24h)</p>
-            <h3>{formatPercent(coin.marketCapChangePercent24h)}</h3>
-          </InfoBox>
-          <InfoBox>
-            <p>Popularity</p>
-            <h3>{coin.rank === null ? '–' : `#${coin.rank}`}</h3>
-          </InfoBox>
-          <InfoBox>
-            <p>Low (24h)</p>
-            <h3>{formatPrice(coin.low24h, currency)}</h3>
-          </InfoBox>
-          <InfoBox>
-            <p>All-Time Low</p>
-            <h3>{formatPrice(coin.atl, currency)}</h3>
-          </InfoBox>
-          <InfoBox>
-            <p>All time high</p>
-            <h3>{formatPrice(coin.ath, currency)}</h3>
-          </InfoBox>
-        </MarketInformationContainer>
-      </CardWrapper>
-    </div>
+      </ChartArea>
+
+      <MarketData>
+        <div>
+          <dt>Market cap</dt>
+          <dd>{formatCompactCurrency(coin.marketCap, currency)}</dd>
+        </div>
+        <div>
+          <dt>Market cap (24h)</dt>
+          <dd>{formatPercent(coin.marketCapChangePercent24h)}</dd>
+        </div>
+        <div>
+          <dt>Market cap rank</dt>
+          <dd>{coin.rank === null ? '–' : `#${coin.rank}`}</dd>
+        </div>
+        <div>
+          <dt>Low (24h)</dt>
+          <dd>{formatPrice(coin.low24h, currency)}</dd>
+        </div>
+        <div>
+          <dt>All-time low</dt>
+          <dd>{formatPrice(coin.atl, currency)}</dd>
+        </div>
+        <div>
+          <dt>All-time high</dt>
+          <dd>{formatPrice(coin.ath, currency)}</dd>
+        </div>
+      </MarketData>
+    </Page>
   );
 }
 
 export default CoinPage;
 
-const CardWrapper = styled.div`
+const Page = styled.article`
   display: flex;
-  margin-left: auto;
-  margin-right: auto;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
-  padding: 2rem;
-  margin-bottom: 65px;
-  max-width: 700px;
-  position: relative;
-`;
-
-const IconTextContainer = styled.div`
-  display: flex;
   align-items: center;
   width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 1rem 0 2rem;
+`;
+
+const TitleRow = styled.div`
+  display: flex;
+  align-items: center;
   justify-content: space-between;
-  p {
-    font-weight: bold;
+  gap: 8px;
+  width: 100%;
+  margin-bottom: 30px;
+  h2 {
+    font-size: 1.1rem;
+    text-align: center;
+    overflow-wrap: anywhere;
   }
   span {
     color: var(--font-color-lightgray);
-    font-size: 0.75rem;
+    font-size: 0.9rem;
   }
-  margin-bottom: 30px;
+`;
+
+const BackLink = styled(NavLink)`
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+`;
+
+const TrackButton = styled.button`
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+`;
+
+const PriceRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin-bottom: 20px;
 `;
 
 const PriceContainer = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  width: 100%;
-
-  span {
-    color: var(--font-color-lightgray);
-    font-size: 1rem;
-  }
-
-  h3 {
-    margin-bottom: 4px;
-  }
-`;
-
-const GoBack = styled(NavLink)``;
-
-const TrackButton = styled.button`
-  border-style: none;
-  background-color: transparent;
-`;
-
-const CicleContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: rgba(182, 185, 206, 0.09) center;
-  border-radius: 36px;
-  height: 72px;
-  width: 72px;
-  background-position: center;
-`;
-
-const CircleBg = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: rgba(182, 185, 206, 0.16) center;
-  background-position: center;
-  border-radius: 25px;
-  height: 50px;
-  width: 50px;
-  padding-top: 2px;
-`;
-
-const CoinImageCircle = styled.div`
-  margin-right: 0;
-`;
-
-const Sidebar = styled.div`
-  display: flex;
-  justify-content: space-around;
-  width: 100%;
-  margin-bottom: 20px;
-`;
-
-const LabelSelect = styled.div`
-  width: 100%;
-`;
-
-const MarketInformationContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-
-  flex-wrap: wrap;
-  margin-top: 32px;
-  max-width: 550px;
-  margin-left: 15px;
-  @media (min-width: 700px) {
-    div:nth-child(2n) {
-      align-items: flex-end;
-    }
-  }
-`;
-
-const InfoBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex-basis: 50%;
-  margin-bottom: 24px;
-  p {
+  gap: 4px;
+  min-width: 0;
+  p:first-child {
     color: var(--font-color-lightgray);
   }
+`;
+
+const Price = styled.p`
+  font-size: 1.4rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
 `;
 
 const Change = styled.span`
   color: ${({ $trend }) =>
-    $trend === 'down' ? 'red' : $trend === 'up' ? 'green' : 'inherit'};
+    $trend === 'down'
+      ? 'var(--color-down)'
+      : $trend === 'up'
+        ? 'var(--color-up)'
+        : 'inherit'};
+`;
+
+const CoinLogo = styled.div`
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(182, 185, 206, 0.16);
+  box-shadow: 0 0 0 11px rgba(182, 185, 206, 0.09) inset;
+`;
+
+const TimeframeSelect = styled.div`
+  width: 100%;
+`;
+
+const ChartArea = styled.div`
+  width: 100%;
+`;
+
+const MarketData = styled.dl`
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px 16px;
+  width: 100%;
+  max-width: 550px;
+  margin-top: 32px;
+  dt {
+    color: var(--font-color-lightgray);
+  }
+  dd {
+    margin-top: 4px;
+    font-size: 1.17rem;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+  }
+  @media (min-width: 700px) {
+    div:nth-child(2n) {
+      text-align: right;
+    }
+  }
 `;

@@ -6,6 +6,7 @@ import Loading from '../components/Loading.jsx';
 import { useTopCoins } from '../api/coingecko.js';
 import { convertAmount, parseAmount } from '../lib/convert.js';
 import { formatAmount } from '../lib/format.js';
+import { useDocumentTitle } from '../hooks/useDocumentTitle.js';
 
 const formatTime = new Intl.DateTimeFormat('en-US', {
   hour: 'numeric',
@@ -31,6 +32,7 @@ function Converter() {
   const [fromId, setFromId] = useState('');
   const [toId, setToId] = useState('');
   const [amountText, setAmountText] = useState('1');
+  useDocumentTitle('Converter');
 
   if (top.isLoading) return <Loading label="Loading prices…" />;
   if (top.error) {

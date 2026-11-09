@@ -159,7 +159,7 @@ describe('coin page', () => {
     mockFetch(coinGecko());
     renderApp('/figure-heloc');
     expect(await screen.findByText('Figure Heloc Price')).toBeInTheDocument();
-    expect(screen.getByText(/Last 24hrs/)).toHaveTextContent('– (–)');
+    expect(screen.getByText(/Last 24 hours/)).toHaveTextContent('– (–)');
   });
 
   it('never shows the previous coin’s values while the next one loads or fails', async () => {

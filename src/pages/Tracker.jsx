@@ -5,16 +5,20 @@ import ApiErrorNotice from '../components/ApiErrorNotice.jsx';
 import Loading from '../components/Loading.jsx';
 import { useCoins, VS_CURRENCY } from '../api/coingecko.js';
 import { useFavorites } from '../store/favorites.js';
+import { useDocumentTitle } from '../hooks/useDocumentTitle.js';
 
 function Tracker() {
   const favorites = useFavorites(state => state.favorites);
   const toggleFavorite = useFavorites(state => state.toggleFavorite);
   const { coins, error, isLoading, retry, retryInSeconds } =
     useCoins(favorites);
+  useDocumentTitle('Tracker');
+  const heading = <h2 className="visually-hidden">Your tracking list</h2>;
 
   if (favorites.length === 0) {
     return (
       <Container>
+        {heading}
         <Message>
           There is nothing in your tracking list. You can add cryptocurrencies
           to your tracking list by clicking the star icon on a coin’s page.
@@ -37,9 +41,12 @@ function Tracker() {
   const missing = favorites.filter(id => !coins.some(coin => coin.id === id));
   return (
     <Container>
+      {heading}
       <CoinList role="list">
         {coins.map(coin => (
-          <CoinCard key={coin.id} coin={coin} currency={VS_CURRENCY} />
+          <li key={coin.id}>
+            <CoinCard coin={coin} currency={VS_CURRENCY} />
+          </li>
         ))}
       </CoinList>
       {missing.length > 0 && (
@@ -68,12 +75,14 @@ const Container = styled.div`
   margin-top: 20px;
 `;
 
-const CoinList = styled.ul``;
+const CoinList = styled.ul`
+  width: 100%;
+  max-width: 338px;
+`;
 
 const Message = styled.p`
-  color: black;
   text-align: center;
-  margin: 0 30px;
+  margin: 0 14px 16px;
   button {
     margin: 0.25rem;
   }

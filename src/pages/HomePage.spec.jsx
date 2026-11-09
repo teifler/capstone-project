@@ -21,7 +21,7 @@ describe('search', () => {
     const user = userEvent.setup();
     renderApp('/');
     await screen.findByText('Bitcoin');
-    const search = screen.getByRole('textbox', { name: /search/i });
+    const search = screen.getByRole('searchbox', { name: /search/i });
     const shown = () =>
       within(screen.getAllByRole('list')[0])
         .queryAllByRole('heading')

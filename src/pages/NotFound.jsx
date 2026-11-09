@@ -1,7 +1,9 @@
 import { Link } from 'react-router';
 import styled from 'styled-components';
+import { useDocumentTitle } from '../hooks/useDocumentTitle.js';
 
 function NotFound({ title = 'Page not found', children }) {
+  useDocumentTitle(title);
   return (
     <Box>
       <h2>{title}</h2>
