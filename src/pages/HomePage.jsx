@@ -6,8 +6,12 @@ import SearchBar from '../components/SearchBar.jsx';
 import ScrollToTop from '../components/ScrollToTop.jsx';
 
 import useStore from '../hooks/useStore.js';
+import { useTopCoins, VS_CURRENCY } from '../api/coingecko.js';
+import ApiErrorNotice from '../components/ApiErrorNotice.jsx';
+import Loading from '../components/Loading.jsx';
 
-function HomePage({ coins, currency }) {
+function HomePage() {
+  const top = useTopCoins();
   const setSearchInput = useStore(state => state.setSearchInput);
   const search = useStore(state => state.search);
 
@@ -15,7 +19,19 @@ function HomePage({ coins, currency }) {
     useStore.getState().setSearchInput('', false);
   }, []);
 
-  const filterdCoins = (coins ?? []).filter(coin =>
+  if (top.isLoading) return <Loading label="Loading coins…" />;
+  if (top.error) {
+    return (
+      <ApiErrorNotice
+        what="the coin list"
+        error={top.error}
+        retryInSeconds={top.retryInSeconds}
+        onRetry={top.retry}
+      />
+    );
+  }
+
+  const filterdCoins = (top.data ?? []).filter(coin =>
     coin.name.toLowerCase().includes(search.input.toLowerCase())
   );
   const handleChange = e => {
@@ -46,7 +62,7 @@ function HomePage({ coins, currency }) {
 
       <CoinList role="list">
         {filterdCoins.map(coin => {
-          return <CoinCard key={coin.id} coin={coin} currency={currency} />;
+          return <CoinCard key={coin.id} coin={coin} currency={VS_CURRENCY} />;
         })}
       </CoinList>
       <ScrollToTop />

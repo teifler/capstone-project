@@ -28,10 +28,6 @@ export default [
     },
   },
   {
-    files: ['src/**/*.{spec,test}.{js,jsx}', 'src/setupTests.js'],
-    languageOptions: { globals: { ...globals.vitest } },
-  },
-  {
     files: ['*.config.js', '.storybook/**/*.js'],
     languageOptions: { globals: { ...globals.node } },
   },

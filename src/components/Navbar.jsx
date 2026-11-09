@@ -4,7 +4,7 @@ import { NavLink } from 'react-router';
 const Navbar = () => {
   return (
     <NavContainer>
-      <LinkTo to="/">
+      <LinkTo to="/" end>
         <Wrapper>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -19,7 +19,7 @@ const Navbar = () => {
           <IconDescription>Home</IconDescription>
         </Wrapper>
       </LinkTo>
-      <LinkTo to="/Tracker">
+      <LinkTo to="/tracker">
         <Wrapper>
           <svg
             xmlns="http://www.w3.org/2000/svg"

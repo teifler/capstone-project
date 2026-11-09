@@ -1,4 +1,6 @@
 import { ApiError } from './errors.js';
+import { getJson } from './http.js';
+import { useCachedResource, useResource } from './resource.js';
 import {
   isValidCoinId,
   safeImageUrl,
@@ -64,4 +66,98 @@ export function parseChart(json) {
         toFiniteNumber(point[1]) !== null
     )
     .map(([time, price]) => ({ time, price }));
+}
+
+// Chart timeframes offered on the coin page (days -> label).
+export const TIMEFRAMES = [
+  { days: 1, label: '1 Day' },
+  { days: 7, label: '7 Days' },
+  { days: 30, label: '1 Month' },
+  { days: 90, label: '3 Months' },
+  { days: 365, label: '1 Year' },
+];
+export const DEFAULT_DAYS = 1;
+
+export function parseDays(value) {
+  const days = Number(value);
+  return TIMEFRAMES.some(t => t.days === days) ? days : DEFAULT_DAYS;
+}
+
+// URLs are built with URL/URLSearchParams from validated ids only.
+export function marketsUrl({ ids } = {}) {
+  const url = new URL(`${API_BASE}/coins/markets`);
+  url.searchParams.set('vs_currency', VS_CURRENCY);
+  url.searchParams.set('order', 'market_cap_desc');
+  if (ids) {
+    const valid = ids.filter(isValidCoinId);
+    url.searchParams.set('ids', valid.join(','));
+    url.searchParams.set('per_page', String(Math.max(1, valid.length)));
+  } else {
+    url.searchParams.set('per_page', String(TOP_COINS_LIMIT));
+  }
+  url.searchParams.set('page', '1');
+  url.searchParams.set('sparkline', 'false');
+  return url.href;
+}
+
+export function chartUrl(id, days) {
+  if (!isValidCoinId(id)) throw new ApiError('parse', 'Invalid coin id');
+  const url = new URL(
+    `${API_BASE}/coins/${encodeURIComponent(id)}/market_chart`
+  );
+  url.searchParams.set('vs_currency', VS_CURRENCY);
+  url.searchParams.set('days', String(parseDays(days)));
+  return url.href;
+}
+
+const loadMarkets = (url, signal) =>
+  getJson(url, { signal }).then(parseMarkets);
+const loadChart = (url, signal) => getJson(url, { signal }).then(parseChart);
+
+const byRank = (a, b) => (a.rank ?? Infinity) - (b.rank ?? Infinity);
+
+// Top 100 by market cap (home page, converter).
+export function useTopCoins() {
+  return useResource(marketsUrl(), loadMarkets);
+}
+
+// A single coin. Reuses the top list when the visitor came from there, so a
+// coin page usually costs only the chart request.
+export function useCoin(id) {
+  const valid = isValidCoinId(id);
+  const top = useCachedResource(valid ? marketsUrl() : null);
+  const fromList = top?.data?.find(coin => coin.id === id);
+  const single = useResource(
+    valid && !fromList ? marketsUrl({ ids: [id] }) : null,
+    loadMarkets
+  );
+  if (fromList) {
+    return { ...single, coin: fromList, isLoading: false, error: null };
+  }
+  return { ...single, coin: single.data?.[0] ?? null };
+}
+
+// Any set of coins by id (tracker), not limited to today's top 100.
+export function useCoins(ids) {
+  const top = useCachedResource(ids.length ? marketsUrl() : null);
+  const all = top?.data;
+  const fromList =
+    all && ids.every(id => all.some(coin => coin.id === id))
+      ? all.filter(coin => ids.includes(coin.id))
+      : undefined;
+  const key =
+    ids.length && !fromList ? marketsUrl({ ids: [...ids].sort() }) : null;
+  const result = useResource(key, loadMarkets);
+  if (!ids.length) return { ...result, coins: [], isLoading: false };
+  if (fromList) {
+    return { ...result, coins: fromList, isLoading: false, error: null };
+  }
+  return {
+    ...result,
+    coins: result.data ? [...result.data].sort(byRank) : null,
+  };
+}
+
+export function useChart(id, days) {
+  return useResource(isValidCoinId(id) ? chartUrl(id, days) : null, loadChart);
 }

@@ -1,17 +1,15 @@
 import { describe, expect, it } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router';
-import HomePage from './HomePage.jsx';
+import { screen } from '@testing-library/react';
+import { renderApp } from '../test/render.jsx';
+import { coinGecko, mockFetch } from '../test/api.js';
 import { coins } from '../test/fixtures.js';
 
 describe('HomePage', () => {
-  it('renders the live top list including the coin with null 24h values', () => {
-    render(
-      <MemoryRouter>
-        <HomePage coins={coins} currency="eur" />
-      </MemoryRouter>
-    );
-    expect(screen.getAllByRole('link')).toHaveLength(coins.length);
-    expect(screen.getByText('Figure Heloc')).toBeInTheDocument();
+  it('renders the live top list including the coin with null 24h values', async () => {
+    mockFetch(coinGecko());
+    renderApp('/');
+    expect(await screen.findByText('Figure Heloc')).toBeInTheDocument();
+    const list = screen.getAllByRole('list')[0];
+    expect(list.querySelectorAll('a')).toHaveLength(coins.length);
   });
 });

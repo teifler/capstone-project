@@ -2,10 +2,10 @@ import { Line } from 'react-chartjs-2';
 import 'chart.js/auto';
 import styled from 'styled-components';
 
-function CryptoChart({ chartHistory, days, currency }) {
-  const coinPriceList = chartHistory.prices.map(coin => coin[1]);
-  const coinTimestampes = chartHistory.prices.map(coin => {
-    const date = new Date(coin[0]);
+function CryptoChart({ points, days, currency }) {
+  const coinPriceList = points.map(point => point.price);
+  const coinTimestampes = points.map(point => {
+    const date = new Date(point.time);
     return days < 2
       ? date.toLocaleString('en-US', {
           hour: 'numeric',

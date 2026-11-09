@@ -1,12 +1,26 @@
-import { NavLink } from 'react-router';
-import { useEffect } from 'react';
+import {
+  Navigate,
+  NavLink,
+  useLocation,
+  useParams,
+  useSearchParams,
+} from 'react-router';
 import Select from 'react-select';
-
 import styled from 'styled-components';
-import useStore from '../hooks/useStore.js';
-import { useFavorites } from '../store/favorites.js';
 
 import CryptoChart from '../components/CryptoChart.jsx';
+import ApiErrorNotice from '../components/ApiErrorNotice.jsx';
+import Loading from '../components/Loading.jsx';
+import NotFound from './NotFound.jsx';
+import {
+  parseDays,
+  TIMEFRAMES,
+  useChart,
+  useCoin,
+  VS_CURRENCY,
+} from '../api/coingecko.js';
+import { useFavorites } from '../store/favorites.js';
+import { isValidCoinId } from '../lib/validate.js';
 import {
   formatCompactCurrency,
   formatPercent,
@@ -18,36 +32,52 @@ import {
 import star from '../images/star.svg';
 import starFilled from '../images/star-filled.svg';
 import arrowLeft from '../images/arrow-left.svg';
-import spinner from '../images/spinner.svg';
 
-const options = [
-  { value: 7, label: '7 Days' },
-  { value: 14, label: '1 Week' },
-  { value: 30, label: '1 Month' },
-  { value: 90, label: '3 Months' },
-  { value: 365, label: '12 Months' },
-];
+const options = TIMEFRAMES.map(({ days, label }) => ({ value: days, label }));
+const currency = VS_CURRENCY;
 
-// `coin` is a normalised record from the markets list (see api/coingecko.js);
-// it already carries low/ATH/ATL and the market cap change, so the page no
-// longer loads the 100 kB /coins/{id} payload.
-function CoinPage({ coin, currency }) {
-  const days = useStore(state => state.days);
-  const setDays = useStore(state => state.setDays);
-  const isFavorite = useFavorites(state => state.favorites.includes(coin.id));
+function CoinPage() {
+  const { coinId = '' } = useParams();
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const days = parseDays(searchParams.get('days'));
+  const valid = isValidCoinId(coinId);
+
+  const { coin, error, isLoading, retry, retryInSeconds } = useCoin(coinId);
+  const chart = useChart(coin ? coinId : null, days);
+  const isFavorite = useFavorites(state => state.favorites.includes(coinId));
   const toggleFavorite = useFavorites(state => state.toggleFavorite);
-  const chartHistory = useStore(state => state.chartHistory);
 
-  const coinId = coin.id;
-
-  useEffect(() => {
-    useStore
-      .getState()
-      .getData(
-        `https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=${currency}&days=${days}`,
-        'chartHistory'
-      );
-  }, [coinId, currency, days]);
+  if (!valid) {
+    // /Bitcoin -> /bitcoin; anything else that is not a coin id is a 404.
+    const lower = coinId.toLowerCase();
+    return isValidCoinId(lower) ? (
+      <Navigate
+        to={{ pathname: `/${lower}`, search: location.search }}
+        replace
+      />
+    ) : (
+      <NotFound />
+    );
+  }
+  if (isLoading) return <Loading label="Loading coin…" />;
+  if (error) {
+    return (
+      <ApiErrorNotice
+        what="this coin"
+        error={error}
+        retryInSeconds={retryInSeconds}
+        onRetry={retry}
+      />
+    );
+  }
+  if (!coin) {
+    return (
+      <NotFound title="Coin not found">
+        CoinGecko has no coin with the id “{coinId}”.
+      </NotFound>
+    );
+  }
 
   const changeTrend = trend(coin.change24h);
 
@@ -104,25 +134,23 @@ function CoinPage({ coin, currency }) {
             aria-label="Select timeframe of chart"
             options={options}
             isSearchable={false}
-            placeholder="Select Timeframe"
-            onChange={e => setDays(e.value)}
+            value={options.find(option => option.value === days)}
+            onChange={option =>
+              setSearchParams({ days: String(option.value) }, { replace: true })
+            }
           />
         </LabelSelect>
-        {chartHistory.loading && (
-          <img src={spinner} alt="spinner" height="80" width="80" />
-        )}
-        {chartHistory.error && (
-          <ErrorMessage>
-            We had issues fetching the chart for you. Please reload the page to
-            try it again!
-          </ErrorMessage>
-        )}
-        {chartHistory.data && !chartHistory.loading && !chartHistory.error && (
-          <CryptoChart
-            chartHistory={chartHistory.data}
-            currency={currency}
-            days={days}
+        {chart.isLoading && <Loading label="Loading chart…" />}
+        {chart.error && (
+          <ApiErrorNotice
+            what="the price chart"
+            error={chart.error}
+            retryInSeconds={chart.retryInSeconds}
+            onRetry={chart.retry}
           />
+        )}
+        {chart.data && (
+          <CryptoChart points={chart.data} currency={currency} days={days} />
         )}
         <MarketInformationContainer>
           <InfoBox>
@@ -274,8 +302,4 @@ const InfoBox = styled.div`
 const Change = styled.span`
   color: ${({ $trend }) =>
     $trend === 'down' ? 'red' : $trend === 'up' ? 'green' : 'inherit'};
-`;
-
-const ErrorMessage = styled.p`
-  color: red;
 `;
