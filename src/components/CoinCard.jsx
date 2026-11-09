@@ -1,18 +1,7 @@
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import arrowUp from '../images/arrow-up.svg';
 import arrowDown from '../images/arrow-down.svg';
-import { NavLink } from 'react-router-dom';
-
-CoinCard.propTypes = {
-  currency: PropTypes.string.isRequired,
-  rank: PropTypes.number.isRequired,
-  name: PropTypes.string,
-  symbol: PropTypes.string,
-  image: PropTypes.string,
-  price: PropTypes.number,
-  price_change_percentage_24h: PropTypes.number,
-};
+import { NavLink } from 'react-router';
 
 function CoinCard({
   currency,

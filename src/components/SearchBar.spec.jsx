@@ -12,13 +12,13 @@ describe('SearchBar', () => {
     expect(searchInputField).toBeInTheDocument();
   });
 
-  it('Renders searchbar with user input', () => {
+  it('Renders searchbar with user input', async () => {
     render(<SearchBar />);
     const searchInputField = screen.getByRole('textbox', {
       name: 'search-input',
     });
 
-    userEvent.type(searchInputField, 'Bitcoin');
+    await userEvent.setup().type(searchInputField, 'Bitcoin');
     expect(searchInputField).toHaveValue('Bitcoin');
   });
 

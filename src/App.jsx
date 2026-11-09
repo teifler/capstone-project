@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router';
 import { useEffect } from 'react';
 import styled from 'styled-components';
 

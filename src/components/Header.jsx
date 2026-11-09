@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import logo from '../images/logo.svg';
 
 function Header() {
@@ -14,10 +13,6 @@ function Header() {
 }
 
 export default Header;
-
-Header.propTypes = {
-  name: PropTypes.string,
-};
 
 const Headline = styled.header`
   display: flex;
